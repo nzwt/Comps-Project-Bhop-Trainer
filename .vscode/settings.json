@@ -51,5 +51,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Comps Project Bhop Trainer.sln"
+    "dotnet.defaultSolution": "Comps-Project-Bhop-Trainer.sln"
 }
