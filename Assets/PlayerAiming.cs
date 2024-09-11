@@ -46,8 +46,9 @@ public class PlayerAiming : MonoBehaviour
 		DecayPunchAngle();
 
 		// Input
-		float xMovement = Input.GetAxisRaw("Mouse X") * horizontalSensitivity * sensitivityMultiplier;
-		float yMovement = -Input.GetAxisRaw("Mouse Y") * verticalSensitivity  * sensitivityMultiplier;
+		// 2.1f is a magic number that makes the sensitivity match to counter strike
+		float xMovement = (Input.GetAxisRaw("Mouse X") * horizontalSensitivity * sensitivityMultiplier) / 2.1f;
+		float yMovement = (-Input.GetAxisRaw("Mouse Y") * verticalSensitivity  * sensitivityMultiplier) / 2.1f;
 
 		// Calculate real rotation from input
 		realRotation   = new Vector3(Mathf.Clamp(realRotation.x + yMovement, minYRotation, maxYRotation), realRotation.y + xMovement, realRotation.z);
