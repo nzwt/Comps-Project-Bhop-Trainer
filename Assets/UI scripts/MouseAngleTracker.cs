@@ -6,7 +6,7 @@ public class MouseAngleTracker : MonoBehaviour
 {
     public TextMeshProUGUI angleText;   // TextMeshProUGUI to display angle change
     public float updateInterval = 0.1f; // Update interval (0.1 seconds)
-    public float mouseSensitivity = 100f;  // Sensitivity multiplier to convert input to degrees
+    public float mouseSensitivity = 1f;  // Sensitivity multiplier to convert input to degrees
     
     public PlayerAiming playerAiming; // Reference to the PlayerAiming script
 
