@@ -40,6 +40,7 @@ namespace Fragsurf.Movement {
         public bool slidingEnabled = false;
         public bool laddersEnabled = true;
         public bool supportAngledLadders = true;
+        public bool movementEnabled = true;
 
         [Header ("Step offset (can be buggy, enable at your own risk)")]
         public bool useStepOffset = false;
@@ -221,9 +222,10 @@ namespace Fragsurf.Movement {
 
             _colliderObject.transform.rotation = Quaternion.identity;
 
-
-            //UpdateTestBinds ();
-            UpdateMoveData ();
+            if(movementEnabled)
+            {
+                UpdateMoveData ();
+            }
             
             // Previous movement code
             Vector3 positionalMovement = transform.position - prevPosition;
