@@ -1,19 +1,19 @@
 using UnityEngine;
 using TMPro;
 
-public class XAxisSpeedTracker : MonoBehaviour
+public class YAxisSpeedTracker : MonoBehaviour
 {
     public TextMeshProUGUI speedText;   // TextMeshProUGUI to display speed
 
-    private float lastXPosition;
+    private float lastYPosition;
     private float speed;
     public float updateInterval = 0.1f; // Update interval (0.1 seconds)
     private float timer = 0f;
 
     void Start()
     {
-        // Store the initial X position of the object
-        lastXPosition = transform.position.x;
+        // Store the initial Y position of the object
+        lastYPosition = transform.position.y;
     }
 
     void Update()
@@ -34,13 +34,13 @@ public class XAxisSpeedTracker : MonoBehaviour
 
     void CalculateXSpeed()
     {
-        // Calculate speed based on the X-axis distance traveled
-        float currentXPosition = transform.position.x;
-        float distanceX = currentXPosition - lastXPosition;
-        speed = distanceX / updateInterval; // Speed = distance / time (0.1 seconds in this case)
+        // Calculate speed based on the Y-axis distance traveled
+        float currentYPosition = transform.position.y;
+        float distanceY = currentYPosition - lastYPosition;
+        speed = distanceY / updateInterval; // Speed = distance / time (0.1 seconds in this case)
 
-        // Update the last X position
-        lastXPosition = currentXPosition;
+        // Update the last Y position
+        lastYPosition = currentYPosition;
     }
 
     void DisplaySpeed()
@@ -48,7 +48,7 @@ public class XAxisSpeedTracker : MonoBehaviour
         // Display the speed in the TextMeshPro text component
         if (speedText != null)
         {
-            speedText.text = "Speed (X): " + speed.ToString("F2") + " units/s";
+            speedText.text = "Speed (Y): " + speed.ToString("F2") + " units/s";
         }
     }
 }
