@@ -60,7 +60,7 @@ namespace Fragsurf.Movement {
         private CameraWaterCheck _cameraWaterCheck;
 
         private MoveData _moveData = new MoveData ();
-        private SurfController _controller = new SurfController ();
+        public SurfController controller = new SurfController ();
 
         private Rigidbody rb;
 
@@ -102,12 +102,12 @@ namespace Fragsurf.Movement {
 		
         private void Awake () {
             
-            _controller.playerTransform = playerRotationTransform;
+            controller.playerTransform = playerRotationTransform;
             
             if (viewTransform != null) {
 
-                _controller.camera = viewTransform;
-                _controller.cameraYPos = viewTransform.localPosition.y;
+                controller.camera = viewTransform;
+                controller.cameraYPos = viewTransform.localPosition.y;
 
             }
 
@@ -255,9 +255,9 @@ namespace Fragsurf.Movement {
             moveData.underwater = underwater;
             
             if (allowCrouch)
-                _controller.Crouch (this, movementConfig, Time.deltaTime);
+                controller.Crouch (this, movementConfig, Time.deltaTime);
 
-            _controller.ProcessMovement (this, movementConfig, Time.deltaTime);
+            controller.ProcessMovement (this, movementConfig, Time.deltaTime);
 
             transform.position = moveData.origin;
             prevPosition = transform.position;

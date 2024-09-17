@@ -195,12 +195,14 @@ namespace Fragsurf.Movement {
                     if (_surfer.moveData.wishJump) {
 
                         ApplyFriction (0.0f, true, true);
+                        _surfer.moveData.grounded = false;
                         Jump ();
                         return;
 
                     } else {
 
                         ApplyFriction (1.0f * frictionMult, true, true);
+                        _surfer.moveData.grounded = true;
 
                     }
 
@@ -532,7 +534,7 @@ namespace Fragsurf.Movement {
         /// <summary>
         /// 
         /// </summary>
-        private bool CheckGrounded () {
+        public bool CheckGrounded () {
 
             _surfer.moveData.surfaceFriction = 1f;
             var movingUp = _surfer.moveData.velocity.y > 0f;
