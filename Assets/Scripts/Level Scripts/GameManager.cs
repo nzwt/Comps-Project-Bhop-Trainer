@@ -27,15 +27,19 @@ public class GameManager : MonoBehaviour
     {
         // Reset the player's position and rotation
         surfCharacter.transform.position = new Vector3(xReset, yReset, zReset);
-        surfCharacter.transform.rotation = Quaternion.identity;
+        surfCharacter.transform.rotation = Quaternion.LookRotation(Vector3.forward);
         //disable input
+        surfCharacter.moveData.verticalAxis = 0;
+        surfCharacter.moveData.horizontalAxis = 0;
         surfCharacter.movementEnabled = false;
+        //DisableMouseLook();
     }
 
     private void OnEnable()
     {
         DisableHudElements();
         EnableStartElements();
+        ResetPlayer();
     }
 
     private void OnDisable()
@@ -73,6 +77,16 @@ public class GameManager : MonoBehaviour
             StartElements[i].SetActive(false);
         }
     }
+    
+    public void DisableMouseLook()
+    {
+        //playerAiming.enabled = false;
+    }
+
+    public void EnableMouseLook()
+    {
+        //playerAiming.enabled = true;
+    }
 
     public void resetScene()
     {
@@ -99,6 +113,7 @@ public class GameManager : MonoBehaviour
             EnableHudElements();
             DisableStartElements();
             surfCharacter.movementEnabled = true;
+            EnableMouseLook();
         }
         if( hasJumped == false && grounded == false)
         {

@@ -1119,6 +1119,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1319595069}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!114 &1168277601 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2611578334253585977, guid: 5a0aa4bc3e204ee4fa5816d76460e8b0, type: 3}
+  m_PrefabInstance: {fileID: 4457641538562633988}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 604093a680e6d5a488206647cc35be23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1319595068
 GameObject:
   m_ObjectHideFlags: 0
@@ -2024,6 +2035,7 @@ MonoBehaviour:
   yReset: 1
   zReset: 0
   surfCharacter: {fileID: 4457641538562633989}
+  playerAiming: {fileID: 1168277601}
   hasJumped: 0
 --- !u!1001 &4457641538562633988
 PrefabInstance:
