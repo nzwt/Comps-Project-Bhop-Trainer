@@ -18,14 +18,18 @@ public class GameManager : MonoBehaviour
     private float zReset = 0.0f;  // Z-axis reset position
     [SerializeField]
     private SurfCharacter surfCharacter;
+    [SerializeField]
+    private PlayerAiming playerAiming;
     
     public bool hasJumped = false;
 
     void ResetPlayer()
     {
         // Reset the player's position and rotation
-        transform.position = new Vector3(xReset, yReset, zReset);
-        transform.rotation = Quaternion.identity;
+        surfCharacter.transform.position = new Vector3(xReset, yReset, zReset);
+        surfCharacter.transform.rotation = Quaternion.identity;
+        //disable input
+        surfCharacter.movementEnabled = false;
     }
 
     private void OnEnable()
@@ -94,6 +98,7 @@ public class GameManager : MonoBehaviour
         {
             EnableHudElements();
             DisableStartElements();
+            surfCharacter.movementEnabled = true;
         }
         if( hasJumped == false && grounded == false)
         {
