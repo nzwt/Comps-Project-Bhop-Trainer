@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using Fragsurf.Movement;
+using System.Collections.Generic;
 
 public class MouseAngleTracker : MonoBehaviour
 {
@@ -15,6 +16,9 @@ public class MouseAngleTracker : MonoBehaviour
     private float angleChangeX;
     private float angleChangeY;
     private float timer = 0f;
+    public float attemptAngleChange = 0;
+    private List<float> angleChanges = new List<float>();
+    public bool isAttemptActive = false;
 
     void Start()
     {
@@ -37,6 +41,14 @@ public class MouseAngleTracker : MonoBehaviour
             // Reset the timer
             timer = 0f;
         }
+
+        // for recording the angle change of an attempt
+        if (!isAttemptActive && angleChanges.Count > 0) // When attempt is finished, calculate average.
+        {
+            float attemptAngleChange = CalculateAverageAngleChange();
+            Debug.Log("Average Angle Change: " + attemptAngleChange);
+            angleChanges = new List<float>(); // Reset for the next attempt.
+        }
     }
 
     void CalculateMouseAngleChange()
@@ -49,9 +61,24 @@ public class MouseAngleTracker : MonoBehaviour
         float currentMouseY = Input.GetAxis("Mouse Y");
         angleChangeY = (currentMouseY - lastMouseY) * mouseSensitivity;
 
+        if(isAttemptActive)
+        {
+            angleChanges.Add(angleChangeX);
+        }
         // Update last mouse positions
         lastMouseX = currentMouseX;
         lastMouseY = currentMouseY;
+        
+    }
+
+    float CalculateAverageAngleChange()
+    {
+        float totalChange = 0;
+        foreach (float change in angleChanges)
+        {
+            totalChange += change;
+        }
+        return Mathf.Round(totalChange / angleChanges.Count * 100f) / 100f;
     }
 
     void DisplayMouseAngleChange()

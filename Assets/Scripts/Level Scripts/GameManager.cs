@@ -22,6 +22,8 @@ public class GameManager : MonoBehaviour
     private PlayerAiming playerAiming;
     
     public bool hasJumped = false;
+    public JumpAttempt currentJumpAttempt;
+    public MouseAngleTracker mouseAngleTracker;
 
     void ResetPlayer()
     {
@@ -33,6 +35,8 @@ public class GameManager : MonoBehaviour
         surfCharacter.moveData.horizontalAxis = 0;
         surfCharacter.movementEnabled = false;
         //DisableMouseLook();
+        currentJumpAttempt = new JumpAttempt(0, 0, 0, 0, 0, 0, 0, 0);
+        mouseAngleTracker.isAttemptActive = false;
     }
 
     private void OnEnable()
@@ -106,14 +110,15 @@ public class GameManager : MonoBehaviour
     void Update()
     {   
         bool grounded = surfCharacter.moveData.groundedTemp;
-        print(grounded);
-        //TODO - need to update this to have checks
+        //print(grounded);
+        //TODO - need to update this to have checks for starting level
         if (Input.GetMouseButtonDown(0))
         {
             EnableHudElements();
             DisableStartElements();
             surfCharacter.movementEnabled = true;
             EnableMouseLook();
+            mouseAngleTracker.isAttemptActive = true;
         }
         if( hasJumped == false && grounded == false)
         {
@@ -123,6 +128,7 @@ public class GameManager : MonoBehaviour
         if (hasJumped == true && grounded == true)
         {
             hasJumped = false;
+            mouseAngleTracker.isAttemptActive = false;
             resetScene();
         }
     }

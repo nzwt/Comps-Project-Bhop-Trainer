@@ -2037,6 +2037,16 @@ MonoBehaviour:
   surfCharacter: {fileID: 4457641538562633989}
   playerAiming: {fileID: 1168277601}
   hasJumped: 0
+  currentJumpAttempt:
+    attemptNumber: 0
+    jumpForce: 0
+    time: 0
+    distance: 0
+    height: 0
+    speed: 0
+    score: 0
+    angle: 0
+  mouseAngleTracker: {fileID: 4457641538562633990}
 --- !u!1001 &4457641538562633988
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2115,6 +2125,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 601d4686cc0b70d45a98271d52094850, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4457641538562633990 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7880296073372609873, guid: 5a0aa4bc3e204ee4fa5816d76460e8b0, type: 3}
+  m_PrefabInstance: {fileID: 4457641538562633988}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec723304366061d4f98773e926efaaf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
