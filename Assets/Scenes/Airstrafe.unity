@@ -2111,6 +2111,10 @@ PrefabInstance:
       propertyPath: angleText
       value: 
       objectReference: {fileID: 1828445540}
+    - target: {fileID: 7880296073372609873, guid: 5a0aa4bc3e204ee4fa5816d76460e8b0, type: 3}
+      propertyPath: updateInterval
+      value: 0.1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
