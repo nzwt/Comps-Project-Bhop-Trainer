@@ -6,15 +6,13 @@ using System.Collections.Generic;
 public class MouseAngleTracker : MonoBehaviour
 {
     public TextMeshProUGUI angleText;   // TextMeshProUGUI to display angle change
-    public float updateInterval = 0.1f; // Update interval (0.1 seconds)
-    public float mouseSensitivity = 1f;  // Sensitivity multiplier to convert input to degrees
-    
+    public float updateInterval = 1f; // Update interval (0.1 seconds)
+    public float mouseSensitivity = 1f;  // Sensitivity multiplier to convert input to degrees  
     public PlayerAiming playerAiming; // Reference to the PlayerAiming script
-
     private float lastMouseX;
     private float lastMouseY;
-    private float angleChangeX;
-    private float angleChangeY;
+    private float accumulatedAngle = 0f;
+    private float angleChangePerInterval = 0f;
     private float timer = 0f;
     public float attemptAngleChange = 0;
     private List<float> angleChanges = new List<float>();
@@ -22,27 +20,29 @@ public class MouseAngleTracker : MonoBehaviour
 
     void Start()
     {
+        mouseSensitivity = (playerAiming.horizontalSensitivity * playerAiming.sensitivityMultiplier) / 2.1f;
         // Capture the initial mouse position
-        lastMouseX = (Input.GetAxis("Mouse X") * playerAiming.horizontalSensitivity * playerAiming.sensitivityMultiplier) / 2.1f;
+        lastMouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
         lastMouseY = (Input.GetAxis("Mouse Y") * playerAiming.verticalSensitivity  * playerAiming.sensitivityMultiplier) / 2.1f;
     }
 
     void Update()
     {
         // Increment the timer by the time passed since the last frame
+        float mouseX = Input.GetAxis("Mouse X") ;
+        
+        // Accumulate the angle change
+        accumulatedAngle += mouseX;
+        
+        // Track time
         timer += Time.deltaTime;
 
-        // Update every x seconds
-        if (timer >= updateInterval)
+        if(timer >= updateInterval)
         {
             CalculateMouseAngleChange();
-            DisplayMouseAngleChange();
-
-            // Reset the timer
-            timer = 0f;
         }
 
-        // for recording the angle change of an attempt
+        //for recording the angle change of an attempt
         if (!isAttemptActive && angleChanges.Count > 0) // When attempt is finished, calculate average.
         {
             float attemptAngleChange = CalculateAverageAngleChange();
@@ -53,32 +53,56 @@ public class MouseAngleTracker : MonoBehaviour
 
     void CalculateMouseAngleChange()
     {
-        // Calculate change in mouse angle for X-axis (horizontal movement)
-        float currentMouseX = Input.GetAxis("Mouse X");
-        angleChangeX = (currentMouseX - lastMouseX) * mouseSensitivity;
 
-        // Not currently using y calculation, might be helpful later
-        float currentMouseY = Input.GetAxis("Mouse Y");
-        angleChangeY = (currentMouseY - lastMouseY) * mouseSensitivity;
+        angleChangePerInterval = accumulatedAngle / timer;
 
+            // Output the angle change for the interval
+        //Debug.Log("Angle Change Per Interval: " + angleChangePerInterval);
         if(isAttemptActive)
         {
-            angleChanges.Add(angleChangeX);
+            //Debug.Log("Angle Change: " + accumulatedAngle);
+            angleChanges.Add(accumulatedAngle);
         }
-        // Update last mouse positions
-        lastMouseX = currentMouseX;
-        lastMouseY = currentMouseY;
+            
+        // Reset timer and accumulated angle for the next interval
+        timer = 0f;
+        accumulatedAngle = 0f;
+
         
     }
+
+    
+    // void CalculateLiveAngleChange()
+    // {
+    //     // Calculate change in mouse angle for X-axis (horizontal movement)
+    //     float currentMouseX = Input.GetAxis("Mouse X");
+    //     float liveAngleChangeX = (currentMouseX - lastMouseX) * mouseSensitivity;
+
+    //     // Not currently using y calculation, might be helpful later
+    //     float currentMouseY = Input.GetAxis("Mouse Y");
+    //     float liveAngleChangeY = (currentMouseY - lastMouseY) * mouseSensitivity;
+
+    //     if(isAttemptActive)
+    //     {
+    //         Debug.Log("Angle Change: " + angleChangeX);
+    //         angleChanges.Add(liveAngleChangeX);
+    //     }
+    //     // Update last mouse positions
+    //     lastMouseX = liveAngleChangeX;
+    //     lastMouseY = liveAngleChangeY;
+        
+    // }
 
     float CalculateAverageAngleChange()
     {
         float totalChange = 0;
         foreach (float change in angleChanges)
         {
+            Debug.Log("Change: " + change);
             totalChange += change;
         }
-        return Mathf.Round(totalChange / angleChanges.Count * 100f) / 100f;
+        Debug.Log("Total Change: " + totalChange);
+        return totalChange;
     }
 
     void DisplayMouseAngleChange()
@@ -87,7 +111,7 @@ public class MouseAngleTracker : MonoBehaviour
         if (angleText != null)
         {
             // Display X and Y axis change (or just one if you prefer)
-            angleText.text = "Mouse Angle Change: X = " + angleChangeX.ToString("F2") + "°/s";
+            angleText.text = "Mouse Angle Change: X = " + accumulatedAngle.ToString("F2") + "°/s";
         }
     }
 }
