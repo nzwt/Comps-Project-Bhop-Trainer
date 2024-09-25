@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ScoreManager : MonoBehaviour
 {
-    private List<JumpAttempt> scoreList = new List<JumpAttempt>();
+    public List<JumpAttempt> scoreList = new List<JumpAttempt>();
 
     private string filePath;
 
@@ -13,14 +13,22 @@ public class ScoreManager : MonoBehaviour
         // Set the file path to save in a persistent location
         filePath = Path.Combine(Application.persistentDataPath, "JumpAttempt.json");
 
+        Debug.Log("File path: " + filePath);
+
         // Load scores if file exists
         LoadScores();
     }
 
     public void SaveScore(int attemptNumber, float jumpForce, float time, float distance, float height, float speed, float score, float angle)
     {
+        if (string.IsNullOrEmpty(filePath))
+        {
+            Debug.LogError("File path is null or empty!");
+            return;
+        }
+
         // Create a new score entry
-        JumpAttempt newScore = new JumpAttempt(attemptNumber, jumpForce, time, distance, height, speed, score, angle);
+        JumpAttempt newScore = new JumpAttempt(attemptNumber, jumpForce, time, distance, height, speed, score, angle, date: System.DateTime.Now);
 
         // Add the new score to the list
         scoreList.Add(newScore);
@@ -36,6 +44,12 @@ public class ScoreManager : MonoBehaviour
 
     public void LoadScores()
     {
+        if (string.IsNullOrEmpty(filePath))
+        {
+            Debug.LogError("File path is null or empty!");
+            return;
+        }
+
         // Check if the file exists
         if (File.Exists(filePath))
         {

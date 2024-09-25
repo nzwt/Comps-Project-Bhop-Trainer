@@ -1990,6 +1990,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2098334199}
   - component: {fileID: 2098334200}
+  - component: {fileID: 2098334201}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -2036,7 +2037,9 @@ MonoBehaviour:
   zReset: 0
   surfCharacter: {fileID: 4457641538562633989}
   playerAiming: {fileID: 1168277601}
+  scoreManager: {fileID: 2098334201}
   hasJumped: 0
+  attemptNumber: 0
   currentJumpAttempt:
     attemptNumber: 0
     jumpForce: 0
@@ -2047,6 +2050,19 @@ MonoBehaviour:
     score: 0
     angle: 0
   mouseAngleTracker: {fileID: 4457641538562633990}
+--- !u!114 &2098334201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2098334198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eac424db91b10fc428c5f65d4547ed27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scoreList: []
 --- !u!1001 &4457641538562633988
 PrefabInstance:
   m_ObjectHideFlags: 0

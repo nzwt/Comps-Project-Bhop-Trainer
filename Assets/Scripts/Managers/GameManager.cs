@@ -6,24 +6,30 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    //Hud Elements
     [SerializeField]
     public GameObject[] HudElements = new GameObject[3];
     [SerializeField]
     public GameObject[] StartElements = new GameObject[3];
     [SerializeField]
+    // Reset position values
     private float xReset = 0.0f;  // X-axis reset position
     [SerializeField]
     private float yReset = 1.0f;  // Y-axis reset position
     [SerializeField]
     private float zReset = 0.0f;  // Z-axis reset position
     [SerializeField]
+    // Reference to the SurfCharacter script
     private SurfCharacter surfCharacter;
     [SerializeField]
     private PlayerAiming playerAiming;
+    public ScoreManager scoreManager;
     
     public bool hasJumped = false;
+    public int attemptNumber = 0;
     public JumpAttempt currentJumpAttempt;
     public MouseAngleTracker mouseAngleTracker;
+
 
     void ResetPlayer()
     {
@@ -35,7 +41,7 @@ public class GameManager : MonoBehaviour
         surfCharacter.moveData.horizontalAxis = 0;
         surfCharacter.movementEnabled = false;
         //DisableMouseLook();
-        currentJumpAttempt = new JumpAttempt(0, 0, 0, 0, 0, 0, 0, 0);
+        currentJumpAttempt = new JumpAttempt(0, 0, 0, 0, 0, 0, 0, 0, date: System.DateTime.Now);
         mouseAngleTracker.isAttemptActive = false;
     }
 
@@ -99,11 +105,26 @@ public class GameManager : MonoBehaviour
         EnableStartElements();
     }
 
+    public void endAttempt()
+    {
+        // Save the score, values are placeholders for now
+        attemptNumber++;
+        scoreManager.SaveScore(attemptNumber, 0, 0, 0, 0, 0, 0, mouseAngleTracker.CalculateAttemptAngleChange());
+        hasJumped = false;
+        mouseAngleTracker.isAttemptActive = false;
+    }
+
     
     // Start is called before the first frame update
     void Start()
     {
-        
+        scoreManager.LoadScores();
+        //load the most recent score
+        if (scoreManager.scoreList.Count > 0)
+            {
+                // Access the last element in the scoreList and return its attempt number
+                attemptNumber = scoreManager.scoreList[scoreManager.scoreList.Count - 1].attemptNumber;
+            }
     }
 
     // Update is called once per frame
@@ -127,8 +148,7 @@ public class GameManager : MonoBehaviour
         }
         if (hasJumped == true && grounded == true)
         {
-            hasJumped = false;
-            mouseAngleTracker.isAttemptActive = false;
+            endAttempt();
             resetScene();
         }
     }

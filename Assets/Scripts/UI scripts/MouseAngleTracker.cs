@@ -45,7 +45,7 @@ public class MouseAngleTracker : MonoBehaviour
         //for recording the angle change of an attempt
         if (!isAttemptActive && angleChanges.Count > 0) // When attempt is finished, calculate average.
         {
-            float attemptAngleChange = CalculateAverageAngleChange();
+            float attemptAngleChange = CalculateAttemptAngleChange();
             Debug.Log("Average Angle Change: " + attemptAngleChange);
             angleChanges = new List<float>(); // Reset for the next attempt.
         }
@@ -71,37 +71,15 @@ public class MouseAngleTracker : MonoBehaviour
         
     }
 
-    
-    // void CalculateLiveAngleChange()
-    // {
-    //     // Calculate change in mouse angle for X-axis (horizontal movement)
-    //     float currentMouseX = Input.GetAxis("Mouse X");
-    //     float liveAngleChangeX = (currentMouseX - lastMouseX) * mouseSensitivity;
-
-    //     // Not currently using y calculation, might be helpful later
-    //     float currentMouseY = Input.GetAxis("Mouse Y");
-    //     float liveAngleChangeY = (currentMouseY - lastMouseY) * mouseSensitivity;
-
-    //     if(isAttemptActive)
-    //     {
-    //         Debug.Log("Angle Change: " + angleChangeX);
-    //         angleChanges.Add(liveAngleChangeX);
-    //     }
-    //     // Update last mouse positions
-    //     lastMouseX = liveAngleChangeX;
-    //     lastMouseY = liveAngleChangeY;
-        
-    // }
-
-    float CalculateAverageAngleChange()
+    public float CalculateAttemptAngleChange()
     {
         float totalChange = 0;
         foreach (float change in angleChanges)
         {
-            Debug.Log("Change: " + change);
+            //Debug.Log("Change: " + change);
             totalChange += change;
         }
-        Debug.Log("Total Change: " + totalChange);
+        //Debug.Log("Total Change: " + totalChange);
         return totalChange;
     }
 

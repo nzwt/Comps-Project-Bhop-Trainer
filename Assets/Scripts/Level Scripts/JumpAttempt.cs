@@ -1,3 +1,5 @@
+using System;
+
 [System.Serializable]
 public class JumpAttempt
 {
@@ -9,8 +11,9 @@ public class JumpAttempt
     public float speed;
     public float score;
     public float angle;
+    public DateTime date;
 
-    public JumpAttempt(int attemptNumber, float jumpForce, float time, float distance, float height, float speed, float score, float angle)
+    public JumpAttempt(int attemptNumber, float jumpForce, float time, float distance, float height, float speed, float score, float angle, DateTime date)
     {
         this.attemptNumber = attemptNumber;
         this.jumpForce = jumpForce;
@@ -19,7 +22,8 @@ public class JumpAttempt
         this.height = height;
         this.speed = speed;
         this.score = score;
-        this.angle = 0;
+        this.angle = angle;
+        this.date = date;
     }
 }
 
