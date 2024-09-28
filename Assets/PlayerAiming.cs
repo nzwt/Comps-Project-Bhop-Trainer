@@ -2,6 +2,8 @@
 
 public class PlayerAiming : MonoBehaviour
 {
+	[Header("Flags")]
+	public bool canAim = false;
 	[Header("References")]
 	public Transform bodyTransform;
 
@@ -44,25 +46,28 @@ public class PlayerAiming : MonoBehaviour
 			return;
 
 		DecayPunchAngle();
+		if (canAim)
+		{
+			// Input
+			// 2.1f is a magic number that makes the sensitivity match to counter strike
+			float xMovement = (Input.GetAxisRaw("Mouse X") * horizontalSensitivity * sensitivityMultiplier) / 2.1f;
+			float yMovement = (-Input.GetAxisRaw("Mouse Y") * verticalSensitivity  * sensitivityMultiplier) / 2.1f;
 
-		// Input
-		// 2.1f is a magic number that makes the sensitivity match to counter strike
-		float xMovement = (Input.GetAxisRaw("Mouse X") * horizontalSensitivity * sensitivityMultiplier) / 2.1f;
-		float yMovement = (-Input.GetAxisRaw("Mouse Y") * verticalSensitivity  * sensitivityMultiplier) / 2.1f;
+			// Calculate real rotation from input
+			realRotation   = new Vector3(Mathf.Clamp(realRotation.x + yMovement, minYRotation, maxYRotation), realRotation.y + xMovement, realRotation.z);
+			realRotation.z = Mathf.Lerp(realRotation.z, 0f, Time.deltaTime * 3f);
 
-		// Calculate real rotation from input
-		realRotation   = new Vector3(Mathf.Clamp(realRotation.x + yMovement, minYRotation, maxYRotation), realRotation.y + xMovement, realRotation.z);
-		realRotation.z = Mathf.Lerp(realRotation.z, 0f, Time.deltaTime * 3f);
+			//Apply real rotation to body
+			bodyTransform.eulerAngles = Vector3.Scale(realRotation, new Vector3(0f, 1f, 0f));
 
-		//Apply real rotation to body
-		bodyTransform.eulerAngles = Vector3.Scale(realRotation, new Vector3(0f, 1f, 0f));
+			//Apply rotation and recoil
+			Vector3 cameraEulerPunchApplied = realRotation;
+			cameraEulerPunchApplied.x += punchAngle.x;
+			cameraEulerPunchApplied.y += punchAngle.y;
 
-		//Apply rotation and recoil
-		Vector3 cameraEulerPunchApplied = realRotation;
-		cameraEulerPunchApplied.x += punchAngle.x;
-		cameraEulerPunchApplied.y += punchAngle.y;
-
-		transform.eulerAngles = cameraEulerPunchApplied;
+			transform.eulerAngles = cameraEulerPunchApplied;
+		}
+		
 	}
 
 	public void ViewPunch(Vector2 punchAmount)
