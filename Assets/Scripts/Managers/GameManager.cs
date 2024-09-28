@@ -40,9 +40,9 @@ public class GameManager : MonoBehaviour
         surfCharacter.moveData.verticalAxis = 0;
         surfCharacter.moveData.horizontalAxis = 0;
         surfCharacter.movementEnabled = false;
-        DisableMouseLook();
         currentJumpAttempt = new JumpAttempt(0, 0, 0, 0, 0, 0, 0, 0, date: System.DateTime.Now);
         mouseAngleTracker.isAttemptActive = false;
+        DisableMouseLook();
     }
 
     private void OnEnable()
@@ -90,6 +90,7 @@ public class GameManager : MonoBehaviour
     
     public void DisableMouseLook()
     {
+        playerAiming.resetRotation();
         playerAiming.canAim = false;
     }
 

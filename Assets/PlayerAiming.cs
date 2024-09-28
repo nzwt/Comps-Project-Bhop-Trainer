@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class PlayerAiming : MonoBehaviour
 {
@@ -68,6 +69,11 @@ public class PlayerAiming : MonoBehaviour
 			transform.eulerAngles = cameraEulerPunchApplied;
 		}
 		
+	}
+
+	public void resetRotation()
+	{
+		realRotation = Vector3.zero;
 	}
 
 	public void ViewPunch(Vector2 punchAmount)
