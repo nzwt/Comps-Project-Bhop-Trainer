@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     public GameObject[] StartElements = new GameObject[3];
     [SerializeField]
+    public GameObject StatScreen;
+    [SerializeField]
     // Reset position values
     private float xReset = 0.0f;  // X-axis reset position
     [SerializeField]
@@ -27,6 +29,7 @@ public class GameManager : MonoBehaviour
     
     public bool hasJumped = false;
     public int attemptNumber = 0;
+    public JumpAttempt lastJumpAttempt;
     public JumpAttempt currentJumpAttempt;
     public MouseAngleTracker mouseAngleTracker;
 
@@ -40,7 +43,7 @@ public class GameManager : MonoBehaviour
         surfCharacter.moveData.verticalAxis = 0;
         surfCharacter.moveData.horizontalAxis = 0;
         surfCharacter.movementEnabled = false;
-        currentJumpAttempt = new JumpAttempt(0, 0, 0, 0, 0, 0, 0, 0, date: System.DateTime.Now);
+        currentJumpAttempt = new JumpAttempt(0, 0, 0, 0, 0, 0, 0, 0, 0, date: System.DateTime.Now);
         mouseAngleTracker.isAttemptActive = false;
         DisableMouseLook();
     }
@@ -88,6 +91,15 @@ public class GameManager : MonoBehaviour
         }
     }
     
+    public void EnableStatScreen()
+    {
+        StatScreen.SetActive(true);
+    }
+    public void DisableStatScreen()
+    {
+        StatScreen.SetActive(false);
+    }
+    
     public void DisableMouseLook()
     {
         playerAiming.resetRotation();
@@ -103,6 +115,7 @@ public class GameManager : MonoBehaviour
     {
         ResetPlayer();
         DisableHudElements();
+        EnableStatScreen();
         EnableStartElements();
     }
 
@@ -110,9 +123,10 @@ public class GameManager : MonoBehaviour
     {
         // Save the score, values are placeholders for now
         attemptNumber++;
-        scoreManager.SaveScore(attemptNumber, 0, 0, 0, 0, 0, 0, mouseAngleTracker.CalculateAttemptAngleChange());
+        scoreManager.SaveScore(attemptNumber, 0, 0, 0, 0, 0, 0, mouseAngleTracker.CalculateAttemptAngleChange(), 0);
         hasJumped = false;
         mouseAngleTracker.isAttemptActive = false;
+        StatScreen.GetComponent<StatScreen>().updateStats();
     }
 
     
@@ -124,6 +138,7 @@ public class GameManager : MonoBehaviour
         if (scoreManager.scoreList.Count > 0)
             {
                 // Access the last element in the scoreList and return its attempt number
+                lastJumpAttempt = scoreManager.scoreList[scoreManager.scoreList.Count - 1];
                 attemptNumber = scoreManager.scoreList[scoreManager.scoreList.Count - 1].attemptNumber;
             }
     }
@@ -137,6 +152,7 @@ public class GameManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             EnableHudElements();
+            DisableStatScreen();
             DisableStartElements();
             surfCharacter.movementEnabled = true;
             EnableMouseLook();

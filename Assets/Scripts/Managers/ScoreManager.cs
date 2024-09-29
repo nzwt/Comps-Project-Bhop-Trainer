@@ -19,7 +19,7 @@ public class ScoreManager : MonoBehaviour
         LoadScores();
     }
 
-    public void SaveScore(int attemptNumber, float jumpForce, float time, float distance, float height, float speed, float score, float angle)
+    public void SaveScore(int attemptNumber, float jumpForce, float time, float distance, float height, float speed, float score, float angle, float aimSmoothness)
     {
         if (string.IsNullOrEmpty(filePath))
         {
@@ -28,7 +28,7 @@ public class ScoreManager : MonoBehaviour
         }
 
         // Create a new score entry
-        JumpAttempt newScore = new JumpAttempt(attemptNumber, jumpForce, time, distance, height, speed, score, angle, date: System.DateTime.Now);
+        JumpAttempt newScore = new JumpAttempt(attemptNumber, jumpForce, time, distance, height, speed, score, angle, aimSmoothness, date: System.DateTime.Now);
 
         // Add the new score to the list
         scoreList.Add(newScore);

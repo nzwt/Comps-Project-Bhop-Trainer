@@ -1,4 +1,5 @@
 using System;
+using Unity.Profiling.LowLevel.Unsafe;
 
 [System.Serializable]
 public class JumpAttempt
@@ -11,9 +12,10 @@ public class JumpAttempt
     public float speed;
     public float score;
     public float angle;
+    public float aimSmoothness;
     public DateTime date;
 
-    public JumpAttempt(int attemptNumber, float jumpForce, float time, float distance, float height, float speed, float score, float angle, DateTime date)
+    public JumpAttempt(int attemptNumber, float jumpForce, float time, float distance, float height, float speed, float score, float angle, float aimSmoothness, DateTime date)
     {
         this.attemptNumber = attemptNumber;
         this.jumpForce = jumpForce;
@@ -23,6 +25,7 @@ public class JumpAttempt
         this.speed = speed;
         this.score = score;
         this.angle = angle;
+        this.aimSmoothness = aimSmoothness;
         this.date = date;
     }
 }
