@@ -8,6 +8,8 @@ public class CurvedArrow3D : MonoBehaviour
 
     public float xOffset = 0.0f;  // Offset along the X-axis
     public float zOffset = 0.0f;  // Offset along the Y-axis
+
+    public bool arrowDirection = false;  // Direction of the arrowhead, false = left, true = right
     //public GameObject arrowheadPrefab;  // Prefab for the 3D arrowhead
 
     void Start()
@@ -19,11 +21,20 @@ public class CurvedArrow3D : MonoBehaviour
 
     void CreateArc(float angle)
     {
+        int rotation;
+        if (arrowDirection)
+        {
+            rotation = -1;
+        }
+        else
+        {
+            rotation = 1;
+        }
         float angleStep = Mathf.Deg2Rad * (angle / segments);  // Convert degrees to radians
         for (int i = 0; i <= segments; i++)
         {
             float currentAngle = angleStep * i;
-            float x = (Mathf.Cos(currentAngle) * radius) + xOffset;  // X-axis for the curve
+            float x = (Mathf.Cos(currentAngle) * radius) * rotation + xOffset;  // X-axis for the curve
             float z = (Mathf.Sin(currentAngle) * radius) + zOffset;  // Z-axis for the curve
 
             lineRenderer.SetPosition(i, new Vector3(x, 1, z));  // Set points along the XZ plane
