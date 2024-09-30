@@ -161,7 +161,7 @@ public class GameManager : MonoBehaviour
         //load the scores
         Debug.Log(scoreManager.isLoaded);
         Debug.Log(lastJumpAttempt);
-        if(scoreManager.isLoaded == true && lastScoreLoaded == false)
+        if(scoreManager.isLoaded == true && lastScoreLoaded == false && scoreManager.GetLastJumpAttempt() != null)
         {
 
             //load the most recent score
