@@ -42,11 +42,32 @@ public class ScoreManager : MonoBehaviour
         Debug.Log("Score saved to: " + filePath);
     }
 
+    public void SaveScore(JumpAttempt newScore)
+    {
+        if (string.IsNullOrEmpty(filePath))
+        {
+            Debug.LogError("File path is null or empty!");
+            return;
+        }
+
+        // Add the new score to the list
+        scoreList.Add(newScore);
+
+        // Serialize the score list to JSON
+        string json = JsonUtility.ToJson(new ScoreListWrapper(scoreList), true);
+
+        // Write the JSON string to the file
+        File.WriteAllText(filePath, json);
+
+        Debug.Log("Score saved to: " + filePath);
+    }
+
     public void LoadScores()
     {
         if (string.IsNullOrEmpty(filePath))
         {
             Debug.LogError("File path is null or empty!");
+            Debug.Break();
             return;
         }
 

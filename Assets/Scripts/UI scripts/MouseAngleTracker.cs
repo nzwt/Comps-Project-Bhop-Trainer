@@ -76,10 +76,8 @@ public class MouseAngleTracker : MonoBehaviour
         float totalChange = 0;
         foreach (float change in angleChanges)
         {
-            //Debug.Log("Change: " + change);
             totalChange += change;
         }
-        //Debug.Log("Total Change: " + totalChange);
         return totalChange;
     }
 

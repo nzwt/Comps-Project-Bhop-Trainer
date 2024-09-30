@@ -9,6 +9,11 @@ public class SpeedTracker : MonoBehaviour
     private float speed;
     private float updateInterval = 0.1f; // Interval for updating speed (0.1 seconds)
     private float timer = 0f;            // Timer to track time
+    private float attemptTimer = 0f;     // Timer to track time for an attempt
+    private float totalSpeed = 0f;       // Total speed for calculating average
+    public bool isAttemptActive = false;
+    public float currentAttemptSpeed = 0f;
+    
 
     void Start()
     {
@@ -29,6 +34,20 @@ public class SpeedTracker : MonoBehaviour
             // Reset the timer
             timer = 0f;
         }
+
+        if(isAttemptActive && speed > 0)
+        {
+            totalSpeed += speed;
+            attemptTimer += Time.deltaTime;
+        }
+        else if(!isAttemptActive && totalSpeed > 0)
+        {
+            float attemptSpeed = CalculateAttemptSpeed();
+            Debug.Log("Average Speed: " + attemptSpeed);
+            currentAttemptSpeed = attemptSpeed;
+            totalSpeed = 0f;
+            attemptTimer = 0f;
+        }
     }
 
     void CalculateSpeed()
@@ -38,6 +57,12 @@ public class SpeedTracker : MonoBehaviour
         speed = distance / updateInterval; // Speed = distance / time (0.1 seconds in this case)
 
         lastPosition = transform.position; // Update last position
+    }
+
+    public float CalculateAttemptSpeed()
+    {
+        float attemptSpeed = totalSpeed / (timer / updateInterval);
+        return attemptSpeed;
     }
 
     void DisplaySpeed()
