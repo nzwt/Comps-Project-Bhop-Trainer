@@ -8,9 +8,9 @@ public class GameManager : MonoBehaviour
 {
     //Hud Elements
     [SerializeField]
-    public GameObject[] HudElements = new GameObject[3];
+    public GameObject HudElements;
     [SerializeField]
-    public GameObject[] StartElements = new GameObject[3];
+    public GameObject StartElements;
     [SerializeField]
     public GameObject StatScreen;
     [SerializeField]
@@ -67,34 +67,22 @@ public class GameManager : MonoBehaviour
 
     public void EnableHudElements()
     {
-        for (int i = 0; i < HudElements.Length; i++)
-        {
-            HudElements[i].SetActive(true);
-        }
+        HudElements.SetActive(true);
     }
 
     public void DisableHudElements()
     {
-        for (int i = 0; i < HudElements.Length; i++)
-        {
-            HudElements[i].SetActive(false);
-        }
+        HudElements.SetActive(false);
     }
     
     public void EnableStartElements()
-    {
-        for (int i = 0; i < StartElements.Length; i++)
-        {
-            StartElements[i].SetActive(true);
-        }
+    { 
+        StartElements.SetActive(true);
     }
 
     public void DisableStartElements()
     {
-        for (int i = 0; i < StartElements.Length; i++)
-        {
-            StartElements[i].SetActive(false);
-        }
+        StartElements.SetActive(false);
     }
     
     public void EnableStatScreen()
