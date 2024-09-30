@@ -131,7 +131,6 @@ public class GameManager : MonoBehaviour
         attemptNumber++;
         // Update the lastJumpAttempt to the currentJumpAttempt
         // Reset the currentJumpAttempt
-        Debug.Log("End Attempt");
         currentJumpAttempt = new JumpAttempt(attemptNumber, 0, 0, 0, 0, speedTracker.currentAttemptSpeed, 0, mouseAngleTracker.CalculateAttemptAngleChange(), 0, date: System.DateTime.Now);
         scoreManager.SaveScore(currentJumpAttempt);
         StatScreen.GetComponent<StatScreen>().updateStats();
@@ -164,7 +163,7 @@ public class GameManager : MonoBehaviour
         Debug.Log(lastJumpAttempt);
         if(scoreManager.isLoaded == true && lastScoreLoaded == false)
         {
-            Debug.Log("Loading Scores");
+
             //load the most recent score
             lastJumpAttempt = scoreManager.GetLastJumpAttempt();
             attemptNumber = lastJumpAttempt.attemptNumber + 1;
