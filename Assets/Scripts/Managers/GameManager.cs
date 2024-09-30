@@ -65,6 +65,7 @@ public class GameManager : MonoBehaviour
     {
     }
 
+    //TODO get rid of these functions, not needed anymore, just toggle on and off individually
     public void EnableHudElements()
     {
         HudElements.SetActive(true);
@@ -119,7 +120,7 @@ public class GameManager : MonoBehaviour
         attemptNumber++;
         // Update the lastJumpAttempt to the currentJumpAttempt
         // Reset the currentJumpAttempt
-        currentJumpAttempt = new JumpAttempt(attemptNumber, 0, 0, 0, 0, speedTracker.currentAttemptSpeed, 0, mouseAngleTracker.CalculateAttemptAngleChange(), 0, date: System.DateTime.Now);
+        currentJumpAttempt = new JumpAttempt(attemptNumber, 0, 0, 0, 0, speedTracker.CalculateAttemptSpeed(), 0, mouseAngleTracker.CalculateAttemptAngleChange(), 0, date: System.DateTime.Now);
         scoreManager.SaveScore(currentJumpAttempt);
         StatScreen.GetComponent<StatScreen>().updateStats();
         hasJumped = false;
@@ -147,8 +148,6 @@ public class GameManager : MonoBehaviour
             firstFrame = false;
         }
         //load the scores
-        Debug.Log(scoreManager.isLoaded);
-        Debug.Log(lastJumpAttempt);
         if(scoreManager.isLoaded == true && lastScoreLoaded == false && scoreManager.GetLastJumpAttempt() != null)
         {
 

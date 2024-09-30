@@ -39,24 +39,24 @@ public class StatScreen : MonoBehaviour
         //changeInAngle.text = "Change in Angle: " + lastJumpAttempt.angle.ToString("F2") + " degrees";
         if(lastJumpAttempt.aimSmoothness <= currentJumpAttempt.aimSmoothness)
         {
-            aimSmoothness.text =currentJumpAttempt.aimSmoothness.ToString("F2") + " degrees (" + lastJumpAttempt.aimSmoothness.ToString("F2") + "▲)";
+            aimSmoothness.text =currentJumpAttempt.aimSmoothness.ToString("F2") + " (" + lastJumpAttempt.aimSmoothness.ToString("F2") + "▲)";
             aimSmoothness.color = Color.green;
         }
         else
         {
-            aimSmoothness.text =currentJumpAttempt.aimSmoothness.ToString("F2") + " degrees (" + lastJumpAttempt.aimSmoothness.ToString("F2") + "▼)";
+            aimSmoothness.text =currentJumpAttempt.aimSmoothness.ToString("F2") + " (" + lastJumpAttempt.aimSmoothness.ToString("F2") + "▼)";
             aimSmoothness.color = Color.red;
         }
         //aimSmoothness.text = "Aim Smoothness: " + lastJumpAttempt.aimSmoothness.ToString("F2") + " degrees";
         //check which is closer to 45
         if( Math.Abs(lastJumpAttempt.angle - 45) > Math.Abs(currentJumpAttempt.angle - 45))
         {
-            changeInAngle.text =currentJumpAttempt.angle.ToString("F2") + " degrees (" + lastJumpAttempt.angle.ToString("F2") + "▲)";
+            changeInAngle.text =currentJumpAttempt.angle.ToString("F2") + "° (" + lastJumpAttempt.angle.ToString("F2") + "°▲)";
             changeInAngle.color = Color.green;
         }
         else
         {
-            changeInAngle.text = currentJumpAttempt.angle.ToString("F2") + " degrees (" + lastJumpAttempt.angle.ToString("F2") + "▼)";
+            changeInAngle.text = currentJumpAttempt.angle.ToString("F2") + "° (" + lastJumpAttempt.angle.ToString("F2") + "°▼)";
             changeInAngle.color = Color.red;
         }
         //totalScore.text = "Total Score: " + lastJumpAttempt.score.ToString();
