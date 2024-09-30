@@ -29,9 +29,12 @@ public class GameManager : MonoBehaviour
     
     public bool hasJumped = false;
     public int attemptNumber = 0;
+    public bool firstFrame = true;
+    //stats
     public JumpAttempt lastJumpAttempt;
     public JumpAttempt currentJumpAttempt;
     public MouseAngleTracker mouseAngleTracker;
+    public SpeedTracker speedTracker;
 
 
     void ResetPlayer()
@@ -43,14 +46,16 @@ public class GameManager : MonoBehaviour
         surfCharacter.moveData.verticalAxis = 0;
         surfCharacter.moveData.horizontalAxis = 0;
         surfCharacter.movementEnabled = false;
-        currentJumpAttempt = new JumpAttempt(0, 0, 0, 0, 0, 0, 0, 0, 0, date: System.DateTime.Now);
         mouseAngleTracker.isAttemptActive = false;
+        speedTracker.isAttemptActive = false;
         DisableMouseLook();
     }
 
     private void OnEnable()
     {
+        currentJumpAttempt = new JumpAttempt(attemptNumber, 0, 0, 0, 0, 0, 0, 0, 0, date: System.DateTime.Now);
         DisableHudElements();
+        DisableStatScreen();
         EnableStartElements();
         ResetPlayer();
     }
@@ -123,10 +128,17 @@ public class GameManager : MonoBehaviour
     {
         // Save the score, values are placeholders for now
         attemptNumber++;
-        scoreManager.SaveScore(attemptNumber, 0, 0, 0, 0, 0, 0, mouseAngleTracker.CalculateAttemptAngleChange(), 0);
+        // Update the lastJumpAttempt to the currentJumpAttempt
+        // Reset the currentJumpAttempt
+        lastJumpAttempt = currentJumpAttempt;
+        currentJumpAttempt = new JumpAttempt(attemptNumber, 0, 0, 0, 0, speedTracker.currentAttemptSpeed, 0, mouseAngleTracker.CalculateAttemptAngleChange(), 0, date: System.DateTime.Now);
+        scoreManager.SaveScore(currentJumpAttempt);
+        StatScreen.GetComponent<StatScreen>().updateStats();
         hasJumped = false;
         mouseAngleTracker.isAttemptActive = false;
-        StatScreen.GetComponent<StatScreen>().updateStats();
+        speedTracker.isAttemptActive = false;
+        
+        
     }
 
     
@@ -146,8 +158,13 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {   
+        //skip first frame, otherwise the player will register an attempt
         bool grounded = surfCharacter.moveData.groundedTemp;
-        //print(grounded);
+        if(firstFrame)
+        {
+            grounded = true;
+            firstFrame = false;
+        }
         //TODO - need to update this to have checks for starting level
         if (Input.GetMouseButtonDown(0))
         {
@@ -157,6 +174,7 @@ public class GameManager : MonoBehaviour
             surfCharacter.movementEnabled = true;
             EnableMouseLook();
             mouseAngleTracker.isAttemptActive = true;
+            speedTracker.isAttemptActive = true;
         }
         if( hasJumped == false && grounded == false)
         {

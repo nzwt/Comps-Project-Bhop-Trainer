@@ -283,7 +283,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 22
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2208,6 +2208,7 @@ MonoBehaviour:
     angle: 0
     aimSmoothness: 0
   mouseAngleTracker: {fileID: 4457641538562633990}
+  speedTracker: {fileID: 4457641538562633993}
 --- !u!114 &2098334201
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2229,6 +2230,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 780841930}
     m_Modifications:
+    - target: {fileID: 2343788202112016058, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
+      propertyPath: m_text
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2603158585071332444, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2308,6 +2313,10 @@ PrefabInstance:
     - target: {fileID: 2603158585071332444, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2645648985546130970, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
+      propertyPath: m_text
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8348349709772627691, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
       propertyPath: m_Name
@@ -2417,6 +2426,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ec723304366061d4f98773e926efaaf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4457641538562633993 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 426427518443884530, guid: 5a0aa4bc3e204ee4fa5816d76460e8b0, type: 3}
+  m_PrefabInstance: {fileID: 4457641538562633988}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e523825e5d48d646b403d7eda0cd3ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807

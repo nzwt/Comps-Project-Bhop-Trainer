@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -23,8 +24,9 @@ public class StatScreen : MonoBehaviour
     public void updateStats()
     {
         currentJumpAttempt = gameManager.GetComponent<GameManager>().currentJumpAttempt;
+        lastJumpAttempt = gameManager.GetComponent<GameManager>().lastJumpAttempt;
         //averageSpeed.text = "Average Speed: " + currentJumpAttempt.speed.ToString("F2") + " (" + lastJumpAttempt.speed.ToString("F2") + ")";
-        if(lastJumpAttempt.speed <= currentJumpAttempt.speed)
+        if( lastJumpAttempt.speed  <= currentJumpAttempt.speed )
         {
             averageSpeed.text = currentJumpAttempt.speed.ToString("F2") + " (" + lastJumpAttempt.speed.ToString("F2") + "▲)";
             averageSpeed.color = Color.green;
@@ -46,7 +48,8 @@ public class StatScreen : MonoBehaviour
             aimSmoothness.color = Color.red;
         }
         //aimSmoothness.text = "Aim Smoothness: " + lastJumpAttempt.aimSmoothness.ToString("F2") + " degrees";
-        if(lastJumpAttempt.angle <= currentJumpAttempt.angle)
+        //check which is closer to 45
+        if( Math.Abs(lastJumpAttempt.angle - 45) > Math.Abs(currentJumpAttempt.angle - 45))
         {
             changeInAngle.text =currentJumpAttempt.angle.ToString("F2") + " degrees (" + lastJumpAttempt.angle.ToString("F2") + "▲)";
             changeInAngle.color = Color.green;
