@@ -5,6 +5,7 @@ using UnityEngine;
 public class ScoreManager : MonoBehaviour
 {
     public List<JumpAttempt> scoreList = new List<JumpAttempt>();
+    public bool isLoaded = false;
 
     private string filePath;
 
@@ -86,6 +87,19 @@ public class ScoreManager : MonoBehaviour
         else
         {
             Debug.Log("No save file found, starting fresh.");
+        }
+        isLoaded = true;
+    }
+
+    public JumpAttempt GetLastJumpAttempt()
+    {
+        if (scoreList.Count > 0)
+        {
+            return scoreList[scoreList.Count - 1];
+        }
+        else
+        {
+            return null;
         }
     }
 

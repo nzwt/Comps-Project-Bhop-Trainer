@@ -30,8 +30,9 @@ public class GameManager : MonoBehaviour
     public bool hasJumped = false;
     public int attemptNumber = 0;
     public bool firstFrame = true;
+    public bool lastScoreLoaded = false;
     //stats
-    public JumpAttempt lastJumpAttempt;
+    public JumpAttempt lastJumpAttempt = null;
     public JumpAttempt currentJumpAttempt;
     public MouseAngleTracker mouseAngleTracker;
     public SpeedTracker speedTracker;
@@ -130,13 +131,14 @@ public class GameManager : MonoBehaviour
         attemptNumber++;
         // Update the lastJumpAttempt to the currentJumpAttempt
         // Reset the currentJumpAttempt
-        lastJumpAttempt = currentJumpAttempt;
+        Debug.Log("End Attempt");
         currentJumpAttempt = new JumpAttempt(attemptNumber, 0, 0, 0, 0, speedTracker.currentAttemptSpeed, 0, mouseAngleTracker.CalculateAttemptAngleChange(), 0, date: System.DateTime.Now);
         scoreManager.SaveScore(currentJumpAttempt);
         StatScreen.GetComponent<StatScreen>().updateStats();
         hasJumped = false;
         mouseAngleTracker.isAttemptActive = false;
         speedTracker.isAttemptActive = false;
+        lastJumpAttempt = currentJumpAttempt;
         
         
     }
@@ -145,14 +147,6 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        scoreManager.LoadScores();
-        //load the most recent score
-        if (scoreManager.scoreList.Count > 0)
-            {
-                // Access the last element in the scoreList and return its attempt number
-                lastJumpAttempt = scoreManager.scoreList[scoreManager.scoreList.Count - 1];
-                attemptNumber = scoreManager.scoreList[scoreManager.scoreList.Count - 1].attemptNumber;
-            }
     }
 
     // Update is called once per frame
@@ -165,6 +159,18 @@ public class GameManager : MonoBehaviour
             grounded = true;
             firstFrame = false;
         }
+        //load the scores
+        Debug.Log(scoreManager.isLoaded);
+        Debug.Log(lastJumpAttempt);
+        if(scoreManager.isLoaded == true && lastScoreLoaded == false)
+        {
+            Debug.Log("Loading Scores");
+            //load the most recent score
+            lastJumpAttempt = scoreManager.GetLastJumpAttempt();
+            attemptNumber = lastJumpAttempt.attemptNumber + 1;
+            lastScoreLoaded = true; 
+        }
+            
         //TODO - need to update this to have checks for starting level
         if (Input.GetMouseButtonDown(0))
         {
