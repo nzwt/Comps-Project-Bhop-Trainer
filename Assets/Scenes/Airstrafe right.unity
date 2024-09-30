@@ -793,7 +793,7 @@ GameObject:
   - component: {fileID: 648257586}
   - component: {fileID: 648257585}
   m_Layer: 5
-  m_Name: SpeedText (y)
+  m_Name: SpeedText (z)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -838,7 +838,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Speed (y):'
+  m_text: 'Speed (z):'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2187,6 +2187,7 @@ MonoBehaviour:
   scoreManager: {fileID: 2098334201}
   hasJumped: 0
   attemptNumber: 0
+  firstFrame: 1
   lastJumpAttempt:
     attemptNumber: 0
     jumpForce: 0

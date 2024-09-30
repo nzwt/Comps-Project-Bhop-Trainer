@@ -5,7 +5,7 @@ public class YAxisSpeedTracker : MonoBehaviour
 {
     public TextMeshProUGUI speedText;   // TextMeshProUGUI to display speed
 
-    private float lastYPosition;
+    private float lastZPosition;
     private float speed;
     public float updateInterval = 0.1f; // Update interval (0.1 seconds)
     private float timer = 0f;
@@ -13,7 +13,7 @@ public class YAxisSpeedTracker : MonoBehaviour
     void Start()
     {
         // Store the initial Y position of the object
-        lastYPosition = transform.position.y;
+        lastZPosition = transform.position.y;
     }
 
     void Update()
@@ -24,7 +24,7 @@ public class YAxisSpeedTracker : MonoBehaviour
         // Update every 0.1 seconds
         if (timer >= updateInterval)
         {
-            CalculateXSpeed();
+            CalculateZSpeed();
             DisplaySpeed();
 
             // Reset the timer
@@ -32,15 +32,15 @@ public class YAxisSpeedTracker : MonoBehaviour
         }
     }
 
-    void CalculateXSpeed()
+    void CalculateZSpeed()
     {
         // Calculate speed based on the Y-axis distance traveled
-        float currentYPosition = transform.position.y;
-        float distanceY = currentYPosition - lastYPosition;
+        float currentZPosition = transform.position.z;
+        float distanceY = currentZPosition - lastZPosition;
         speed = distanceY / updateInterval; // Speed = distance / time (0.1 seconds in this case)
 
         // Update the last Y position
-        lastYPosition = currentYPosition;
+        lastZPosition = currentZPosition;
     }
 
     void DisplaySpeed()
@@ -48,7 +48,7 @@ public class YAxisSpeedTracker : MonoBehaviour
         // Display the speed in the TextMeshPro text component
         if (speedText != null)
         {
-            speedText.text = "Speed (Y): " + speed.ToString("F2") + " units/s";
+            speedText.text = "Speed (Z): " + speed.ToString("F2") + " units/s";
         }
     }
 }

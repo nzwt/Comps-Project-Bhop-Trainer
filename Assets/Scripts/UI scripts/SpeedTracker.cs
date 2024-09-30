@@ -11,6 +11,7 @@ public class SpeedTracker : MonoBehaviour
     private float timer = 0f;            // Timer to track time
     private float attemptTimer = 0f;     // Timer to track time for an attempt
     private float totalSpeed = 0f;       // Total speed for calculating average
+    private int speedInstances = 0;      // Number of speed instances for calculating average
     public bool isAttemptActive = false;
     public float currentAttemptSpeed = 0f;
     
@@ -38,7 +39,7 @@ public class SpeedTracker : MonoBehaviour
         if(isAttemptActive && speed > 0)
         {
             totalSpeed += speed;
-            attemptTimer += Time.deltaTime;
+            speedInstances++;
         }
         else if(!isAttemptActive && totalSpeed > 0)
         {
@@ -46,7 +47,7 @@ public class SpeedTracker : MonoBehaviour
             Debug.Log("Average Speed: " + attemptSpeed);
             currentAttemptSpeed = attemptSpeed;
             totalSpeed = 0f;
-            attemptTimer = 0f;
+            speedInstances = 0;
         }
     }
 
@@ -61,7 +62,7 @@ public class SpeedTracker : MonoBehaviour
 
     public float CalculateAttemptSpeed()
     {
-        float attemptSpeed = totalSpeed / (timer / updateInterval);
+        float attemptSpeed = totalSpeed / speedInstances;
         return attemptSpeed;
     }
 
@@ -70,7 +71,7 @@ public class SpeedTracker : MonoBehaviour
         // Display speed in the TextMeshPro text component
         if (speedText != null)
         {
-            speedText.text = "Speed: " + speed.ToString("F2") + " units/s";
+            speedText.text = "Speed: " + speed.ToString("F2");
         }
     }
 }

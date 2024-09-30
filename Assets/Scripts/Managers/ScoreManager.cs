@@ -67,7 +67,7 @@ public class ScoreManager : MonoBehaviour
         if (string.IsNullOrEmpty(filePath))
         {
             Debug.LogError("File path is null or empty!");
-            Debug.Break();
+            //Debug.Break();
             return;
         }
 
