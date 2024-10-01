@@ -234,6 +234,9 @@ namespace Fragsurf.Movement {
                     _surfer.moveData.velocity.y = yVelocityNew * (_wishDir.y < 0f ? 1.2f : 1.0f);
                     float removableYVelocity = _surfer.moveData.velocity.y - yVelocityNew;
 
+                    //add forward movement
+                    _surfer.moveData.velocity.z = 4;
+
                 }
 
                 break;
@@ -463,6 +466,16 @@ namespace Fragsurf.Movement {
             if (yAffected == true) { _surfer.moveData.velocity.y *= _newSpeed; }
             _surfer.moveData.velocity.z *= _newSpeed;
 
+        }
+
+        private void MoveForward()
+        {
+            Vector3 forward = new Vector3(0.0f, 0.0f, 4.0f);
+            forward.y = 0; // Ensure the movement is only on the XZ plane
+            forward.Normalize();
+
+            // Modify the player's velocity to move forward
+            _surfer.moveData.velocity += forward * Time.deltaTime;
         }
 
         /// <summary>
