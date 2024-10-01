@@ -38,6 +38,9 @@ public class GameManager : MonoBehaviour
     public JumpAttempt currentJumpAttempt;
     public MouseAngleTracker mouseAngleTracker;
     public SpeedTracker speedTracker;
+    //scene bool
+    //not sure if this is how I want to do this
+    public bool allowPlayerMovement = true;
 
 
     void ResetPlayer()
@@ -124,8 +127,11 @@ public class GameManager : MonoBehaviour
         DisableStartElements();
         surfCharacter.movementEnabled = true;
         EnableMouseLook();
-        surfCharacter.controller.moveForward = true;
-        //has to jump
+        if(!allowPlayerMovement)
+        {
+            surfCharacter.controller.moveForward = true;
+            //has to jump
+        }
         mouseAngleTracker.isAttemptActive = true;
         speedTracker.isAttemptActive = true;
     }
@@ -140,9 +146,12 @@ public class GameManager : MonoBehaviour
     public void endAttempt()
     {
         //stop the movement
-        surfCharacter.controller.moveForward = false;
-        surfCharacter.controller.moveRight = false;
-        surfCharacter.controller.attemptWishJump = false;
+        if(!allowPlayerMovement)
+        {
+            surfCharacter.controller.moveForward = false;
+            surfCharacter.controller.moveRight = false;
+            surfCharacter.controller.attemptWishJump = false;
+        }
         // Save the score, values are placeholders for now
         attemptNumber++;
         // Update the lastJumpAttempt to the currentJumpAttempt
@@ -184,7 +193,7 @@ public class GameManager : MonoBehaviour
             lastScoreLoaded = true; 
         }
         //Debug.Log(surfCharacter.transform.position.z);
-        if(surfCharacter.transform.position.z <= 0.05 && surfCharacter.transform.position.z >= -0.05 && !startTriggered)
+        if(surfCharacter.transform.position.z <= 0.05 && surfCharacter.transform.position.z >= -0.05 && !startTriggered && !allowPlayerMovement)
         {
             Debug.Log("Reset");
             surfCharacter.controller.moveForward = false;
