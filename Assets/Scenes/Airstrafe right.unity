@@ -2383,7 +2383,7 @@ MonoBehaviour:
   StatScreen: {fileID: 207569369}
   xReset: 0
   yReset: 1
-  zReset: 0
+  zReset: -1
   surfCharacter: {fileID: 4457641538562633989}
   playerAiming: {fileID: 1168277601}
   scoreManager: {fileID: 2098334201}
@@ -2391,6 +2391,7 @@ MonoBehaviour:
   attemptNumber: 0
   firstFrame: 1
   lastScoreLoaded: 0
+  startTriggered: 0
   lastJumpAttempt:
     attemptNumber: 0
     jumpForce: 0

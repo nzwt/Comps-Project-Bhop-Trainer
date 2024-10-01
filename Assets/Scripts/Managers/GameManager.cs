@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Fragsurf.Movement;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -31,6 +32,7 @@ public class GameManager : MonoBehaviour
     public int attemptNumber = 0;
     public bool firstFrame = true;
     public bool lastScoreLoaded = false;
+    public bool startTriggered = false;
     //stats
     public JumpAttempt lastJumpAttempt = null;
     public JumpAttempt currentJumpAttempt;
@@ -112,10 +114,35 @@ public class GameManager : MonoBehaviour
         DisableHudElements();
         EnableStatScreen();
         EnableStartElements();
+        startTriggered = false;
     }
 
+    public void startAttempt()
+    {
+        EnableHudElements();
+        DisableStatScreen();
+        DisableStartElements();
+        surfCharacter.movementEnabled = true;
+        EnableMouseLook();
+        surfCharacter.controller.moveForward = true;
+        //has to jump
+        mouseAngleTracker.isAttemptActive = true;
+        speedTracker.isAttemptActive = true;
+    }
+    IEnumerator handleJump()
+    {
+        for(int i = 0; i < 10; i++)
+        {
+            yield return null;
+        }
+        hasJumped = true;
+    }
     public void endAttempt()
     {
+        //stop the movement
+        surfCharacter.controller.moveForward = false;
+        surfCharacter.controller.moveRight = false;
+        surfCharacter.controller.attemptWishJump = false;
         // Save the score, values are placeholders for now
         attemptNumber++;
         // Update the lastJumpAttempt to the currentJumpAttempt
@@ -156,23 +183,32 @@ public class GameManager : MonoBehaviour
             attemptNumber = lastJumpAttempt.attemptNumber + 1;
             lastScoreLoaded = true; 
         }
+        //Debug.Log(surfCharacter.transform.position.z);
+        if(surfCharacter.transform.position.z <= 0.05 && surfCharacter.transform.position.z >= -0.05 && !startTriggered)
+        {
+            Debug.Log("Reset");
+            surfCharacter.controller.moveForward = false;
+            surfCharacter.controller.attemptWishJump = true;
+            surfCharacter.controller.moveRight = true;
+            StartCoroutine(handleJump());
+            startTriggered = true;
+        }
+        //Debug.Log(grounded);
             
         //TODO - need to update this to have checks for starting level
         if (Input.GetMouseButtonDown(0))
         {
-            EnableHudElements();
-            DisableStatScreen();
-            DisableStartElements();
-            surfCharacter.movementEnabled = true;
-            EnableMouseLook();
-            mouseAngleTracker.isAttemptActive = true;
-            speedTracker.isAttemptActive = true;
+            startAttempt();
         }
         if( hasJumped == false && grounded == false)
         {
             print("Jumped");
             hasJumped = true;
         }
+        // if( hasJumped == true && grounded == false)
+        // {
+        //     surfCharacter.controller.moveForward = false;
+        // }
         if (hasJumped == true && grounded == true)
         {
             endAttempt();

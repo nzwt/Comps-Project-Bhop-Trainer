@@ -30,6 +30,12 @@ namespace Fragsurf.Movement {
 
         private float frictionMult = 1f;
 
+        ///// Trainer variables /////
+        public bool moveForward = false;
+        public bool moveRight = false;
+        public bool moveLeft = false; 
+        public bool attemptWishJump = false;
+
         ///// Methods /////
 
         Vector3 groundNormal = Vector3.up;
@@ -192,7 +198,7 @@ namespace Fragsurf.Movement {
                     Vector3 _wishDir;
 
                     // Jump and friction
-                    if (_surfer.moveData.wishJump) {
+                    if (_surfer.moveData.wishJump || attemptWishJump) {
 
                         ApplyFriction (0.0f, true, true);
                         _surfer.moveData.grounded = false;
@@ -208,10 +214,38 @@ namespace Fragsurf.Movement {
 
                     float forwardMove = _surfer.moveData.verticalAxis;
                     float rightMove = _surfer.moveData.horizontalAxis;
-
+                    // if (moveForward == true)
+                    // {
+                    //     if(forwardMove < 7)
+                    //     {
+                    //         forwardMove = 7;
+                    //     }
+                    // }
+                    // if(moveRight == true)
+                    // {
+                    //     if(rightMove < 7)
+                    //     {
+                    //         rightMove = 7;
+                    //     }
+                    // }
                     _wishDir = forwardMove * forward + rightMove * right;
+                    
                     _wishDir.Normalize ();
                     Vector3 moveDirNorm = _wishDir;
+
+                    //add forward movement
+                    if(moveForward == true)
+                    {
+                        _surfer.moveData.velocity.z = 7;
+                    }
+                    if(moveRight == true)
+                    {
+                        _surfer.moveData.velocity.x = 7;
+                    }
+                    if(moveLeft == true)
+                    {
+                        _surfer.moveData.velocity.x = -7;
+                    }
 
                     Vector3 forwardVelocity = Vector3.Cross (groundNormal, Quaternion.AngleAxis (-90, Vector3.up) * new Vector3 (_surfer.moveData.velocity.x, 0f, _surfer.moveData.velocity.z));
 
@@ -235,7 +269,18 @@ namespace Fragsurf.Movement {
                     float removableYVelocity = _surfer.moveData.velocity.y - yVelocityNew;
 
                     //add forward movement
-                    _surfer.moveData.velocity.z = 4;
+                    if(moveForward == true)
+                    {
+                        _surfer.moveData.velocity.z = 7;
+                    }
+                    if(moveRight == true)
+                    {
+                        _surfer.moveData.velocity.x = 7;
+                    }
+                    if(moveLeft == true)
+                    {
+                        _surfer.moveData.velocity.x = -7;
+                    }
 
                 }
 
@@ -537,7 +582,11 @@ namespace Fragsurf.Movement {
         private void Jump () {
             
             if (!_config.autoBhop)
+            {
                 _surfer.moveData.wishJump = false;
+                attemptWishJump = false;
+            }
+                
             
             _surfer.moveData.velocity.y += _config.jumpForce;
             jumping = true;
