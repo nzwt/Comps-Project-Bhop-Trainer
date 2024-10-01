@@ -16,6 +16,7 @@ public class MouseAngleTracker : MonoBehaviour
     private float timer = 0f;
     public float attemptAngleChange = 0;
     private List<float> angleChanges = new List<float>();
+    private List<float> angleChangePerIntervals = new List<float>();
     public bool isAttemptActive = false;
 
     void Start()
@@ -39,7 +40,7 @@ public class MouseAngleTracker : MonoBehaviour
 
         if(timer >= updateInterval)
         {
-            CalculateMouseAngleChange();
+            CalculateMouseAngleSmoothness();
         }
 
         //for recording the angle change of an attempt
@@ -51,7 +52,7 @@ public class MouseAngleTracker : MonoBehaviour
         }
     }
 
-    void CalculateMouseAngleChange()
+    void CalculateMouseAngleSmoothness()
     {
 
         angleChangePerInterval = accumulatedAngle / timer;
@@ -62,6 +63,7 @@ public class MouseAngleTracker : MonoBehaviour
         {
             //Debug.Log("Angle Change: " + accumulatedAngle);
             angleChanges.Add(accumulatedAngle);
+            angleChangePerIntervals.Add(angleChangePerInterval);
         }
             
         // Reset timer and accumulated angle for the next interval
@@ -79,6 +81,22 @@ public class MouseAngleTracker : MonoBehaviour
             totalChange += change;
         }
         return totalChange;
+    }
+
+    public float CalculateAverageAttemptAngleSmoothness()
+    {
+        float totalChange = 0;
+        foreach (float change in angleChanges)
+        {
+            totalChange += change;
+        }
+        return totalChange / angleChanges.Count;
+
+        // foreach (float change in angleChangePerIntervals)
+        // {
+        //     totalChange += change;
+        // }
+        // return totalChange / angleChangePerIntervals.Count;
     }
 
     void DisplayMouseAngleChange()

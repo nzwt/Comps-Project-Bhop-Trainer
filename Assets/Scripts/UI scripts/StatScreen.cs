@@ -62,12 +62,12 @@ public class StatScreen : MonoBehaviour
         //totalScore.text = "Total Score: " + lastJumpAttempt.score.ToString();
         if(lastJumpAttempt.score <= currentJumpAttempt.score)
         {
-            totalScore.text =currentJumpAttempt.score.ToString() + " (" + lastJumpAttempt.score.ToString() + "▲)";
+            totalScore.text =currentJumpAttempt.score.ToString("F2") + " (" + lastJumpAttempt.score.ToString() + "▲)";
             totalScore.color = Color.green;
         }
         else
         {
-            totalScore.text = currentJumpAttempt.score.ToString() + " (" + lastJumpAttempt.score.ToString() + "▼)";
+            totalScore.text = currentJumpAttempt.score.ToString("F2") + " (" + lastJumpAttempt.score.ToString() + "▼)";
             totalScore.color = Color.red;
         }
     }

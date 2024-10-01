@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Fragsurf.Movement;
@@ -156,7 +157,8 @@ public class GameManager : MonoBehaviour
         attemptNumber++;
         // Update the lastJumpAttempt to the currentJumpAttempt
         // Reset the currentJumpAttempt
-        currentJumpAttempt = new JumpAttempt(attemptNumber, 0, 0, 0, 0, speedTracker.CalculateAttemptSpeed(), 0, mouseAngleTracker.CalculateAttemptAngleChange(), 0, date: System.DateTime.Now);
+        float score = speedTracker.CalculateAttemptSpeed() + (20 - Math.Abs(45 - mouseAngleTracker.CalculateAttemptAngleChange())); //+ mouseAngleTracker.CalculateAverageAttemptAngleSmoothness();//(10 - Math.Abs(mouseAngleTracker.CalculateAverageAttemptAngleSmoothness()));
+        currentJumpAttempt = new JumpAttempt(attemptNumber, 0, 0, 0, 0, speedTracker.CalculateAttemptSpeed(), score, mouseAngleTracker.CalculateAttemptAngleChange(), mouseAngleTracker.CalculateAverageAttemptAngleSmoothness(), date: System.DateTime.Now);
         scoreManager.SaveScore(currentJumpAttempt);
         StatScreen.GetComponent<StatScreen>().updateStats();
         hasJumped = false;
