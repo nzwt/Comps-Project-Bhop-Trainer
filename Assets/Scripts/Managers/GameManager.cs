@@ -8,9 +8,9 @@ public class GameManager : MonoBehaviour
 {
     //Hud Elements
     [SerializeField]
-    public GameObject[] HudElements = new GameObject[3];
+    public GameObject HudElements;
     [SerializeField]
-    public GameObject[] StartElements = new GameObject[3];
+    public GameObject StartElements;
     [SerializeField]
     public GameObject StatScreen;
     [SerializeField]
@@ -65,36 +65,25 @@ public class GameManager : MonoBehaviour
     {
     }
 
+    //TODO get rid of these functions, not needed anymore, just toggle on and off individually
     public void EnableHudElements()
     {
-        for (int i = 0; i < HudElements.Length; i++)
-        {
-            HudElements[i].SetActive(true);
-        }
+        HudElements.SetActive(true);
     }
 
     public void DisableHudElements()
     {
-        for (int i = 0; i < HudElements.Length; i++)
-        {
-            HudElements[i].SetActive(false);
-        }
+        HudElements.SetActive(false);
     }
     
     public void EnableStartElements()
-    {
-        for (int i = 0; i < StartElements.Length; i++)
-        {
-            StartElements[i].SetActive(true);
-        }
+    { 
+        StartElements.SetActive(true);
     }
 
     public void DisableStartElements()
     {
-        for (int i = 0; i < StartElements.Length; i++)
-        {
-            StartElements[i].SetActive(false);
-        }
+        StartElements.SetActive(false);
     }
     
     public void EnableStatScreen()
@@ -131,7 +120,7 @@ public class GameManager : MonoBehaviour
         attemptNumber++;
         // Update the lastJumpAttempt to the currentJumpAttempt
         // Reset the currentJumpAttempt
-        currentJumpAttempt = new JumpAttempt(attemptNumber, 0, 0, 0, 0, speedTracker.currentAttemptSpeed, 0, mouseAngleTracker.CalculateAttemptAngleChange(), 0, date: System.DateTime.Now);
+        currentJumpAttempt = new JumpAttempt(attemptNumber, 0, 0, 0, 0, speedTracker.CalculateAttemptSpeed(), 0, mouseAngleTracker.CalculateAttemptAngleChange(), 0, date: System.DateTime.Now);
         scoreManager.SaveScore(currentJumpAttempt);
         StatScreen.GetComponent<StatScreen>().updateStats();
         hasJumped = false;
@@ -159,9 +148,7 @@ public class GameManager : MonoBehaviour
             firstFrame = false;
         }
         //load the scores
-        Debug.Log(scoreManager.isLoaded);
-        Debug.Log(lastJumpAttempt);
-        if(scoreManager.isLoaded == true && lastScoreLoaded == false)
+        if(scoreManager.isLoaded == true && lastScoreLoaded == false && scoreManager.GetLastJumpAttempt() != null)
         {
 
             //load the most recent score

@@ -99,7 +99,7 @@ public class ScoreManager : MonoBehaviour
         }
         else
         {
-            return null;
+            return new JumpAttempt(0, 0, 0, 0, 0, 0, 0, 0, 0, date: System.DateTime.Now);;
         }
     }
 
