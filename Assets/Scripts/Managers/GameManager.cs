@@ -44,20 +44,6 @@ public class GameManager : MonoBehaviour
     public bool allowPlayerMovement = true;
 
 
-    void ResetPlayer()
-    {
-        // Reset the player's position and rotation
-        surfCharacter.transform.position = new Vector3(xReset, yReset, zReset);
-        surfCharacter.transform.rotation = Quaternion.LookRotation(Vector3.forward);
-        //disable input
-        surfCharacter.moveData.verticalAxis = 0;
-        surfCharacter.moveData.horizontalAxis = 0;
-        surfCharacter.movementEnabled = false;
-        mouseAngleTracker.isAttemptActive = false;
-        speedTracker.isAttemptActive = false;
-        DisableMouseLook();
-    }
-
     private void OnEnable()
     {
     }
@@ -67,41 +53,6 @@ public class GameManager : MonoBehaviour
     }
 
     //TODO get rid of these functions, not needed anymore, just toggle on and off individually
-  
-    public void DisableMouseLook()
-    {
-        playerAiming.resetRotation();
-        playerAiming.canAim = false;
-    }
-
-    public void EnableMouseLook()
-    {
-        playerAiming.canAim = true;
-    }
-    public void endAttempt()
-    {
-        //stop the movement
-        if(!allowPlayerMovement)
-        {
-            surfCharacter.controller.moveForward = false;
-            surfCharacter.controller.moveRight = false;
-            surfCharacter.controller.attemptWishJump = false;
-        }
-        // Save the score, values are placeholders for now
-        attemptNumber++;
-        // Update the lastJumpAttempt to the currentJumpAttempt
-        // Reset the currentJumpAttempt
-        float score = speedTracker.CalculateAttemptSpeed() + (20 - Math.Abs(45 - mouseAngleTracker.CalculateAttemptAngleChange())); //+ mouseAngleTracker.CalculateAverageAttemptAngleSmoothness();//(10 - Math.Abs(mouseAngleTracker.CalculateAverageAttemptAngleSmoothness()));
-        currentJumpAttempt = new JumpAttempt(attemptNumber, 0, 0, 0, 0, speedTracker.CalculateAttemptSpeed(), score, mouseAngleTracker.CalculateAttemptAngleChange(), mouseAngleTracker.CalculateAverageAttemptAngleSmoothness(), date: System.DateTime.Now);
-        scoreManager.SaveScore(currentJumpAttempt);
-        StatScreen.GetComponent<StatScreen>().updateStats();
-        hasJumped = false;
-        mouseAngleTracker.isAttemptActive = false;
-        speedTracker.isAttemptActive = false;
-        lastJumpAttempt = currentJumpAttempt;
-        
-        
-    }
 
     
     // Start is called before the first frame update

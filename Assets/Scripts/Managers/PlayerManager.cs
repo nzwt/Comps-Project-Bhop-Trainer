@@ -6,10 +6,10 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     // refrences to other scripts
-    SurfCharacter surfCharacter;
-    MouseAngleTracker mouseAngleTracker;
-    SpeedTracker speedTracker;
-    PlayerAiming playerAiming;
+    public SurfCharacter surfCharacter;
+    public MouseAngleTracker mouseAngleTracker;
+    public SpeedTracker speedTracker;
+    public PlayerAiming playerAiming;
     public void ResetPlayer( float x, float y, float z)
     {
         // Reset the player's position and rotation

@@ -18,13 +18,13 @@ public class StatScreen : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        lastJumpAttempt = gameManager.GetComponent<GameManager>().lastJumpAttempt;
+        //lastJumpAttempt = gameManager.GetComponent<GameManager>().lastJumpAttempt;
     }
 
     public void updateStats()
     {
-        currentJumpAttempt = gameManager.GetComponent<GameManager>().currentJumpAttempt;
-        lastJumpAttempt = gameManager.GetComponent<GameManager>().lastJumpAttempt;
+        // currentJumpAttempt = gameManager.GetComponent<GameManager>().currentJumpAttempt;
+        // lastJumpAttempt = gameManager.GetComponent<GameManager>().lastJumpAttempt;
         //averageSpeed.text = "Average Speed: " + currentJumpAttempt.speed.ToString("F2") + " (" + lastJumpAttempt.speed.ToString("F2") + ")";
         if( lastJumpAttempt.speed  <= currentJumpAttempt.speed )
         {
