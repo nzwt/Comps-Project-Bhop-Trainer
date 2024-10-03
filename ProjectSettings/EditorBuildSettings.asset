@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Airstrafe right.unity
     guid: a58fe3fb26fc7a94e9fd719c7f3d89c3
+  - enabled: 1
+    path: Assets/Scenes/Airstrafe right with movement.unity
+    guid: 047395f2bc525ef428d216a21e04cd2e
   m_configObjects: {}
