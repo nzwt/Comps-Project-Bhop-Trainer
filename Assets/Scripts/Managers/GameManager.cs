@@ -60,11 +60,6 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable()
     {
-        currentJumpAttempt = new JumpAttempt(attemptNumber, 0, 0, 0, 0, 0, 0, 0, 0, date: System.DateTime.Now);
-        DisableHudElements();
-        DisableStatScreen();
-        EnableStartElements();
-        ResetPlayer();
     }
 
     private void OnDisable()
@@ -72,35 +67,7 @@ public class GameManager : MonoBehaviour
     }
 
     //TODO get rid of these functions, not needed anymore, just toggle on and off individually
-    public void EnableHudElements()
-    {
-        HudElements.SetActive(true);
-    }
-
-    public void DisableHudElements()
-    {
-        HudElements.SetActive(false);
-    }
-    
-    public void EnableStartElements()
-    { 
-        StartElements.SetActive(true);
-    }
-
-    public void DisableStartElements()
-    {
-        StartElements.SetActive(false);
-    }
-    
-    public void EnableStatScreen()
-    {
-        StatScreen.SetActive(true);
-    }
-    public void DisableStatScreen()
-    {
-        StatScreen.SetActive(false);
-    }
-    
+  
     public void DisableMouseLook()
     {
         playerAiming.resetRotation();
@@ -110,39 +77,6 @@ public class GameManager : MonoBehaviour
     public void EnableMouseLook()
     {
         playerAiming.canAim = true;
-    }
-
-    public void resetScene()
-    {
-        ResetPlayer();
-        DisableHudElements();
-        EnableStatScreen();
-        EnableStartElements();
-        startTriggered = false;
-    }
-
-    public void startAttempt()
-    {
-        EnableHudElements();
-        DisableStatScreen();
-        DisableStartElements();
-        surfCharacter.movementEnabled = true;
-        EnableMouseLook();
-        if(!allowPlayerMovement)
-        {
-            surfCharacter.controller.moveForward = true;
-            //has to jump
-        }
-        mouseAngleTracker.isAttemptActive = true;
-        speedTracker.isAttemptActive = true;
-    }
-    IEnumerator handleJump()
-    {
-        for(int i = 0; i < 10; i++)
-        {
-            yield return null;
-        }
-        hasJumped = true;
     }
     public void endAttempt()
     {
@@ -178,52 +112,6 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {   
-        //skip first frame, otherwise the player will register an attempt
-        bool grounded = surfCharacter.moveData.groundedTemp;
-        if(firstFrame)
-        {
-            grounded = true;
-            firstFrame = false;
-        }
-        //load the scores
-        if(scoreManager.isLoaded == true && lastScoreLoaded == false && scoreManager.GetLastJumpAttempt() != null)
-        {
 
-            //load the most recent score
-            lastJumpAttempt = scoreManager.GetLastJumpAttempt();
-            attemptNumber = lastJumpAttempt.attemptNumber + 1;
-            lastScoreLoaded = true; 
-        }
-        //Debug.Log(surfCharacter.transform.position.z);
-        if(surfCharacter.transform.position.z <= 0.05 && surfCharacter.transform.position.z >= -0.05 && !startTriggered && !allowPlayerMovement)
-        {
-            Debug.Log("Reset");
-            surfCharacter.controller.moveForward = false;
-            surfCharacter.controller.attemptWishJump = true;
-            surfCharacter.controller.moveRight = true;
-            StartCoroutine(handleJump());
-            startTriggered = true;
-        }
-        //Debug.Log(grounded);
-            
-        //TODO - need to update this to have checks for starting level
-        if (Input.GetMouseButtonDown(0))
-        {
-            startAttempt();
-        }
-        if( hasJumped == false && grounded == false)
-        {
-            print("Jumped");
-            hasJumped = true;
-        }
-        // if( hasJumped == true && grounded == false)
-        // {
-        //     surfCharacter.controller.moveForward = false;
-        // }
-        if (hasJumped == true && grounded == true)
-        {
-            endAttempt();
-            resetScene();
-        }
     }
 }
