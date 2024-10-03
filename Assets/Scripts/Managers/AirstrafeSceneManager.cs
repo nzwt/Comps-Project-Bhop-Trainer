@@ -6,10 +6,10 @@ using UnityEngine;
 public class AirstrafeSceneManager : MonoBehaviour
 {
     // refrences to other scripts
-    SurfCharacter surfCharacter;
-    UIManager uiManager;
-    PlayerManager playerManager;
-    ScoreManager scoreManager;
+    public SurfCharacter surfCharacter;
+    public UIManager uiManager;
+    public PlayerManager playerManager;
+    public ScoreManager scoreManager;
 
     // game objects
     public JumpAttempt currentJumpAttempt;
@@ -26,9 +26,9 @@ public class AirstrafeSceneManager : MonoBehaviour
     public bool allowPlayerMovement = true;
 
     // Reset position values
-    private float xReset = 0.0f;  // X-axis reset position
-    private float yReset = 1.0f;  // Y-axis reset position
-    private float zReset = 0.0f;  // Z-axis reset position
+    public float xReset = 0.0f;  // X-axis reset position
+    public float yReset = 1.0f;  // Y-axis reset position
+    public float zReset = 0.0f;  // Z-axis reset position
 
      private void OnEnable()
     {
@@ -72,6 +72,9 @@ public class AirstrafeSceneManager : MonoBehaviour
         currentJumpAttempt = new JumpAttempt(attemptNumber, 0, 0, 0, 0, speedTracker.CalculateAttemptSpeed(), score, mouseAngleTracker.CalculateAttemptAngleChange(), mouseAngleTracker.CalculateAverageAttemptAngleSmoothness(), date: System.DateTime.Now);
         scoreManager.SaveScore(currentJumpAttempt);
         //TODO: stats are going to be different depending on the scene, this should probably be dont in the scene manager but I dont know
+        //jank, fix later
+        uiManager.StatScreen.GetComponent<StatScreen>().currentJumpAttempt = currentJumpAttempt;
+        uiManager.StatScreen.GetComponent<StatScreen>().lastJumpAttempt = lastJumpAttempt;
         uiManager.StatScreen.GetComponent<StatScreen>().updateStats();
         hasJumped = false;
         mouseAngleTracker.isAttemptActive = false;

@@ -1961,6 +1961,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2098334199}
   - component: {fileID: 2098334200}
+  - component: {fileID: 2098334202}
+  - component: {fileID: 2098334204}
+  - component: {fileID: 2098334203}
   - component: {fileID: 2098334201}
   m_Layer: 0
   m_Name: GameManager
@@ -2047,6 +2050,84 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scoreList: []
   isLoaded: 0
+--- !u!114 &2098334202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2098334198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbf877801d868584f8082cd81dd7b19b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  surfCharacter: {fileID: 4457641538562633989}
+  uiManager: {fileID: 2098334203}
+  playerManager: {fileID: 2098334204}
+  scoreManager: {fileID: 2098334201}
+  currentJumpAttempt:
+    attemptNumber: 0
+    jumpForce: 0
+    time: 0
+    distance: 0
+    height: 0
+    speed: 0
+    score: 0
+    angle: 0
+    aimSmoothness: 0
+  lastJumpAttempt:
+    attemptNumber: 0
+    jumpForce: 0
+    time: 0
+    distance: 0
+    height: 0
+    speed: 0
+    score: 0
+    angle: 0
+    aimSmoothness: 0
+  attemptNumber: 0
+  mouseAngleTracker: {fileID: 4457641538562633990}
+  speedTracker: {fileID: 4457641538562633993}
+  hasJumped: 0
+  firstFrame: 1
+  lastScoreLoaded: 0
+  startTriggered: 0
+  allowPlayerMovement: 1
+  xReset: 0
+  yReset: 1
+  zReset: 0
+--- !u!114 &2098334203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2098334198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e151e76406c8c414eafb54f65f077448, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HudElements: {fileID: 1669012185}
+  StartElements: {fileID: 2100799773}
+  StatScreen: {fileID: 207569369}
+--- !u!114 &2098334204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2098334198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c7a273d133016d4287bb1cfb0470f65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  surfCharacter: {fileID: 4457641538562633989}
+  mouseAngleTracker: {fileID: 4457641538562633990}
+  speedTracker: {fileID: 4457641538562633993}
+  playerAiming: {fileID: 1168277601}
 --- !u!1001 &2100799771
 PrefabInstance:
   m_ObjectHideFlags: 0
