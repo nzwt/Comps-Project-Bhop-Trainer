@@ -47,8 +47,8 @@ public class BhopTimingSceneManager : MonoBehaviour
         uiManager.EnableHudElements();
         uiManager.DisableStatScreen();
         uiManager.DisableStartElements();
-        surfCharacter.movementEnabled = true;
         surfCharacter.DisableNonJumpInput();
+        StartCoroutine(allowJump());
         //playerManager.EnableMouseLook();
         surfCharacter.controller.moveForward = true;
         speedTracker.isAttemptActive = true;
@@ -62,7 +62,7 @@ public class BhopTimingSceneManager : MonoBehaviour
         attemptNumber++;
         // Update the lastJumpAttempt to the currentJumpAttempt
         // Reset the currentJumpAttempt
-        float score = speedTracker.CalculateAttemptSpeed() + (20 - System.Math.Abs(45 )); //+ mouseAngleTracker.CalculateAverageAttemptAngleSmoothness();//(10 - Math.Abs(mouseAngleTracker.CalculateAverageAttemptAngleSmoothness()));
+        float score = speedTracker.CalculateAttemptSpeed() + (1-calculateBhopAccuracy())*10;
         currentJumpAttempt = new JumpAttempt(1,attemptNumber, 0, 0, 0, 0, speedTracker.CalculateAttemptSpeed(), score, 0, 0, calculateBhopAccuracy(), date: System.DateTime.Now);
         scoreManager.SaveScore(currentJumpAttempt);
         //TODO: stats are going to be different depending on the scene, this should probably be dont in the scene manager but I dont know
@@ -77,6 +77,7 @@ public class BhopTimingSceneManager : MonoBehaviour
         speedTracker.isAttemptActive = false;
         lastJumpAttempt = currentJumpAttempt;
         surfCharacter.moveData.velocity = Vector3.zero;
+        surfCharacter.moveData.wishJump = false;
         
         
     }
@@ -112,21 +113,21 @@ public class BhopTimingSceneManager : MonoBehaviour
         
     }
 
-    IEnumerator handleJump()
+    IEnumerator allowJump()
     {
         for(int i = 0; i < 10; i++)
         {
             yield return null;
         }
-        hasJumped = true;
+        surfCharacter.movementEnabled = true;
     }
 
     void Update()
-    {   bool grounded = true;
+    {   bool grounded = false;
         //skip first frame, otherwise the player will register an attempt
         if(surfCharacter.groundObject == null)
         {
-            grounded = false;
+            grounded = true;
         }
         if(firstFrame)
         {
