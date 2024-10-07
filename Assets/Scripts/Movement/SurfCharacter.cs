@@ -329,13 +329,20 @@ namespace Fragsurf.Movement {
 
         }
 
-        private void DisableInput () {
+        public void DisableInput () {
 
             _moveData.verticalAxis = 0f;
             _moveData.horizontalAxis = 0f;
             _moveData.sideMove = 0f;
             _moveData.forwardMove = 0f;
             _moveData.wishJump = false;
+
+        }
+
+        public void DisableNonJumpInput () {
+            _moveData.horizontalAxis = 0f;
+            _moveData.sideMove = 0f;
+            _moveData.forwardMove = 0f;
 
         }
 
