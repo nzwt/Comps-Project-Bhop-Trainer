@@ -139,7 +139,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 207569369}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fcc513ad29dfaba4c97dba4fb6529712, type: 3}
   m_Name: 
@@ -174,6 +174,47 @@ MonoBehaviour:
   changeInAngle: {fileID: 1657174318}
   aimSmoothness: {fileID: 591366314}
   totalScore: {fileID: 353039007}
+--- !u!114 &207569372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 207569369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f26e6de56e67a1f4abbcefd4dbfb071e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameManager: {fileID: 2098334198}
+  statScreen: {fileID: 207569369}
+  lastJumpAttempt:
+    scenarioNumber: 0
+    attemptNumber: 0
+    jumpForce: 0
+    time: 0
+    distance: 0
+    height: 0
+    speed: 0
+    score: 0
+    angle: 0
+    aimSmoothness: 0
+    bhopAccuracy: 0
+  currentJumpAttempt:
+    scenarioNumber: 0
+    attemptNumber: 0
+    jumpForce: 0
+    time: 0
+    distance: 0
+    height: 0
+    speed: 0
+    score: 0
+    angle: 0
+    aimSmoothness: 0
+    bhopAccuracy: 0
+  averageSpeed: {fileID: 373999258}
+  bhopAccuracy: {fileID: 1657174318}
+  totalScore: {fileID: 591366314}
 --- !u!1 &270252542
 GameObject:
   m_ObjectHideFlags: 0
@@ -2342,6 +2383,26 @@ PrefabInstance:
       propertyPath: m_text
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 5312967917207693761, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
+      propertyPath: m_text
+      value: 'Average speed:
+
+        Timing accuracy:
+
+        Total score:'
+      objectReference: {fileID: 0}
+    - target: {fileID: 5734852156142728765, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
+      propertyPath: m_Name
+      value: Jump Timing accuracy
+      objectReference: {fileID: 0}
+    - target: {fileID: 6848534530165746812, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 113.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7850171156242897778, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
+      propertyPath: m_Name
+      value: Total Score
+      objectReference: {fileID: 0}
     - target: {fileID: 8348349709772627691, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
       propertyPath: m_Name
       value: AfterStats
@@ -2356,6 +2417,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8348349709772627691, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 207569371}
+    - targetCorrespondingSourceObject: {fileID: 8348349709772627691, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 207569372}
   m_SourcePrefab: {fileID: 100100000, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
 --- !u!1001 &4457641538562633988
 PrefabInstance:

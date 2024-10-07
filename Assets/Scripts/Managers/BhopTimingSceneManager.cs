@@ -67,9 +67,9 @@ public class BhopTimingSceneManager : MonoBehaviour
         scoreManager.SaveScore(currentJumpAttempt);
         //TODO: stats are going to be different depending on the scene, this should probably be dont in the scene manager but I dont know
         //jank, fix later
-        uiManager.StatScreen.GetComponent<StatScreen>().currentJumpAttempt = currentJumpAttempt;
-        uiManager.StatScreen.GetComponent<StatScreen>().lastJumpAttempt = lastJumpAttempt;
-        uiManager.StatScreen.GetComponent<StatScreen>().updateStats();
+        uiManager.StatScreen.GetComponent<BhopStatScreen>().currentJumpAttempt = currentJumpAttempt;
+        uiManager.StatScreen.GetComponent<BhopStatScreen>().lastJumpAttempt = lastJumpAttempt;
+        uiManager.StatScreen.GetComponent<BhopStatScreen>().updateStats();
         //reset vars
         currentJumps = 0;
         groundTimes.Clear();
