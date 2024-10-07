@@ -147,6 +147,7 @@ MonoBehaviour:
   gameManager: {fileID: 2098334198}
   statScreen: {fileID: 207569369}
   lastJumpAttempt:
+    scenarioNumber: 0
     attemptNumber: 0
     jumpForce: 0
     time: 0
@@ -156,7 +157,9 @@ MonoBehaviour:
     score: 0
     angle: 0
     aimSmoothness: 0
+    bhopAccuracy: 0
   currentJumpAttempt:
+    scenarioNumber: 0
     attemptNumber: 0
     jumpForce: 0
     time: 0
@@ -166,6 +169,7 @@ MonoBehaviour:
     score: 0
     angle: 0
     aimSmoothness: 0
+    bhopAccuracy: 0
   averageSpeed: {fileID: 373999258}
   changeInAngle: {fileID: 1657174318}
   aimSmoothness: {fileID: 591366314}
@@ -1267,11 +1271,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1624179128 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2611578335327444060, guid: 5a0aa4bc3e204ee4fa5816d76460e8b0, type: 3}
-  m_PrefabInstance: {fileID: 4457641538562633988}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1657174318 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2645648985546130970, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
@@ -2023,6 +2022,7 @@ MonoBehaviour:
   playerManager: {fileID: 2098334204}
   scoreManager: {fileID: 2098334201}
   currentJumpAttempt:
+    scenarioNumber: 0
     attemptNumber: 0
     jumpForce: 0
     time: 0
@@ -2032,7 +2032,9 @@ MonoBehaviour:
     score: 0
     angle: 0
     aimSmoothness: 0
+    bhopAccuracy: 0
   lastJumpAttempt:
+    scenarioNumber: 0
     attemptNumber: 0
     jumpForce: 0
     time: 0
@@ -2042,6 +2044,7 @@ MonoBehaviour:
     score: 0
     angle: 0
     aimSmoothness: 0
+    bhopAccuracy: 0
   attemptNumber: 0
   mouseAngleTracker: {fileID: 4457641538562633990}
   speedTracker: {fileID: 4457641538562633993}
@@ -2101,6 +2104,7 @@ MonoBehaviour:
   playerManager: {fileID: 2098334204}
   scoreManager: {fileID: 2098334201}
   currentJumpAttempt:
+    scenarioNumber: 0
     attemptNumber: 0
     jumpForce: 0
     time: 0
@@ -2110,7 +2114,9 @@ MonoBehaviour:
     score: 0
     angle: 0
     aimSmoothness: 0
+    bhopAccuracy: 0
   lastJumpAttempt:
+    scenarioNumber: 0
     attemptNumber: 0
     jumpForce: 0
     time: 0
@@ -2120,6 +2126,7 @@ MonoBehaviour:
     score: 0
     angle: 0
     aimSmoothness: 0
+    bhopAccuracy: 0
   attemptNumber: 0
   speedTracker: {fileID: 4457641538562633993}
   hasJumped: 0
@@ -2421,17 +2428,14 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2611578335327444060, guid: 5a0aa4bc3e204ee4fa5816d76460e8b0, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4457641538562633996}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5a0aa4bc3e204ee4fa5816d76460e8b0, type: 3}
 --- !u!114 &4457641538562633989 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2611578335327444062, guid: 5a0aa4bc3e204ee4fa5816d76460e8b0, type: 3}
   m_PrefabInstance: {fileID: 4457641538562633988}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1624179128}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 601d4686cc0b70d45a98271d52094850, type: 3}
@@ -2442,7 +2446,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7880296073372609873, guid: 5a0aa4bc3e204ee4fa5816d76460e8b0, type: 3}
   m_PrefabInstance: {fileID: 4457641538562633988}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1624179128}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ec723304366061d4f98773e926efaaf6, type: 3}
@@ -2453,35 +2457,12 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 426427518443884530, guid: 5a0aa4bc3e204ee4fa5816d76460e8b0, type: 3}
   m_PrefabInstance: {fileID: 4457641538562633988}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1624179128}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0e523825e5d48d646b403d7eda0cd3ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!136 &4457641538562633996
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1624179128}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

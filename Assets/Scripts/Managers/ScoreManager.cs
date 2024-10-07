@@ -20,7 +20,7 @@ public class ScoreManager : MonoBehaviour
         LoadScores();
     }
 
-    public void SaveScore(int attemptNumber, float jumpForce, float time, float distance, float height, float speed, float score, float angle, float aimSmoothness)
+    public void SaveScore(int scenarioNumber,int attemptNumber, float jumpForce, float time, float distance, float height, float speed, float score, float angle, float aimSmoothness, float bhopAccuracy)
     {
         if (string.IsNullOrEmpty(filePath))
         {
@@ -29,7 +29,7 @@ public class ScoreManager : MonoBehaviour
         }
 
         // Create a new score entry
-        JumpAttempt newScore = new JumpAttempt(attemptNumber, jumpForce, time, distance, height, speed, score, angle, aimSmoothness, date: System.DateTime.Now);
+        JumpAttempt newScore = new JumpAttempt(scenarioNumber, attemptNumber, jumpForce, time, distance, height, speed, score, angle, aimSmoothness, bhopAccuracy, date: System.DateTime.Now);
 
         // Add the new score to the list
         scoreList.Add(newScore);
@@ -99,7 +99,7 @@ public class ScoreManager : MonoBehaviour
         }
         else
         {
-            return new JumpAttempt(0, 0, 0, 0, 0, 0, 0, 0, 0, date: System.DateTime.Now);;
+            return new JumpAttempt(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, date: System.DateTime.Now);;
         }
     }
 

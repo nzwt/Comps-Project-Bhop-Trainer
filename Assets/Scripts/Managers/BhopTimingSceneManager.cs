@@ -35,7 +35,7 @@ public class BhopTimingSceneManager : MonoBehaviour
 
      private void OnEnable()
     {
-        currentJumpAttempt = new JumpAttempt(attemptNumber, 0, 0, 0, 0, 0, 0, 0, 0, date: System.DateTime.Now);
+        currentJumpAttempt = new JumpAttempt(1,attemptNumber, 0, 0, 0, 0, 0, 0, 0, 0, 0, date: System.DateTime.Now);
         uiManager.DisableHudElements();
         uiManager.DisableStatScreen();
         uiManager.EnableStartElements();
@@ -63,7 +63,7 @@ public class BhopTimingSceneManager : MonoBehaviour
         // Update the lastJumpAttempt to the currentJumpAttempt
         // Reset the currentJumpAttempt
         float score = speedTracker.CalculateAttemptSpeed() + (20 - System.Math.Abs(45 )); //+ mouseAngleTracker.CalculateAverageAttemptAngleSmoothness();//(10 - Math.Abs(mouseAngleTracker.CalculateAverageAttemptAngleSmoothness()));
-        currentJumpAttempt = new JumpAttempt(attemptNumber, 0, 0, 0, 0, speedTracker.CalculateAttemptSpeed(), score, 0, 0, date: System.DateTime.Now);
+        currentJumpAttempt = new JumpAttempt(1,attemptNumber, 0, 0, 0, 0, speedTracker.CalculateAttemptSpeed(), score, 0, 0, calculateBhopAccuracy(), date: System.DateTime.Now);
         scoreManager.SaveScore(currentJumpAttempt);
         //TODO: stats are going to be different depending on the scene, this should probably be dont in the scene manager but I dont know
         //jank, fix later
@@ -76,6 +76,7 @@ public class BhopTimingSceneManager : MonoBehaviour
         hasJumped = false;
         speedTracker.isAttemptActive = false;
         lastJumpAttempt = currentJumpAttempt;
+        surfCharacter.moveData.velocity = Vector3.zero;
         
         
     }
@@ -87,6 +88,22 @@ public class BhopTimingSceneManager : MonoBehaviour
         uiManager.EnableStatScreen();
         uiManager.EnableStartElements();
         startTriggered = false;
+    }
+
+    public float calculateBhopAccuracy()
+    {
+        if (groundTimes.Count == 0)
+        {
+            return 0f;
+        }
+
+        float sum = 0f;
+        foreach (float time in groundTimes)
+        {
+            sum += time;
+        }
+
+        return sum / groundTimes.Count;
     }
     
     // Start is called before the first frame update
