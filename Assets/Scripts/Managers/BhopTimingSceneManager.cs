@@ -105,9 +105,12 @@ public class BhopTimingSceneManager : MonoBehaviour
     }
 
     void Update()
-    {   
+    {   bool grounded = true;
         //skip first frame, otherwise the player will register an attempt
-        bool grounded = surfCharacter.moveData.groundedTemp;
+        if(surfCharacter.groundObject == null)
+        {
+            grounded = false;
+        }
         if(firstFrame)
         {
             grounded = true;
