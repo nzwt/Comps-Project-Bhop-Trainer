@@ -9,6 +9,7 @@ public class BhopTimingSceneManager : MonoBehaviour
     public UIManager uiManager;
     public PlayerManager playerManager;
     public ScoreManager scoreManager;
+    public JumpIndicator jumpIndicator;
 
     // game objects
     public JumpAttempt currentJumpAttempt;
@@ -123,11 +124,11 @@ public class BhopTimingSceneManager : MonoBehaviour
     }
 
     void Update()
-    {   bool grounded = false;
+    {   bool grounded = true;
         //skip first frame, otherwise the player will register an attempt
         if(surfCharacter.groundObject == null)
         {
-            grounded = true;
+            grounded = false;
         }
         if(firstFrame)
         {
@@ -162,6 +163,7 @@ public class BhopTimingSceneManager : MonoBehaviour
             // Player has jumped, register the jump
             print("Jumped");
             hasJumped = true;
+            jumpIndicator.StartJump();
         }
 
         if (hasJumped == true && grounded == true && groundTimer == -1)
