@@ -171,6 +171,7 @@ public class BhopTimingSceneManager : MonoBehaviour
             // Player landed after a jump, start timing the grounded period
             groundTimer = 0;
             hasJumped = false; // Reset jump status after landing
+            jumpIndicator.EndJump();
         }
 
         if (hasJumped == false && grounded == true && groundTimer >= 0)
