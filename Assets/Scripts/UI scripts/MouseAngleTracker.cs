@@ -12,6 +12,7 @@ public class MouseAngleTracker : MonoBehaviour
     private float lastMouseX;
     private float lastMouseY;
     private float accumulatedAngle = 0f;
+    public float angleChange = 0f;
     private float angleChangePerInterval = 0f;
     private float timer = 0f;
     public float attemptAngleChange = 0;
@@ -34,6 +35,8 @@ public class MouseAngleTracker : MonoBehaviour
         
         // Accumulate the angle change
         accumulatedAngle += mouseX;
+        angleChange += mouseX;
+        angleChange = angleChange%360;
         
         // Track time
         timer += Time.deltaTime;
@@ -49,6 +52,7 @@ public class MouseAngleTracker : MonoBehaviour
             float attemptAngleChange = CalculateAttemptAngleChange();
             Debug.Log("Average Angle Change: " + attemptAngleChange);
             angleChanges = new List<float>(); // Reset for the next attempt.
+            angleChange = 0;
         }
     }
 
