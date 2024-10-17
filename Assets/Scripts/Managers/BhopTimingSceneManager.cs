@@ -72,6 +72,7 @@ public class BhopTimingSceneManager : MonoBehaviour
         uiManager.StatScreen.GetComponent<BhopStatScreen>().lastJumpAttempt = lastJumpAttempt;
         uiManager.StatScreen.GetComponent<BhopStatScreen>().updateStats();
         //reset vars
+        jumpIndicator.deleteLines();
         currentJumps = 0;
         groundTimes.Clear();
         hasJumped = false;
@@ -134,6 +135,7 @@ public class BhopTimingSceneManager : MonoBehaviour
         {
             grounded = true;
             firstFrame = false;
+            surfCharacter.moveData.wishJump = false;
         }
         //load the scores
         if(scoreManager.isLoaded == true && lastScoreLoaded == false && scoreManager.GetLastJumpAttempt() != null)
