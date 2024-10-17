@@ -53,6 +53,7 @@ public class BhopTimingSceneManager : MonoBehaviour
         //playerManager.EnableMouseLook();
         surfCharacter.controller.moveForward = true;
         speedTracker.isAttemptActive = true;
+        startTriggered = true;
     }
 
     public void endAttempt()
@@ -149,9 +150,11 @@ public class BhopTimingSceneManager : MonoBehaviour
 
         //IN RUN LOGIC//
         //check if the player crosses the line (maybe make this a trigger) (should this be the end of the attempt?)
-        if(surfCharacter.transform.position.z <= 0.05 && surfCharacter.transform.position.z >= -0.05 && startTriggered == true)
+        Debug.Log(surfCharacter.transform.position.z);
+        if(surfCharacter.transform.position.z <= 27.5 && surfCharacter.transform.position.z >= 27 && startTriggered == true)
         {
             endAttempt();
+            resetScene();
         }
         //calculate how long the player has been on the ground
 
@@ -186,9 +189,9 @@ public class BhopTimingSceneManager : MonoBehaviour
         {
             // Player has jumped, add the ground time to the list
             groundTimes.Add(groundTimer);
-            Debug.Log("Ground time recorded: " + groundTimer);
+            //Debug.Log("Ground time recorded: " + groundTimer);
             currentJumps++;
-            Debug.Log("Current jumps: " + currentJumps);
+            //Debug.Log("Current jumps: " + currentJumps);
             groundTimer = -1; // Reset timer after recording
         }
 
@@ -197,7 +200,7 @@ public class BhopTimingSceneManager : MonoBehaviour
             // Player has reached max jumps, end the attempt
             foreach (float time in groundTimes)
             {
-                Debug.Log(time);
+                //Debug.Log(time);
             }
             endAttempt();
             resetScene();
