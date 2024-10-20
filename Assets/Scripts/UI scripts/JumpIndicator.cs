@@ -112,5 +112,14 @@ public class JumpIndicator : MonoBehaviour
         }
         dynamicLines.Clear();
     }
+
+    public void changeLastLineColor(Color color)
+    {
+        Debug.Log("Changing last line color");
+        if (dynamicLines.Count > 0)
+        {
+            dynamicLines[dynamicLines.Count - 1].GetComponent<Image>().color = color;
+        }
+    }
 }
 

@@ -150,7 +150,7 @@ public class BhopTimingSceneManager : MonoBehaviour
 
         //IN RUN LOGIC//
         //check if the player crosses the line (maybe make this a trigger) (should this be the end of the attempt?)
-        Debug.Log(surfCharacter.transform.position.z);
+        //Debug.Log(surfCharacter.transform.position.z);
         if(surfCharacter.transform.position.z <= 27.5 && surfCharacter.transform.position.z >= 27 && startTriggered == true)
         {
             endAttempt();
@@ -193,6 +193,19 @@ public class BhopTimingSceneManager : MonoBehaviour
             currentJumps++;
             //Debug.Log("Current jumps: " + currentJumps);
             groundTimer = -1; // Reset timer after recording
+            //check timer and assign a color based on performance
+            if(groundTimes[groundTimes.Count - 1] > 0.1)
+            {
+                jumpIndicator.changeLastLineColor(Color.red);
+            }
+            else if(groundTimes[groundTimes.Count - 1] > 0.05)
+            {
+                jumpIndicator.changeLastLineColor(Color.yellow);
+            }
+            else
+            {
+                jumpIndicator.changeLastLineColor(Color.green);
+            }
         }
 
         if (currentJumps >= maxJumps)
