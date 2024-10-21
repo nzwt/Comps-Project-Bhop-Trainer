@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fragsurf.Movement;
 using System;
+using System.Linq;
 
-public class AimingTimingSceneManager : MonoBehaviour
+public class StrafeAimingTimingSceneManager : MonoBehaviour
 {
-    public SurfCharacter surfCharacter;
+ public SurfCharacter surfCharacter;
     public UIManager uiManager;
     public PlayerManager playerManager;
     public ScoreManager scoreManager;
@@ -25,9 +26,18 @@ public class AimingTimingSceneManager : MonoBehaviour
     public bool lastScoreLoaded = false;
     public bool startTriggered = false;
     public bool playerStart = false;
+    private bool AHeld = false;
+    private bool DHeld = false;
     //management values
-    public int maxSwitches = 5;
+    public int maxSwitches = 3;
     public List<float> switchTimes = new List<float>();
+    public List<float> rightLookTimes = new List<float>();
+    public List<float> leftLookTimes = new List<float>();
+    public List<float> APressedTimes = new List<float>();
+    public List<float> DPressedTimes = new List<float>();
+    public List<float> AReleasedTimes= new List<float>();
+    public float[] AHeldAccuracy = Enumerable.Repeat(-1000f, 6).ToArray();
+    public float[] DHeldAccuracy = Enumerable.Repeat(-1000f, 6).ToArray();
     private float switchTimer = -1;
     private float globalTimer = -1;
     //0 is left, 1 is right
@@ -40,6 +50,8 @@ public class AimingTimingSceneManager : MonoBehaviour
     public float xReset = 0.0f;  // X-axis reset position
     public float yReset = 1.0f;  // Y-axis reset position
     public float zReset = 0.0f;  // Z-axis reset position
+
+
 
      private void OnEnable()
     {
@@ -106,25 +118,6 @@ public class AimingTimingSceneManager : MonoBehaviour
         startTriggered = false;
     }
 
-    // IEnumerator SwitchTargetsOnTime()
-    // {
-    //     while (true)
-    //     {
-    //         Debug.Log("Switching targets");
-    //         orbController.switchTarget();
-    //         switchTimer = 0;
-    //         if(currentTarget == leftTarget)
-    //         {
-    //             currentTarget = rightTarget;
-    //         }
-    //         else
-    //         {
-    //             currentTarget = leftTarget;
-    //         }
-    //         // Wait for 0.65 seconds before executing the next loop
-    //         yield return new WaitForSeconds(0.65f);
-    //     }
-    // }
     
     // Start is called before the first frame update
     void Start()
@@ -157,10 +150,12 @@ public class AimingTimingSceneManager : MonoBehaviour
                     playerStart = true;
                     //Debug.Log("Player is looking left");
                     switchTimer = 0;
+                    globalTimer = 0;
                     currentTarget = rightTarget;
                     orbController.TargetLeft();
                     arrow.transform.rotation = Quaternion.Euler(0, 0, 0);
                     jumpIndicator.StartJump();
+                    rightLookTimes.Add(globalTimer);
                 }
             }
         }
@@ -168,6 +163,26 @@ public class AimingTimingSceneManager : MonoBehaviour
         if(playerStart == true)
         {
             switchTimer += Time.deltaTime;
+            if(Input.GetKeyDown(KeyCode.A) && DHeld == false)
+            {
+                AHeld = true;
+                APressedTimes.Add(globalTimer);
+            }
+            if(Input.GetKeyDown(KeyCode.D))
+            {
+                DHeld = true;
+                DPressedTimes.Add(globalTimer);
+            }
+            if(Input.GetKeyUp(KeyCode.A) && AHeld == true)
+            {
+                AHeld = false;
+                AReleasedTimes.Add(globalTimer);
+            }
+            if(Input.GetKeyUp(KeyCode.D))
+            {
+                DHeld = false;
+                AReleasedTimes.Add(globalTimer);
+            }
         }
         //check if the player has started the attempt, if not, are they looking at a target?
         if(playerStart == true)
@@ -182,6 +197,7 @@ public class AimingTimingSceneManager : MonoBehaviour
                     arrow.transform.Rotate(0, 180, 0);
                     currentTarget = leftTarget;
                     jumpIndicator.StartJump();
+                    leftLookTimes.Add(globalTimer);
                     //Debug.Log("Player is looking right");
                 }
             }
@@ -195,6 +211,7 @@ public class AimingTimingSceneManager : MonoBehaviour
                     arrow.transform.Rotate(0, 180, 0);
                     currentTarget = rightTarget;
                     jumpIndicator.StartJump();
+                    rightLookTimes.Add(globalTimer);
                     //Debug.Log("Player is looking left");
                 }
             }
@@ -209,11 +226,77 @@ public class AimingTimingSceneManager : MonoBehaviour
         if (switchTimes.Count >= maxSwitches)
         {
             // Player has reached max switches, end the attempt
+            //calculate look accuracy
             foreach (float time in switchTimes)
             {
                 bhopAccuracy += time - 0.65f;
             }
             bhopAccuracy = bhopAccuracy / maxSwitches;
+            //calculate strafe accuracy
+            //for first switch, check from global start to halfway to next attempt
+            if(APressedTimes[0] < rightLookTimes[0] && APressedTimes[0] > 0 )
+            {
+                AHeldAccuracy[0] = rightLookTimes[0] - APressedTimes[0];
+            }
+            else if(APressedTimes[0] > rightLookTimes[0] && APressedTimes[0] < leftLookTimes[0])
+            {
+                AHeldAccuracy[0] = APressedTimes[0] - rightLookTimes[0];
+            }
+                //maybe i want a continous hold check to make sure this doesn't mess up and overwrite
+
+            //calculate offset of start of A press from switch
+            for(int i = 2; i < 6; i +=2)
+            {
+                for(int j = 1; j < APressedTimes.Count; j++)
+                {
+                    if(AHeldAccuracy[i] != -1000)
+                    {
+                        continue;
+                    }
+                    float time = APressedTimes[j];
+                    if(time < rightLookTimes[i/2] && time > leftLookTimes[(i/2)-1] && AHeldAccuracy[i] == -1000)
+                    {
+                        AHeldAccuracy[i] = rightLookTimes[i/2] - time;
+                    }
+                    else if(time > rightLookTimes[i/2] && time < leftLookTimes[i/2] && AHeldAccuracy[i] == -1000)
+                    {
+                        AHeldAccuracy[i] = time-rightLookTimes[i/2];
+                    }
+                }
+            }
+
+            
+            //calculate offset of end of A press from switch
+            for(int i = 1; i < 6; i +=2)
+            {
+                for(int j = 1; j < AReleasedTimes.Count; j++)
+                {
+                    if(AHeldAccuracy[i] != -1000)
+                    {
+                        continue;
+                    }
+                    float time = AReleasedTimes[j];
+                    if(time < rightLookTimes[i/2] && time > leftLookTimes[(i/2)-1] && AHeldAccuracy[i] == -1000)
+                    {
+                        AHeldAccuracy[i] = rightLookTimes[i/2] - time;
+                    }
+                    else if(time > rightLookTimes[i/2] && time < leftLookTimes[i/2] && AHeldAccuracy[i] == -1000)
+                    {
+                        AHeldAccuracy[i] = time-rightLookTimes[i/2];
+                    }
+                }
+            }
+
+            //calculate strafe accuracy
+            Debug.Log("A Held Accuracy");
+            for(int i = 0; i < 6; i++)
+            {
+                Debug.Log(AHeldAccuracy[i]);
+            }
+
+
+            //for each switch, check from halfway to last switch to halfway to next switch and determine accuracy
+
             endAttempt();
             resetScene();
         }
