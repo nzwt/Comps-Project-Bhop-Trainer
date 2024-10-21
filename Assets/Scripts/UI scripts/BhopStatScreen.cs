@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class BhopStatScreen : MonoBehaviour
 {
-public GameObject gameManager;
+    public GameObject gameManager;
     public GameObject statScreen;
     public JumpAttempt lastJumpAttempt;
     public JumpAttempt currentJumpAttempt;

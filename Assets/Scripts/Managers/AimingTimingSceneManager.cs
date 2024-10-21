@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fragsurf.Movement;
+using System;
 
 public class AimingTimingSceneManager : MonoBehaviour
 {
@@ -33,6 +34,7 @@ public class AimingTimingSceneManager : MonoBehaviour
     public Transform currentTarget;
     public Transform leftTarget;
     public Transform rightTarget;
+    private float bhopAccuracy = 0;
 
     // Reset position values
     public float xReset = 0.0f;  // X-axis reset position
@@ -63,6 +65,7 @@ public class AimingTimingSceneManager : MonoBehaviour
         mouseAngleTracker.isAttemptActive = true;
         arrow.transform.rotation = Quaternion.Euler(0, 0, 0);
         orbController.resetTargets();
+        bhopAccuracy = 0;
     }
 
     public void endAttempt()
@@ -72,8 +75,8 @@ public class AimingTimingSceneManager : MonoBehaviour
         attemptNumber++;
         // Update the lastJumpAttempt to the currentJumpAttempt
         // Reset the currentJumpAttempt
-        float score = 0;
-        currentJumpAttempt = new JumpAttempt(1,attemptNumber, 0, 0, 0, 0, 0, score, 0, 0, 0, date: System.DateTime.Now);
+        float score = (0.65f - Math.Abs(bhopAccuracy))*15.4f;
+        currentJumpAttempt = new JumpAttempt(3,attemptNumber, 0, 0, 0, 0, 0, score, 0, 0, bhopAccuracy, date: System.DateTime.Now);
         scoreManager.SaveScore(currentJumpAttempt);
         //TODO: stats are going to be different depending on the scene, this should probably be dont in the scene manager but I dont know
         //jank, fix later
@@ -208,8 +211,9 @@ public class AimingTimingSceneManager : MonoBehaviour
             // Player has reached max switches, end the attempt
             foreach (float time in switchTimes)
             {
-                Debug.Log(time);
+                bhopAccuracy += time - 0.65f;
             }
+            bhopAccuracy = bhopAccuracy / maxSwitches;
             endAttempt();
             resetScene();
         }

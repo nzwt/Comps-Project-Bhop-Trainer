@@ -512,48 +512,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2603158585071332444, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
   m_PrefabInstance: {fileID: 990453128933974216}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &207569371
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 207569369}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fcc513ad29dfaba4c97dba4fb6529712, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameManager: {fileID: 2098334198}
-  statScreen: {fileID: 207569369}
-  lastJumpAttempt:
-    scenarioNumber: 0
-    attemptNumber: 0
-    jumpForce: 0
-    time: 0
-    distance: 0
-    height: 0
-    speed: 0
-    score: 0
-    angle: 0
-    aimSmoothness: 0
-    bhopAccuracy: 0
-  currentJumpAttempt:
-    scenarioNumber: 0
-    attemptNumber: 0
-    jumpForce: 0
-    time: 0
-    distance: 0
-    height: 0
-    speed: 0
-    score: 0
-    angle: 0
-    aimSmoothness: 0
-    bhopAccuracy: 0
-  averageSpeed: {fileID: 373999258}
-  changeInAngle: {fileID: 1657174318}
-  aimSmoothness: {fileID: 591366314}
-  totalScore: {fileID: 353039007}
 --- !u!114 &207569372
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -561,7 +519,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 207569369}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f26e6de56e67a1f4abbcefd4dbfb071e, type: 3}
   m_Name: 
@@ -593,6 +551,47 @@ MonoBehaviour:
     aimSmoothness: 0
     bhopAccuracy: 0
   averageSpeed: {fileID: 373999258}
+  bhopAccuracy: {fileID: 1657174318}
+  totalScore: {fileID: 591366314}
+--- !u!114 &207569373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 207569369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 515f7f8c19d1eb34890983ddbd8da320, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameManager: {fileID: 2098334198}
+  statScreen: {fileID: 207569369}
+  lastJumpAttempt:
+    scenarioNumber: 0
+    attemptNumber: 0
+    jumpForce: 0
+    time: 0
+    distance: 0
+    height: 0
+    speed: 0
+    score: 0
+    angle: 0
+    aimSmoothness: 0
+    bhopAccuracy: 0
+  currentJumpAttempt:
+    scenarioNumber: 0
+    attemptNumber: 0
+    jumpForce: 0
+    time: 0
+    distance: 0
+    height: 0
+    speed: 0
+    score: 0
+    angle: 0
+    aimSmoothness: 0
+    bhopAccuracy: 0
+  aimSmoothness: {fileID: 373999258}
   bhopAccuracy: {fileID: 1657174318}
   totalScore: {fileID: 591366314}
 --- !u!1 &270252542
@@ -2530,6 +2529,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 86.5
       objectReference: {fileID: 0}
+    - target: {fileID: 1948345930817979695, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
+      propertyPath: m_Name
+      value: Smoothness
+      objectReference: {fileID: 0}
     - target: {fileID: 2343788202112016058, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
       propertyPath: m_text
       value: 
@@ -2626,17 +2629,17 @@ PrefabInstance:
       propertyPath: m_text
       value: 'Smoothness:
 
-        Timing accuracy:
+        Timing offset:
 
         Total score:'
       objectReference: {fileID: 0}
     - target: {fileID: 5734852156142728765, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
       propertyPath: m_Name
-      value: Jump Timing accuracy
+      value: Timing Offset
       objectReference: {fileID: 0}
     - target: {fileID: 6848534530165746812, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 113.8
+      value: 95.7
       objectReference: {fileID: 0}
     - target: {fileID: 7850171156242897778, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
       propertyPath: m_Name
@@ -2655,10 +2658,10 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8348349709772627691, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 207569371}
+      addedObject: {fileID: 207569372}
     - targetCorrespondingSourceObject: {fileID: 8348349709772627691, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 207569372}
+      addedObject: {fileID: 207569373}
   m_SourcePrefab: {fileID: 100100000, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
 --- !u!1001 &4457641538562633988
 PrefabInstance:
