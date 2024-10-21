@@ -11,6 +11,7 @@ public class AimingTimingSceneManager : MonoBehaviour
     public ScoreManager scoreManager;
     public JumpIndicator jumpIndicator;
     public MouseAngleTracker mouseAngleTracker;
+    public OrbController orbController;
 
     // game objects
     public JumpAttempt currentJumpAttempt;
@@ -21,10 +22,12 @@ public class AimingTimingSceneManager : MonoBehaviour
     // managment bools
     public bool lastScoreLoaded = false;
     public bool startTriggered = false;
+    public bool playerStart = false;
     //management values
     public int maxSwitches = 5;
-    private int currentSwitches = 0;
     public List<float> switchTimes = new List<float>();
+    private float switchTimer = -1;
+    private float globalTimer = -1;
     //0 is left, 1 is right
     public Transform currentTarget;
     public Transform leftTarget;
@@ -56,6 +59,7 @@ public class AimingTimingSceneManager : MonoBehaviour
         playerManager.EnableMouseLook();
         currentTarget = leftTarget;
         mouseAngleTracker.isAttemptActive = true;
+        orbController.TargetLeft();
     }
 
     public void endAttempt()
@@ -92,21 +96,6 @@ public class AimingTimingSceneManager : MonoBehaviour
         startTriggered = false;
     }
 
-    void CheckAimAccuracy()
-    {
-        // Calculate the direction to the current target
-        Vector3 directionToTarget = currentTarget.position - transform.position;
-        directionToTarget.Normalize();
-
-        // Get the player's forward direction (where the camera is pointing)
-        Vector3 playerForward = transform.forward;
-
-        // Calculate the angle between the player's aim and the target
-        float angleToTarget = Vector3.Angle(playerForward, directionToTarget);
-        Debug.Log("Angle to target: " + angleToTarget);
-
-    }
-
     
     // Start is called before the first frame update
     void Start()
@@ -130,21 +119,48 @@ public class AimingTimingSceneManager : MonoBehaviour
         //CheckAimAccuracy();
 
         //IN RUN LOGIC//
+        //start attempt by moving over left orb
+        if(playerStart == false)
+        {
+            if(mouseAngleTracker.angleChange < 0)
+            {
+                if (mouseAngleTracker.angleChange < -20 && mouseAngleTracker.angleChange > -25)
+                {
+                    playerStart = true;
+                    //Debug.Log("Player is looking left");
+                    switchTimer = 0;
+                    orbController.TargetRight();
+                }
+            }
+        }
+        //if attempt is active, add time
+        if(playerStart == true)
+        {
+            switchTimer += Time.deltaTime;
+        }
         //check if the player has started the attempt, if not, are they looking at a target?
-        if(mouseAngleTracker.isAttemptActive == true)
+        if(playerStart == true)
         {
             if(mouseAngleTracker.angleChange > 0)
             {
-                if(mouseAngleTracker.angleChange > 20 && mouseAngleTracker.angleChange < 25)
+                if(mouseAngleTracker.angleChange > 20 && mouseAngleTracker.angleChange < 25 && currentTarget == rightTarget)
                 {
-                    Debug.Log("Player is looking right");
+                    currentTarget = leftTarget;
+                    switchTimes.Add(switchTimer);
+                    switchTimer = 0;
+                    orbController.TargetLeft();
+                    //Debug.Log("Player is looking right");
                 }
             }
             else if(mouseAngleTracker.angleChange < 0)
             {
-                if (mouseAngleTracker.angleChange < -20 && mouseAngleTracker.angleChange > -25)
+                if (mouseAngleTracker.angleChange < -20 && mouseAngleTracker.angleChange > -25 && currentTarget == leftTarget)
                 {
-                    Debug.Log("Player is looking left");
+                    currentTarget = rightTarget;
+                    switchTimes.Add(switchTimer);
+                    switchTimer = 0;
+                    orbController.TargetRight();
+                    //Debug.Log("Player is looking left");
                 }
             }
         }
@@ -155,9 +171,9 @@ public class AimingTimingSceneManager : MonoBehaviour
             startAttempt();
         }
 
-        if (currentSwitches >= maxSwitches)
+        if (switchTimes.Count >= maxSwitches)
         {
-            // Player has reached max jumps, end the attempt
+            // Player has reached max switches, end the attempt
             foreach (float time in switchTimes)
             {
                 Debug.Log(time);
