@@ -135,14 +135,14 @@ public class AimingTimingSceneManager : MonoBehaviour
         {
             if(mouseAngleTracker.angleChange > 0)
             {
-                if(mouseAngleTracker.angleChange > 22 && mouseAngleTracker.angleChange < 23)
+                if(mouseAngleTracker.angleChange > 20 && mouseAngleTracker.angleChange < 25)
                 {
                     Debug.Log("Player is looking right");
                 }
             }
             else if(mouseAngleTracker.angleChange < 0)
             {
-                if (mouseAngleTracker.angleChange < -22 && mouseAngleTracker.angleChange > -23)
+                if (mouseAngleTracker.angleChange < -20 && mouseAngleTracker.angleChange > -25)
                 {
                     Debug.Log("Player is looking left");
                 }
