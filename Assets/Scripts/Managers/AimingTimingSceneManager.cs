@@ -18,6 +18,7 @@ public class AimingTimingSceneManager : MonoBehaviour
     public JumpAttempt lastJumpAttempt;
     public int attemptNumber = 0;
     public GameObject cameraHolder;
+    public GameObject arrow; //flip x to aim left
     
     // managment bools
     public bool lastScoreLoaded = false;
@@ -58,8 +59,10 @@ public class AimingTimingSceneManager : MonoBehaviour
         surfCharacter.movementEnabled = false;
         playerManager.EnableMouseLook();
         currentTarget = leftTarget;
+        mouseAngleTracker.resetAngleChange();
         mouseAngleTracker.isAttemptActive = true;
-        orbController.TargetLeft();
+        arrow.transform.rotation = Quaternion.Euler(0, 0, 0);
+        orbController.resetTargets();
     }
 
     public void endAttempt()
@@ -81,6 +84,10 @@ public class AimingTimingSceneManager : MonoBehaviour
         lastJumpAttempt = currentJumpAttempt;
         surfCharacter.moveData.velocity = Vector3.zero;
         surfCharacter.moveData.wishJump = false;
+        switchTimes.Clear();
+        jumpIndicator.deleteLines();
+        playerStart = false;
+        mouseAngleTracker.isAttemptActive = false;
         
         
     }
@@ -96,11 +103,29 @@ public class AimingTimingSceneManager : MonoBehaviour
         startTriggered = false;
     }
 
+    // IEnumerator SwitchTargetsOnTime()
+    // {
+    //     while (true)
+    //     {
+    //         Debug.Log("Switching targets");
+    //         orbController.switchTarget();
+    //         switchTimer = 0;
+    //         if(currentTarget == leftTarget)
+    //         {
+    //             currentTarget = rightTarget;
+    //         }
+    //         else
+    //         {
+    //             currentTarget = leftTarget;
+    //         }
+    //         // Wait for 0.65 seconds before executing the next loop
+    //         yield return new WaitForSeconds(0.65f);
+    //     }
+    // }
     
     // Start is called before the first frame update
     void Start()
-    {
-        
+    {      
     }
 
     void Update()
@@ -129,7 +154,10 @@ public class AimingTimingSceneManager : MonoBehaviour
                     playerStart = true;
                     //Debug.Log("Player is looking left");
                     switchTimer = 0;
-                    orbController.TargetRight();
+                    currentTarget = rightTarget;
+                    orbController.TargetLeft();
+                    arrow.transform.rotation = Quaternion.Euler(0, 0, 0);
+                    jumpIndicator.StartJump();
                 }
             }
         }
@@ -143,23 +171,27 @@ public class AimingTimingSceneManager : MonoBehaviour
         {
             if(mouseAngleTracker.angleChange > 0)
             {
-                if(mouseAngleTracker.angleChange > 20 && mouseAngleTracker.angleChange < 25 && currentTarget == rightTarget)
+                if(mouseAngleTracker.angleChange > 20 && mouseAngleTracker.angleChange < 25 && currentTarget == rightTarget && switchTimer > -1)
                 {
-                    currentTarget = leftTarget;
                     switchTimes.Add(switchTimer);
+                    orbController.ShowRightAccuracy(switchTimer);
                     switchTimer = 0;
-                    orbController.TargetLeft();
+                    arrow.transform.Rotate(0, 180, 0);
+                    currentTarget = leftTarget;
+                    jumpIndicator.StartJump();
                     //Debug.Log("Player is looking right");
                 }
             }
             else if(mouseAngleTracker.angleChange < 0)
             {
-                if (mouseAngleTracker.angleChange < -20 && mouseAngleTracker.angleChange > -25 && currentTarget == leftTarget)
+                if (mouseAngleTracker.angleChange < -20 && mouseAngleTracker.angleChange > -25 && currentTarget == leftTarget && switchTimer > -1)
                 {
-                    currentTarget = rightTarget;
                     switchTimes.Add(switchTimer);
+                    orbController.ShowLeftAccuracy(switchTimer);
                     switchTimer = 0;
-                    orbController.TargetRight();
+                    arrow.transform.Rotate(0, 180, 0);
+                    currentTarget = rightTarget;
+                    jumpIndicator.StartJump();
                     //Debug.Log("Player is looking left");
                 }
             }

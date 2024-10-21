@@ -55,6 +55,10 @@ public class MouseAngleTracker : MonoBehaviour
             angleChange = 0;
         }
     }
+    public void resetAngleChange()
+    {
+        angleChange = 0;
+    }
 
     void CalculateMouseAngleSmoothness()
     {
