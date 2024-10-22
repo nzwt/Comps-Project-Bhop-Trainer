@@ -36,6 +36,7 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
     public List<float> APressedTimes = new List<float>();
     public List<float> DPressedTimes = new List<float>();
     public List<float> AReleasedTimes= new List<float>();
+    public List<float> DReleasedTimes = new List<float>();
     public float[] AHeldAccuracy = Enumerable.Repeat(-1000f, 6).ToArray();
     public float[] DHeldAccuracy = Enumerable.Repeat(-1000f, 6).ToArray();
     private float switchTimer = -1;
@@ -162,18 +163,22 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
         //if attempt is active, add time
         if(playerStart == true)
         {
+            globalTimer += Time.deltaTime;
             switchTimer += Time.deltaTime;
-            if(Input.GetKeyDown(KeyCode.A) && DHeld == false)
+            if(Input.GetKeyDown(KeyCode.A) )//&& DHeld == false)
             {
                 AHeld = true;
                 APressedTimes.Add(globalTimer);
+                Debug.Log("A pressed");
+                Debug.Log(globalTimer);
             }
-            if(Input.GetKeyDown(KeyCode.D))
+            if(Input.GetKeyDown(KeyCode.D) )//&& AHeld == false)
             {
                 DHeld = true;
                 DPressedTimes.Add(globalTimer);
+                Debug.Log("D pressed");
             }
-            if(Input.GetKeyUp(KeyCode.A) && AHeld == true)
+            if(Input.GetKeyUp(KeyCode.A))
             {
                 AHeld = false;
                 AReleasedTimes.Add(globalTimer);
@@ -181,7 +186,7 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
             if(Input.GetKeyUp(KeyCode.D))
             {
                 DHeld = false;
-                AReleasedTimes.Add(globalTimer);
+                DReleasedTimes.Add(globalTimer);
             }
         }
         //check if the player has started the attempt, if not, are they looking at a target?
@@ -227,6 +232,10 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
         {
             // Player has reached max switches, end the attempt
             //calculate look accuracy
+            if(DReleasedTimes.Count < 3)
+            {
+                DReleasedTimes.Add(globalTimer);
+            }
             foreach (float time in switchTimes)
             {
                 bhopAccuracy += time - 0.65f;
@@ -234,33 +243,33 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
             bhopAccuracy = bhopAccuracy / maxSwitches;
             //calculate strafe accuracy
             //for first switch, check from global start to halfway to next attempt
-            if(APressedTimes[0] < rightLookTimes[0] && APressedTimes[0] > 0 )
+            if(DPressedTimes[0] < rightLookTimes[0] && DPressedTimes[0] > 0 )
             {
-                AHeldAccuracy[0] = rightLookTimes[0] - APressedTimes[0];
+                DHeldAccuracy[0] = rightLookTimes[0] - DPressedTimes[0];
             }
-            else if(APressedTimes[0] > rightLookTimes[0] && APressedTimes[0] < leftLookTimes[0])
+            else if(DPressedTimes[0] > rightLookTimes[0] && DPressedTimes[0] < leftLookTimes[0])
             {
-                AHeldAccuracy[0] = APressedTimes[0] - rightLookTimes[0];
+                DHeldAccuracy[0] = DPressedTimes[0] - rightLookTimes[0];
             }
-                //maybe i want a continous hold check to make sure this doesn't mess up and overwrite
+            //maybe i want a continous hold check to make sure this doesn't mess up and overwrite
 
-            //calculate offset of start of A press from switch
+            //calculate offset of start of D press from switch
             for(int i = 2; i < 6; i +=2)
             {
-                for(int j = 1; j < APressedTimes.Count; j++)
+                for(int j = 1; j < DPressedTimes.Count; j++)
                 {
-                    if(AHeldAccuracy[i] != -1000)
+                    if(DHeldAccuracy[i] != -1000)
                     {
                         continue;
                     }
-                    float time = APressedTimes[j];
-                    if(time < rightLookTimes[i/2] && time > leftLookTimes[(i/2)-1] && AHeldAccuracy[i] == -1000)
+                    float time = DPressedTimes[j];
+                    if(time < rightLookTimes[i/2] && time > leftLookTimes[(i/2)-1] && DHeldAccuracy[i] == -1000)
                     {
-                        AHeldAccuracy[i] = rightLookTimes[i/2] - time;
+                        DHeldAccuracy[i] = rightLookTimes[i/2] - time;
                     }
-                    else if(time > rightLookTimes[i/2] && time < leftLookTimes[i/2] && AHeldAccuracy[i] == -1000)
+                    else if(time > rightLookTimes[i/2] && time < leftLookTimes[i/2] && DHeldAccuracy[i] == -1000)
                     {
-                        AHeldAccuracy[i] = time-rightLookTimes[i/2];
+                        DHeldAccuracy[i] = time-rightLookTimes[i/2];
                     }
                 }
             }
@@ -269,29 +278,29 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
             //calculate offset of end of A press from switch
             for(int i = 1; i < 6; i +=2)
             {
-                for(int j = 1; j < AReleasedTimes.Count; j++)
+                for(int j = 0; j < DReleasedTimes.Count; j++)
                 {
-                    if(AHeldAccuracy[i] != -1000)
+                    if(DHeldAccuracy[i] != -1000)
                     {
                         continue;
                     }
-                    float time = AReleasedTimes[j];
-                    if(time < rightLookTimes[i/2] && time > leftLookTimes[(i/2)-1] && AHeldAccuracy[i] == -1000)
+                    float time = DReleasedTimes[j]; //if they missed the time by more than 0.2 seconds, they need some work
+                    if(time < leftLookTimes[i/2] && time > (leftLookTimes[(i/2)] - 0.2) && DHeldAccuracy[i] == -1000)
                     {
-                        AHeldAccuracy[i] = rightLookTimes[i/2] - time;
+                        DHeldAccuracy[i] = leftLookTimes[i/2] - time;
                     }
-                    else if(time > rightLookTimes[i/2] && time < leftLookTimes[i/2] && AHeldAccuracy[i] == -1000)
+                    else if(time > leftLookTimes[i/2] && time < (leftLookTimes[(i/2)] + 0.2) && DHeldAccuracy[i] == -1000)
                     {
-                        AHeldAccuracy[i] = time-rightLookTimes[i/2];
+                        DHeldAccuracy[i] = time-leftLookTimes[i/2];
                     }
                 }
             }
 
             //calculate strafe accuracy
-            Debug.Log("A Held Accuracy");
+            Debug.Log("D Held Accuracy");
             for(int i = 0; i < 6; i++)
             {
-                Debug.Log(AHeldAccuracy[i]);
+                Debug.Log(DHeldAccuracy[i]);
             }
 
 
