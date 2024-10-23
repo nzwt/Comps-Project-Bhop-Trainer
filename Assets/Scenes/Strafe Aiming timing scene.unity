@@ -2390,27 +2390,20 @@ MonoBehaviour:
   lastScoreLoaded: 0
   startTriggered: 0
   playerStart: 0
-  maxSwitches: 5
+  maxSwitches: 3
   switchTimes: []
   rightLookTimes: []
   leftLookTimes: []
+  APressedTimestamps: []
+  DPressedTimestamps: []
   APressedTimes: []
   DPressedTimes: []
-  AReleasedTimes: []
-  AHeldAccuracy:
-  - -1000
-  - -1000
-  - -1000
-  - -1000
-  - -1000
-  - -1000
-  DHeldAccuracy:
-  - -1000
-  - -1000
-  - -1000
-  - -1000
-  - -1000
-  - -1000
+  APressedOffset: []
+  DPressedOffset: []
+  AReleasedOffset: []
+  DReleasedOffset: []
+  rightSwitchCount: -1
+  leftSwitchCount: -1
   currentTarget: {fileID: 0}
   leftTarget: {fileID: 96461165}
   rightTarget: {fileID: 57201181}
