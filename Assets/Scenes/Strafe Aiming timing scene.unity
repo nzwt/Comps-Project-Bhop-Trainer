@@ -2198,7 +2198,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2098334199}
   - component: {fileID: 2098334208}
-  - component: {fileID: 2098334206}
   - component: {fileID: 2098334204}
   - component: {fileID: 2098334203}
   - component: {fileID: 2098334201}
@@ -2270,63 +2269,6 @@ MonoBehaviour:
   mouseAngleTracker: {fileID: 4457641538562633990}
   speedTracker: {fileID: 4457641538562633993}
   playerAiming: {fileID: 1168277601}
---- !u!114 &2098334206
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2098334198}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7276b531832d7b64bb09d37cfba00fc4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  surfCharacter: {fileID: 4457641538562633989}
-  uiManager: {fileID: 2098334203}
-  playerManager: {fileID: 2098334204}
-  scoreManager: {fileID: 2098334201}
-  jumpIndicator: {fileID: 186905279}
-  mouseAngleTracker: {fileID: 4457641538562633990}
-  orbController: {fileID: 2098334207}
-  currentJumpAttempt:
-    scenarioNumber: 0
-    attemptNumber: 0
-    strafeTimingOffset: 0
-    time: 0
-    distance: 0
-    height: 0
-    speed: 0
-    score: 0
-    angle: 0
-    aimSmoothness: 0
-    bhopAccuracy: 0
-  lastJumpAttempt:
-    scenarioNumber: 0
-    attemptNumber: 0
-    strafeTimingOffset: 0
-    time: 0
-    distance: 0
-    height: 0
-    speed: 0
-    score: 0
-    angle: 0
-    aimSmoothness: 0
-    bhopAccuracy: 0
-  attemptNumber: 0
-  cameraHolder: {fileID: 926023497}
-  arrow: {fileID: 1726983691}
-  lastScoreLoaded: 0
-  startTriggered: 0
-  playerStart: 0
-  maxSwitches: 5
-  switchTimes: []
-  currentTarget: {fileID: 0}
-  leftTarget: {fileID: 96461165}
-  rightTarget: {fileID: 57201181}
-  xReset: 0
-  yReset: 1
-  zReset: 0
 --- !u!114 &2098334207
 MonoBehaviour:
   m_ObjectHideFlags: 0
