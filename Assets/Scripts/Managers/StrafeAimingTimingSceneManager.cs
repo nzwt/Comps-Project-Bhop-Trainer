@@ -55,7 +55,10 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
     public Transform currentTarget;
     public Transform leftTarget;
     public Transform rightTarget;
+    //jumpAttempt stats
     private float bhopAccuracy = 0;
+    private float strafeTimingOffset = 0;
+    private int scorePenalties = 0;
 
     // Reset position values
     public float xReset = 0.0f;  // X-axis reset position
@@ -87,9 +90,10 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
         currentTarget = leftTarget;
         mouseAngleTracker.resetAngleChange();
         mouseAngleTracker.isAttemptActive = true;
-        arrow.transform.rotation = Quaternion.Euler(0, 0, 0);
+        arrow.transform.rotation = Quaternion.Euler(0, 180, 0);
         orbController.resetTargets();
         bhopAccuracy = 0;
+        scorePenalties = 0;
     }
 
     public void endAttempt()
@@ -99,14 +103,14 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
         attemptNumber++;
         // Update the lastJumpAttempt to the currentJumpAttempt
         // Reset the currentJumpAttempt
-        float score = (0.65f - Math.Abs(bhopAccuracy))*15.4f;
-        currentJumpAttempt = new JumpAttempt(3,attemptNumber, 0, 0, 0, 0, 0, score, 0, 0, bhopAccuracy, date: System.DateTime.Now);
+        float score = (0.65f - Math.Abs(bhopAccuracy))*7.65f + (0.65f - Math.Abs(strafeTimingOffset))*7.65f;
+        currentJumpAttempt = new JumpAttempt(4,attemptNumber, strafeTimingOffset, 0, 0, 0, 0, score, 0, 0, bhopAccuracy, date: System.DateTime.Now);
         scoreManager.SaveScore(currentJumpAttempt);
         //TODO: stats are going to be different depending on the scene, this should probably be dont in the scene manager but I dont know
         //jank, fix later
-        uiManager.StatScreen.GetComponent<BhopStatScreen>().currentJumpAttempt = currentJumpAttempt;
-        uiManager.StatScreen.GetComponent<BhopStatScreen>().lastJumpAttempt = lastJumpAttempt;
-        uiManager.StatScreen.GetComponent<BhopStatScreen>().updateStats();
+        uiManager.StatScreen.GetComponent<StrafingStatScreen>().currentJumpAttempt = currentJumpAttempt;
+        uiManager.StatScreen.GetComponent<StrafingStatScreen>().lastJumpAttempt = lastJumpAttempt;
+        uiManager.StatScreen.GetComponent<StrafingStatScreen>().updateStats();
         //reset vars
         lastJumpAttempt = currentJumpAttempt;
         surfCharacter.moveData.velocity = Vector3.zero;
@@ -115,7 +119,7 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
         jumpIndicator.deleteLines();
         playerStart = false;
         mouseAngleTracker.isAttemptActive = false;
-        //resetArrays();
+        resetArrays();
         
         
     }
@@ -130,8 +134,8 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
         DPressedOffset = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
         AReleasedOffset = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
         DReleasedOffset = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
-        rightLookTimes.Clear();
-        leftLookTimes.Clear();
+        rightLookTimes = new List<float>();
+        leftLookTimes = new List<float>();
     }
 
     public void resetScene()
@@ -193,18 +197,19 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
         {
             globalTimer += Time.deltaTime;
             switchTimer += Time.deltaTime;
+            //TODO: Bug - if the player holds D then lets go and taps A a bunch of times before looking left, it makes the array too big
             if(Input.GetKeyDown(KeyCode.A)  && APressedTimestamps[leftSwitchCount] == -1000)//&& DHeld == false)
             {
                 AHeld = true;
                 APressedTimestamps[leftSwitchCount] = (globalTimer);
-                Debug.Log("A pressed");
-                Debug.Log(globalTimer);
+                // Debug.Log("A pressed");
+                // Debug.Log(globalTimer);
             }
             if(Input.GetKeyDown(KeyCode.D) && DPressedTimestamps[rightSwitchCount] == -1000)//&& AHeld == false)
             {
                 DHeld = true;
                 DPressedTimestamps[rightSwitchCount] = (globalTimer);
-                Debug.Log("D pressed");
+                // Debug.Log("D pressed");
             }
             if(Input.GetKey(KeyCode.A) && AHeld == true)
             {
@@ -219,14 +224,14 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
                 AHeld = false;
                 APressedTimes[leftSwitchCount] = ATimer;
                 ATimer = 0;
-                Debug.Log("A released");
+                // Debug.Log("A released");
             }
             if(Input.GetKeyUp(KeyCode.D) && DHeld == true)
             {
                 DHeld = false;
                 DPressedTimes[rightSwitchCount] = DTimer;
                 DTimer = 0;
-                Debug.Log("D released");
+                // Debug.Log("D released");
             }
         }
         //check if the player has started the attempt, if not, are they looking at a target?
@@ -302,7 +307,7 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
                 else if(DPressedTimestamps[i] > rightLookTimes[i] && DPressedTimestamps[i] < rightLookTimes[i] + 0.2f)
                 {
                     DPressedOffset[i] = DPressedTimestamps[i] - rightLookTimes[i];
-                }
+                }               
             }
             //calculate offset of all D releases from switch
             for(int i = 0; i < rightLookTimes.Count; i++)
@@ -350,10 +355,32 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
 
             //calculate strafe accuracy
             Debug.Log("A Held Accuracy");
+            float totalOffset = 0;
+            int totalCounted = 0;
             for(int i = 0; i < leftLookTimes.Count; i++)
             {
                 Debug.Log(APressedOffset[i]);
                 Debug.Log(AReleasedOffset[i]);
+                if(APressedOffset[i] != -1000)
+                {
+                    totalOffset += APressedOffset[i];
+                    totalCounted += 1;
+                }
+                else
+                {
+                    scorePenalties += 1;
+                }
+                //if they missed by too much, apply a score penalty but dont change the accuracy timing
+                //TODO: make a stat for total misses?
+                if(AReleasedOffset[i] != -1000)
+                {
+                    totalOffset += AReleasedOffset[i];
+                    totalCounted += 1;
+                }
+                else
+                {
+                    scorePenalties += 1;
+                }
             }
 
             Debug.Log("D Held Accuracy");
@@ -361,7 +388,33 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
             {
                 Debug.Log(DPressedOffset[i]);
                 Debug.Log(DReleasedOffset[i]);
+                if(DPressedOffset[i] != -1000)
+                {
+                    totalOffset += DPressedOffset[i];
+                    totalCounted += 1;
+                }
+                else
+                {
+                    scorePenalties += 1;
+                }
+                if(DReleasedOffset[i] != -1000)
+                {
+                    totalOffset += DReleasedOffset[i];
+                    totalCounted += 1;
+                }
+                else
+                {
+                    scorePenalties += 1;
+                }
             }
+            strafeTimingOffset = totalOffset / totalCounted;
+
+            //calculate timing offset
+            foreach (float time in switchTimes)
+            {
+                bhopAccuracy += time - 0.65f;
+            }
+            bhopAccuracy = bhopAccuracy / maxSwitches;
 
 
             //for each switch, check from halfway to last switch to halfway to next switch and determine accuracy
