@@ -30,6 +30,9 @@ public class AimingTimingSceneManager : MonoBehaviour
     public List<float> switchTimes = new List<float>();
     private float switchTimer = -1;
     private float globalTimer = -1;
+    private float switchTrackTimer = 0;
+    private float switchTrackStart = 0;
+    private float switchTrackEnd = 0;
     //0 is left, 1 is right
     public Transform currentTarget;
     public Transform leftTarget;
@@ -161,6 +164,7 @@ public class AimingTimingSceneManager : MonoBehaviour
                     orbController.TargetLeft();
                     arrow.transform.rotation = Quaternion.Euler(0, 0, 0);
                     jumpIndicator.StartJump();
+                    switchTrackStart = mouseAngleTracker.angleChange;
                 }
             }
         }
@@ -168,6 +172,33 @@ public class AimingTimingSceneManager : MonoBehaviour
         if(playerStart == true)
         {
             switchTimer += Time.deltaTime;
+            if(switchTrackTimer < 0.05)
+            {
+                switchTrackTimer += Time.deltaTime;
+            }
+            else
+            {
+                switchTrackEnd = mouseAngleTracker.angleChange;
+                if(currentTarget == leftTarget)
+                {
+                    if( switchTrackEnd  > switchTrackStart + 3)
+                    {
+                        Debug.Log("going right");
+                        currentTarget = rightTarget;
+                    }
+                }
+                else if(currentTarget == rightTarget)
+                {
+                    if( switchTrackEnd  < switchTrackStart - 3)
+                    {
+                        Debug.Log("going left");
+                        currentTarget = leftTarget;
+                    }
+                }
+                switchTrackTimer = 0;
+                switchTrackStart = switchTrackEnd;
+            }
+            
         }
         //check if the player has started the attempt, if not, are they looking at a target?
         if(playerStart == true)
