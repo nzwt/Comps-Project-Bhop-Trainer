@@ -40,7 +40,7 @@ public class StrafingStatScreen : MonoBehaviour
         }
         else
         {
-            strafeTimingOffset.text = currentStrafeTimingOffset.ToString("F2") + " (" + lastJumpAttempt.aimSmoothness.ToString("F2") + "▼)";
+            strafeTimingOffset.text = currentStrafeTimingOffset.ToString("F2") + " (" + lastJumpAttempt.strafeTimingOffset.ToString("F2") + "▼)";
             strafeTimingOffset.color = Color.red;
         }
         if( Math.Abs(lastJumpAttempt.bhopAccuracy)  >= Math.Abs(currentJumpAttempt.bhopAccuracy) )

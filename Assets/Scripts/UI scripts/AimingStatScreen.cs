@@ -23,16 +23,16 @@ public class AimingStatScreen : MonoBehaviour
     public void updateStats()
     {
         //changeInAngle.text = "Change in Angle: " + lastJumpAttempt.angle.ToString("F2") + " degrees";
-        if(lastJumpAttempt.aimSmoothness <= currentJumpAttempt.aimSmoothness)
-        {
-            aimSmoothness.text =currentJumpAttempt.aimSmoothness.ToString("F2") + " (" + lastJumpAttempt.aimSmoothness.ToString("F2") + "▲)";
-            aimSmoothness.color = Color.green;
-        }
-        else
-        {
-            aimSmoothness.text =currentJumpAttempt.aimSmoothness.ToString("F2") + " (" + lastJumpAttempt.aimSmoothness.ToString("F2") + "▼)";
-            aimSmoothness.color = Color.red;
-        }
+        // if(lastJumpAttempt.aimSmoothness <= currentJumpAttempt.aimSmoothness)
+        // {
+        //     aimSmoothness.text =currentJumpAttempt.aimSmoothness.ToString("F2") + " (" + lastJumpAttempt.aimSmoothness.ToString("F2") + "▲)";
+        //     aimSmoothness.color = Color.green;
+        // }
+        // else
+        // {
+        //     aimSmoothness.text =currentJumpAttempt.aimSmoothness.ToString("F2") + " (" + lastJumpAttempt.aimSmoothness.ToString("F2") + "▼)";
+        //     aimSmoothness.color = Color.red;
+        // }
         if( Math.Abs(lastJumpAttempt.bhopAccuracy)  <= Math.Abs(currentJumpAttempt.bhopAccuracy) )
         {
             bhopAccuracy.text = currentJumpAttempt.bhopAccuracy.ToString("F2") + " (" + lastJumpAttempt.bhopAccuracy.ToString("F2") + "▲)";

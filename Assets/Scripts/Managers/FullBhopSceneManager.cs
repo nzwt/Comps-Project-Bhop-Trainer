@@ -15,7 +15,6 @@ public class FullBhopSceneManager : MonoBehaviour
     public JumpIndicator jumpIndicator;
     public MouseAngleTracker mouseAngleTracker;
     public SpeedTracker speedTracker;
-    public OrbController orbController;
 
     // game objects
     public JumpAttempt currentJumpAttempt;
@@ -68,7 +67,7 @@ public class FullBhopSceneManager : MonoBehaviour
 
     // Jumping Variables
     public bool hasJumped = false;
-    public bool firstFrame = true;
+    public bool firstJump = true;
     public bool allowPlayerMovement = true;
     // jump management values
     public int maxJumps = 5;
@@ -78,6 +77,7 @@ public class FullBhopSceneManager : MonoBehaviour
     
     //jumpAttempt stats
     private float bhopAccuracy = 0;
+    private float lookOffset = 0;
     private float strafeTimingOffset = 0;
     private int scorePenalties = 0;
 
@@ -109,16 +109,17 @@ public class FullBhopSceneManager : MonoBehaviour
         uiManager.DisableStatScreen();
         uiManager.DisableStartElements();
         //Player control enabled
-        surfCharacter.movementEnabled = false;
+        surfCharacter.movementEnabled = true;
         playerManager.EnableMouseLook();
         //make targets virtual
         lookDirection = true;
         mouseAngleTracker.resetAngleChange();
         mouseAngleTracker.isAttemptActive = true;
         arrow.transform.rotation = Quaternion.Euler(0, 180, 0);
+        firstJump = true;
         speedTracker.isAttemptActive = true;
-        orbController.resetTargets();
         bhopAccuracy = 0;
+        lookOffset = 0;
         scorePenalties = 0;
     }
 
@@ -129,8 +130,9 @@ public class FullBhopSceneManager : MonoBehaviour
         attemptNumber++;
         // Update the lastJumpAttempt to the currentJumpAttempt
         // Reset the currentJumpAttempt
-        float score = (0.65f - Math.Abs(bhopAccuracy))*7.65f + (0.65f - Math.Abs(strafeTimingOffset))*7.65f;
-        currentJumpAttempt = new JumpAttempt(4,attemptNumber, strafeTimingOffset, 0, 0, 0, 0, score, 0, 0, bhopAccuracy, date: System.DateTime.Now);
+        bhopAccuracy = calculateBhopAccuracy();
+        float score = (0.65f - Math.Abs(lookOffset))*5f + (0.65f - Math.Abs(strafeTimingOffset))*5f + (1-bhopAccuracy)*10 - scorePenalties;
+        currentJumpAttempt = new JumpAttempt(4,attemptNumber, strafeTimingOffset, 0, 0, 0, 0, score, 0, lookOffset, bhopAccuracy, date: System.DateTime.Now);
         scoreManager.SaveScore(currentJumpAttempt);
         //TODO: stats are going to be different depending on the scene, this should probably be dont in the scene manager but I dont know
         //jank, fix later
@@ -174,6 +176,22 @@ public class FullBhopSceneManager : MonoBehaviour
         startTriggered = false;
     }
 
+    public float calculateBhopAccuracy()
+    {
+        if (groundTimes.Count == 0)
+        {
+            return 0f;
+        }
+
+        float sum = 0f;
+        foreach (float time in groundTimes)
+        {
+            sum += time;
+        }
+
+        return sum / groundTimes.Count;
+    }
+
     
     // Start is called before the first frame update
     void Start()
@@ -208,26 +226,29 @@ public class FullBhopSceneManager : MonoBehaviour
                 DTimer = 0;
                 //You should look right first
                 lookDirection = true;
-            }
-            if(mouseAngleTracker.angleChange < 0)
-            {
-                if (mouseAngleTracker.angleChange < -20 && mouseAngleTracker.angleChange > -25)
+                playerStart = true;
+                //Debug.Log("Player is looking left");
+                switchTimer = 0;
+                globalTimer = 0;
+                rightSwitchCount = 0;
+                leftSwitchCount = -1;
+                ATimer = 0;
+                DTimer = 0;
+                lookDirection = true;
+                if(firstJump == true)
                 {
-                    playerStart = true;
-                    //Debug.Log("Player is looking left");
-                    switchTimer = 0;
-                    globalTimer = 0;
-                    rightSwitchCount = 0;
-                    leftSwitchCount = -1;
-                    ATimer = 0;
-                    DTimer = 0;
-                    lookDirection = true;
-                    orbController.TargetLeft();
-                    arrow.transform.rotation = Quaternion.Euler(0, 0, 0);
-                    jumpIndicator.StartJump();
-                    rightLookTimes.Add(globalTimer);
+                    firstJump = false;
                 }
+                else
+                {
+                    arrow.transform.rotation = Quaternion.Euler(0, 0, 0);
+                }
+                jumpIndicator.StartJump();
+                rightLookTimes.Add(globalTimer);
             }
+            
+                    
+
         }
 
         /// Jump Tracking
@@ -286,16 +307,16 @@ public class FullBhopSceneManager : MonoBehaviour
             arrow.transform.Rotate(0, 180, 0);
         }
 
-        if (currentJumps >= maxJumps)
-        {
-            // Player has reached max jumps, end the attempt
-            foreach (float time in groundTimes)
-            {
-                //Debug.Log(time);
-            }
-            endAttempt();
-            resetScene();
-        }
+        // if (currentJumps >= maxJumps)
+        // {
+        //     // Player has reached max jumps, end the attempt
+        //     foreach (float time in groundTimes)
+        //     {
+        //         //Debug.Log(time);
+        //     }
+        //     endAttempt();
+        //     resetScene();
+        // }
 
 
         //if attempt is active, add time
@@ -416,13 +437,7 @@ public class FullBhopSceneManager : MonoBehaviour
             }
             //calculate look accuracy
             float endTime = globalTimer;
-            foreach (float time in switchTimes)
-            {
-                bhopAccuracy += time - 0.65f;
-            }
-            bhopAccuracy = bhopAccuracy / maxSwitches;
             //calculate strafe accuracy
-            //calculate offset of D press from switch
 
             //calculate offset of all D presses from switch
             for(int i = 0; i < rightLookTimes.Count; i++)
@@ -539,9 +554,10 @@ public class FullBhopSceneManager : MonoBehaviour
             //calculate timing offset
             foreach (float time in switchTimes)
             {
-                bhopAccuracy += time - 0.65f;
+                lookOffset += time - 0.65f;
             }
-            bhopAccuracy = bhopAccuracy / maxSwitches;
+            lookOffset = lookOffset / maxSwitches;
+            Debug.Log("Look Offset: " + lookOffset);
 
 
 

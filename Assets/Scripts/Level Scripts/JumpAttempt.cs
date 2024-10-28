@@ -13,11 +13,11 @@ public class JumpAttempt
     public float speed;
     public float score;
     public float angle;
-    public float aimSmoothness;
+    public float lookOffset;
     public float bhopAccuracy;
     public DateTime date;
 
-    public JumpAttempt(int scenarioNumber, int attemptNumber, float strafeTimingOffset, float time, float distance, float height, float speed, float score, float angle, float aimSmoothness, float bhopAccuracy, DateTime date)
+    public JumpAttempt(int scenarioNumber, int attemptNumber, float strafeTimingOffset, float time, float distance, float height, float speed, float score, float angle, float lookOffset, float bhopAccuracy, DateTime date)
     {
         this.scenarioNumber = scenarioNumber;
         this.attemptNumber = attemptNumber;
@@ -28,7 +28,7 @@ public class JumpAttempt
         this.speed = speed;
         this.score = score;
         this.angle = angle;
-        this.aimSmoothness = aimSmoothness;
+        this.lookOffset = lookOffset;
         this.bhopAccuracy = bhopAccuracy;
         this.date = date;
     }
