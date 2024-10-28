@@ -34,6 +34,7 @@ public class FullBhopSceneManager : MonoBehaviour
     public List<float> switchTimes = new List<float>();
     public List<float> rightLookTimes = new List<float>();
     public List<float> leftLookTimes = new List<float>();
+    public float[] jumpTimestamps;
     public float[] APressedTimestamps ;
     public float[] DPressedTimestamps ;
     [SerializeField]
@@ -84,6 +85,7 @@ public class FullBhopSceneManager : MonoBehaviour
         uiManager.DisableStatScreen();
         uiManager.EnableStartElements();
         playerManager.ResetPlayer(xReset, yReset, zReset);
+        maxSwitches = maxJumps;
         
         resetArrays();
     }
@@ -150,6 +152,7 @@ public class FullBhopSceneManager : MonoBehaviour
         DReleasedOffset = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
         rightLookTimes = new List<float>();
         leftLookTimes = new List<float>();
+        jumpTimestamps = Enumerable.Repeat(-1000f, maxJumps).ToArray();
     }
 
     public void resetScene()
@@ -231,6 +234,7 @@ public class FullBhopSceneManager : MonoBehaviour
             // Player has jumped, register the jump
             //print("Jumped");
             hasJumped = true;
+            jumpTimestamps[currentJumps] = globalTimer;
             jumpIndicator.StartJump();
         }
 
