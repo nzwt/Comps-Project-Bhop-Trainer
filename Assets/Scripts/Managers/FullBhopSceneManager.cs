@@ -4,6 +4,7 @@ using UnityEngine;
 using Fragsurf.Movement;
 using System;
 using System.Linq;
+using UnityEngine.Analytics;
 
 public class FullBhopSceneManager : MonoBehaviour
 {
@@ -30,11 +31,20 @@ public class FullBhopSceneManager : MonoBehaviour
     private bool AHeld = false;
     private bool DHeld = false;
     //management values
+    //Look vars
     public int maxSwitches = 6;
     public List<float> switchTimes = new List<float>();
     public List<float> rightLookTimes = new List<float>();
     public List<float> leftLookTimes = new List<float>();
     public float[] jumpTimestamps;
+    private float rightAngleStart = 0;
+    private float leftAngleStart = 0;
+    private int switchCount = 0;
+    private float switchTrackTimer = 0;
+    private float switchTrackStart = 0;
+    private float switchTrackEnd = 0;
+
+    //Strafe Variables
     public float[] APressedTimestamps ;
     public float[] DPressedTimestamps ;
     [SerializeField]
@@ -192,7 +202,6 @@ public class FullBhopSceneManager : MonoBehaviour
             if(surfCharacter.transform.position.z <= 1.2 && surfCharacter.transform.position.z >= 1)
             {
                 playerStart = true;
-                mouseAngleTracker.resetAngleChange();
                 rightSwitchCount = 0;
                 leftSwitchCount = -1;
                 ATimer = 0;
@@ -273,6 +282,8 @@ public class FullBhopSceneManager : MonoBehaviour
             {
                 jumpIndicator.changeLastLineColor(Color.green);
             }
+            //tell player to switch directions
+            arrow.transform.Rotate(0, 180, 0);
         }
 
         if (currentJumps >= maxJumps)
@@ -292,6 +303,7 @@ public class FullBhopSceneManager : MonoBehaviour
         {
             globalTimer += Time.deltaTime;
             switchTimer += Time.deltaTime;
+            //Strafe logic
             //TODO: Bug - if the player holds D then lets go and taps A a bunch of times before looking left, it makes the array too big
             if(Input.GetKeyDown(KeyCode.A)  && APressedTimestamps[leftSwitchCount] == -1000)//&& DHeld == false)
             {
@@ -329,38 +341,58 @@ public class FullBhopSceneManager : MonoBehaviour
                 // Debug.Log("D released");
             }
         }
-        //check if the player has started the attempt, if not, are they looking at a target?
+        //LOOK LOGIC//
+        //check if the player has started the attempt, if so, are they looking left or right?
         if(playerStart == true)
         {
-            if(mouseAngleTracker.angleChange > 0)
+            bool newDirection = false;
+            if(switchTrackTimer < 0.05)
             {
-                if(mouseAngleTracker.angleChange > 20 && mouseAngleTracker.angleChange < 25 && lookDirection == true && switchTimer > -1)
-                {
-                    switchTimes.Add(switchTimer);
-                    orbController.ShowRightAccuracy(switchTimer);
-                    switchTimer = 0;
-                    arrow.transform.Rotate(0, 180, 0);
-                    lookDirection = false;
-                    jumpIndicator.StartJump();
-                    leftLookTimes.Add(globalTimer);
-                    leftSwitchCount++;
-                    //Debug.Log("Player is looking right");
-                }
+                switchTrackTimer += Time.deltaTime;
             }
-            else if(mouseAngleTracker.angleChange < 0)
+            else
             {
-                if (mouseAngleTracker.angleChange < -20 && mouseAngleTracker.angleChange > -25 && lookDirection == false && switchTimer > -1)
+                switchTrackEnd = mouseAngleTracker.angleChange;
+                //left is false, true is right
+                if(lookDirection == false)
                 {
-                    switchTimes.Add(switchTimer);
-                    orbController.ShowLeftAccuracy(switchTimer);
-                    switchTimer = 0;
-                    arrow.transform.Rotate(0, 180, 0);
-                    lookDirection = true;
-                    jumpIndicator.StartJump();
-                    rightLookTimes.Add(globalTimer);
-                    rightSwitchCount++;
-                    //Debug.Log("Player is looking left");
+                    if( switchTrackEnd  > switchTrackStart + 3)
+                    {
+                        Debug.Log("going right");
+                        lookDirection = true;
+                        newDirection = true;
+                    }
                 }
+                else if(lookDirection == true)
+                {
+                    if( switchTrackEnd  < switchTrackStart - 3)
+                    {
+                        Debug.Log("going left");
+                        lookDirection = false;
+                        newDirection = true;
+                    }
+                }
+                switchTrackTimer = 0;
+                switchTrackStart = switchTrackEnd;
+            }
+            if(newDirection && lookDirection == false && switchCount == currentJumps) //you just switched from right to left
+            {
+                //TODO: I could track angle change here, new stat?
+                switchTimes.Add(switchTimer);
+                switchTimer = 0;
+                leftLookTimes.Add(globalTimer);
+                leftSwitchCount++;
+                switchCount++;
+                //Debug.Log("Player is looking right");
+
+            }
+            else if(newDirection && lookDirection == true && switchCount == currentJumps) //you just switched from left to right
+            {
+                switchTimes.Add(switchTimer);
+                switchTimer = 0;
+                rightLookTimes.Add(globalTimer);
+                rightSwitchCount++;
+                switchCount++;
             }
         }
 
@@ -512,7 +544,6 @@ public class FullBhopSceneManager : MonoBehaviour
             bhopAccuracy = bhopAccuracy / maxSwitches;
 
 
-            //for each switch, check from halfway to last switch to halfway to next switch and determine accuracy
 
             endAttempt();
             resetScene();
