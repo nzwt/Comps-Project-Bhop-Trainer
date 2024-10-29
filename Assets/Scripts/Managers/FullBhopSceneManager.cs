@@ -121,6 +121,8 @@ public class FullBhopSceneManager : MonoBehaviour
         bhopAccuracy = 0;
         lookOffset = 0;
         scorePenalties = 0;
+        switchCount = 1;
+        currentJumps = 0;
     }
 
     public void endAttempt()
@@ -423,7 +425,7 @@ public class FullBhopSceneManager : MonoBehaviour
             startAttempt();
         }
 
-        if (switchTimes.Count >= maxSwitches)
+        if ((switchTimes.Count >= maxSwitches || currentJumps >= maxJumps) && playerStart == true)
         {
             // Player has reached max switches, end the attempt
             //If the player did not let go of the key, end the time
@@ -452,7 +454,7 @@ public class FullBhopSceneManager : MonoBehaviour
                 }               
             }
             //calculate offset of all D releases from switch
-            for(int i = 0; i < rightLookTimes.Count; i++)
+            for(int i = 0; i < rightLookTimes.Count-1; i++)
             {
                 float release = (DPressedOffset[i] + rightLookTimes[i]) + DPressedTimes[i];
                 if(release < leftLookTimes[i] && release > leftLookTimes[i] - 0.2f)
