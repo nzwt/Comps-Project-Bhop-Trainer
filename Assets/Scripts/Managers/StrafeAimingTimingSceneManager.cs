@@ -310,7 +310,7 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
                 }               
             }
             //calculate offset of all D releases from switch
-            for(int i = 0; i < rightLookTimes.Count; i++)
+            for(int i = 0; i < rightLookTimes.Count-1; i++)
             {
                 float release = (DPressedOffset[i] + rightLookTimes[i]) + DPressedTimes[i];
                 if(release < leftLookTimes[i] && release > leftLookTimes[i] - 0.2f)
