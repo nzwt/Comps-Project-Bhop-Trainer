@@ -11,9 +11,10 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
     public UIManager uiManager;
     public PlayerManager playerManager;
     public ScoreManager scoreManager;
-    public JumpIndicator jumpIndicator;
+    public ArcJumpIndicator jumpIndicator;
     public MouseAngleTracker mouseAngleTracker;
     public OrbController orbController;
+    public TimelineController timelineController;
 
     // game objects
     public JumpAttempt currentJumpAttempt;
@@ -111,12 +112,13 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
         uiManager.StatScreen.GetComponent<StrafingStatScreen>().currentJumpAttempt = currentJumpAttempt;
         uiManager.StatScreen.GetComponent<StrafingStatScreen>().lastJumpAttempt = lastJumpAttempt;
         uiManager.StatScreen.GetComponent<StrafingStatScreen>().updateStats();
+        timelineController.CalculateTimestamps();
         //reset vars
         lastJumpAttempt = currentJumpAttempt;
         surfCharacter.moveData.velocity = Vector3.zero;
         surfCharacter.moveData.wishJump = false;
         switchTimes.Clear();
-        jumpIndicator.deleteLines();
+        jumpIndicator.deleteDots();
         playerStart = false;
         mouseAngleTracker.isAttemptActive = false;
         resetArrays();
@@ -140,6 +142,7 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
 
     public void resetScene()
     {
+        timelineController.RemoveAllPips();
         playerManager.ResetPlayer(xReset, yReset, zReset);
         uiManager.DisableHudElements();
         uiManager.EnableStatScreen();
@@ -298,7 +301,7 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
             //calculate offset of D press from switch
 
             //calculate offset of all D presses from switch
-            for(int i = 0; i < rightLookTimes.Count; i++)
+            for(int i = 0; i < rightLookTimes.Count-1; i++)
             {
                 if(DPressedTimestamps[i] < rightLookTimes[i] && DPressedTimestamps[i] > rightLookTimes[i] - 0.2f)
                 {
@@ -415,9 +418,12 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
                 bhopAccuracy += time - 0.65f;
             }
             bhopAccuracy = bhopAccuracy / maxSwitches;
-
-
             //for each switch, check from halfway to last switch to halfway to next switch and determine accuracy
+            //add values to timeline
+            timelineController.startLookTimestamps = leftLookTimes.ToArray();
+            timelineController.endLookTimestamps = rightLookTimes.ToArray();
+            timelineController.strafeStartTimestamps = APressedTimestamps;
+            timelineController.strafeEndTimestamps = DPressedTimestamps;
 
             endAttempt();
             resetScene();

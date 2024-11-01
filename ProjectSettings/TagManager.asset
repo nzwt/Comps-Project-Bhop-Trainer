@@ -41,3 +41,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Timeline
+    uniqueID: 653706319
+    locked: 0
+  - name: UI text
+    uniqueID: 3263858689
+    locked: 0
+  - name: UI
+    uniqueID: 2251519499
+    locked: 0

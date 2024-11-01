@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3095969102897547166}
   - component: {fileID: 6206262770616452663}
   m_Layer: 5
-  m_Name: MovingLine
+  m_Name: BlackCircle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35,7 +35,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -35, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3095969102897547166
 CanvasRenderer:
@@ -58,14 +58,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45730427, g: 0.9245283, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 59ac974f443d9bb48824322ffc1f1ea4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2e636212549b0a34f8cf81aca83b7200, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
