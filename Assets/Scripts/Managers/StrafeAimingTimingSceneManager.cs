@@ -4,6 +4,7 @@ using UnityEngine;
 using Fragsurf.Movement;
 using System;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class StrafeAimingTimingSceneManager : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
     public GameObject arrow; //flip x to aim left
     
     // managment bools
+    public bool firstTime = true;
     public bool lastScoreLoaded = false;
     public bool startTriggered = false;
     public bool playerStart = false;
@@ -70,6 +72,8 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
 
      private void OnEnable()
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         currentJumpAttempt = new JumpAttempt(1,attemptNumber, 0, 0, 0, 0, 0, 0, 0, 0, 0, date: System.DateTime.Now);
         uiManager.DisableHudElements();
         uiManager.DisableStatScreen();
@@ -83,6 +87,8 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
     {
         ///text appears: move mouse to either the left or the right to start an attempt, then switch targets by smoothly moving your mouse to the other target each time the 
         /// indicator changes color.
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         uiManager.EnableHudElements();
         uiManager.DisableStatScreen();
         uiManager.DisableStartElements();
@@ -95,6 +101,11 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
         orbController.resetTargets();
         bhopAccuracy = 0;
         scorePenalties = 0;
+    }
+
+    public void LoadScene()
+    {
+        SceneManager.LoadScene("Full Bhop Scene");
     }
 
     public void endAttempt()
@@ -273,8 +284,11 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
         }
 
         //TODO - need to update this to have checks for starting level
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && firstTime == true)
         {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            firstTime = false;
             startAttempt();
         }
 
