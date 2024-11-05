@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fragsurf.Movement;
 using System;
+using UnityEngine.SceneManagement;
 
 public class AimingTimingSceneManager : MonoBehaviour
 {
@@ -25,6 +26,7 @@ public class AimingTimingSceneManager : MonoBehaviour
     public bool lastScoreLoaded = false;
     public bool startTriggered = false;
     public bool playerStart = false;
+    public bool firstTime = true;
     //management values
     public int maxSwitches = 5;
     public List<float> switchTimes = new List<float>();
@@ -43,6 +45,8 @@ public class AimingTimingSceneManager : MonoBehaviour
 
      private void OnEnable()
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         currentJumpAttempt = new JumpAttempt(1,attemptNumber, 0, 0, 0, 0, 0, 0, 0, 0, 0, date: System.DateTime.Now);
         uiManager.DisableHudElements();
         uiManager.DisableStatScreen();
@@ -55,6 +59,8 @@ public class AimingTimingSceneManager : MonoBehaviour
     {
         ///text appears: move mouse to either the left or the right to start an attempt, then switch targets by smoothly moving your mouse to the other target each time the 
         /// indicator changes color.
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         uiManager.EnableHudElements();
         uiManager.DisableStatScreen();
         uiManager.DisableStartElements();
@@ -66,6 +72,11 @@ public class AimingTimingSceneManager : MonoBehaviour
         arrow.transform.rotation = Quaternion.Euler(0, 0, 0);
         orbController.resetTargets();
         bhopAccuracy = 0;
+    }
+
+    public void LoadScene()
+    {
+        SceneManager.LoadScene("Strafe Aiming timing scene");
     }
 
     public void endAttempt()
@@ -91,8 +102,8 @@ public class AimingTimingSceneManager : MonoBehaviour
         jumpIndicator.deleteLines();
         playerStart = false;
         mouseAngleTracker.isAttemptActive = false;
-        
-        
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
 
@@ -201,8 +212,11 @@ public class AimingTimingSceneManager : MonoBehaviour
         }
 
         //TODO - need to update this to have checks for starting level
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && firstTime == true)
         {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            firstTime = false;
             startAttempt();
         }
 
