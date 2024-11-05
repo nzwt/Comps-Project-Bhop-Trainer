@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fragsurf.Movement;
+using UnityEngine.SceneManagement;
 
 public class BhopTimingSceneManager : MonoBehaviour
 {// refrences to other scripts
@@ -18,6 +19,7 @@ public class BhopTimingSceneManager : MonoBehaviour
     public SpeedTracker speedTracker;
     
     // managment bools
+    public bool firstTime = true;
     public bool hasJumped = false;
     public bool firstFrame = true;
     public bool lastScoreLoaded = false;
@@ -36,6 +38,8 @@ public class BhopTimingSceneManager : MonoBehaviour
 
      private void OnEnable()
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         currentJumpAttempt = new JumpAttempt(1,attemptNumber, 0, 0, 0, 0, 0, 0, 0, 0, 0, date: System.DateTime.Now);
         uiManager.DisableHudElements();
         uiManager.DisableStatScreen();
@@ -45,6 +49,8 @@ public class BhopTimingSceneManager : MonoBehaviour
 
     public void startAttempt()
     {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         uiManager.EnableHudElements();
         uiManager.DisableStatScreen();
         uiManager.DisableStartElements();
@@ -54,6 +60,11 @@ public class BhopTimingSceneManager : MonoBehaviour
         surfCharacter.controller.moveForward = true;
         speedTracker.isAttemptActive = true;
         startTriggered = true;
+    }
+
+    public void LoadScene()
+    {
+        SceneManager.LoadScene("Aiming timing scene");
     }
 
     public void endAttempt()
@@ -81,6 +92,8 @@ public class BhopTimingSceneManager : MonoBehaviour
         lastJumpAttempt = currentJumpAttempt;
         surfCharacter.moveData.velocity = Vector3.zero;
         surfCharacter.moveData.wishJump = false;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         
         
     }
@@ -158,9 +171,11 @@ public class BhopTimingSceneManager : MonoBehaviour
         }
         //calculate how long the player has been on the ground
 
-        //TODO - need to update this to have checks for starting level
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && firstTime == true)
         {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            firstTime = false;
             startAttempt();
         }
         if (hasJumped == false && grounded == false)
