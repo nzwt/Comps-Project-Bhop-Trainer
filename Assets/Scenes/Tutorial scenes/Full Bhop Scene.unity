@@ -1456,6 +1456,7 @@ MonoBehaviour:
   attemptNumber: 0
   cameraHolder: {fileID: 926023497}
   arrow: {fileID: 1726983691}
+  firstTime: 1
   lastScoreLoaded: 0
   startTriggered: 0
   playerStart: 0
@@ -1659,6 +1660,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7464105935643742047, guid: 972bd1ae68c134a4eb7a79199b90109a, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 14.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1796,6 +1801,10 @@ PrefabInstance:
 
         Total
         score:'
+      objectReference: {fileID: 0}
+    - target: {fileID: 5434825786336964862, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 14.5
       objectReference: {fileID: 0}
     - target: {fileID: 5734852156142728765, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
       propertyPath: m_Name
