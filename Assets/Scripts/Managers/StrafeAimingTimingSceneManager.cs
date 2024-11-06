@@ -85,6 +85,7 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
 
     public void startAttempt()
     {
+        timelineController.RemoveAllPips();
         ///text appears: move mouse to either the left or the right to start an attempt, then switch targets by smoothly moving your mouse to the other target each time the 
         /// indicator changes color.
         Cursor.lockState = CursorLockMode.Locked;
@@ -133,6 +134,8 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
         playerStart = false;
         mouseAngleTracker.isAttemptActive = false;
         resetArrays();
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         
         
     }
@@ -153,7 +156,6 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
 
     public void resetScene()
     {
-        timelineController.RemoveAllPips();
         playerManager.ResetPlayer(xReset, yReset, zReset);
         uiManager.DisableHudElements();
         uiManager.EnableStatScreen();

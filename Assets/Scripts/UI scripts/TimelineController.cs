@@ -19,7 +19,7 @@ public class TimelineController : MonoBehaviour
     public Color strafeColor = Color.blue;
     public Color lookColor = Color.red;
     [Header("Pip Offset")]
-    public float xOffset = -141.5f; // Offset to adjust the position of the pips on the x-axis
+    public float xOffset = -150; // Offset to adjust the position of the pips on the x-axis
 
     public void CalculateTimestamps()
     {
@@ -62,8 +62,10 @@ public class TimelineController : MonoBehaviour
 
             // Set the position of the pip on the timeline
             RectTransform rectTransform = pip.GetComponent<RectTransform>();
-            float positionX = (timestamp / totalDuration) * timelinePanel.rect.width + xOffset;
+            float positionX = timestamp / totalDuration * timelinePanel.rect.width + xOffset;
             rectTransform.anchoredPosition = new Vector2(positionX, 0);
+            rectTransform.position = rectTransform.position + new Vector3(xOffset/2, 0, 0);
+            
         }
     }
     public void RemoveAllPips()
