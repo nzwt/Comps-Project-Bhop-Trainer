@@ -15,7 +15,7 @@ public class FullBhopSceneManager : MonoBehaviour
     public JumpIndicator jumpIndicator;
     public MouseAngleTracker mouseAngleTracker;
     public SpeedTracker speedTracker;
-
+    public TimelineController timelineController;
     // game objects
     public JumpAttempt currentJumpAttempt;
     public JumpAttempt lastJumpAttempt;
@@ -31,6 +31,7 @@ public class FullBhopSceneManager : MonoBehaviour
     private bool DHeld = false;
     //management values
     //Look vars
+    bool firstTime = true;
     public int maxSwitches = 6;
     public List<float> switchTimes = new List<float>();
     public List<float> rightLookTimes = new List<float>();
@@ -90,6 +91,8 @@ public class FullBhopSceneManager : MonoBehaviour
 
      private void OnEnable()
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         currentJumpAttempt = new JumpAttempt(1,attemptNumber, 0, 0, 0, 0, 0, 0, 0, 0, 0, date: System.DateTime.Now);
         uiManager.DisableHudElements();
         uiManager.DisableStatScreen();
@@ -102,6 +105,9 @@ public class FullBhopSceneManager : MonoBehaviour
 
     public void startAttempt()
     {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        timelineController.RemoveAllPips();
         ///text appears: move mouse to either the left or the right to start an attempt, then switch targets by smoothly moving your mouse to the other target each time the 
         /// indicator changes color.
         /// HUD
@@ -141,6 +147,7 @@ public class FullBhopSceneManager : MonoBehaviour
         uiManager.StatScreen.GetComponent<StrafingStatScreen>().currentJumpAttempt = currentJumpAttempt;
         uiManager.StatScreen.GetComponent<StrafingStatScreen>().lastJumpAttempt = lastJumpAttempt;
         uiManager.StatScreen.GetComponent<StrafingStatScreen>().updateStats();
+        timelineController.CalculateTimestamps();
         //reset vars
         lastJumpAttempt = currentJumpAttempt;
         surfCharacter.moveData.velocity = Vector3.zero;
@@ -150,6 +157,8 @@ public class FullBhopSceneManager : MonoBehaviour
         playerStart = false;
         mouseAngleTracker.isAttemptActive = false;
         resetArrays();
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         
         
     }
@@ -420,8 +429,11 @@ public class FullBhopSceneManager : MonoBehaviour
         }
 
         //TODO - need to update this to have checks for starting level
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && firstTime == true)
         {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            firstTime = false;
             startAttempt();
         }
 
@@ -561,7 +573,11 @@ public class FullBhopSceneManager : MonoBehaviour
             lookOffset = lookOffset / maxSwitches;
             Debug.Log("Look Offset: " + lookOffset);
 
-
+            timelineController.startLookTimestamps = leftLookTimes.ToArray();
+            timelineController.endLookTimestamps = rightLookTimes.ToArray();
+            timelineController.strafeStartTimestamps = APressedTimestamps;
+            timelineController.strafeEndTimestamps = DPressedTimestamps;
+            timelineController.jumpTimestamps = jumpTimestamps;
 
             endAttempt();
             resetScene();
