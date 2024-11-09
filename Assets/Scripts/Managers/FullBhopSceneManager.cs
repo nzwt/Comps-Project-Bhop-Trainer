@@ -12,7 +12,7 @@ public class FullBhopSceneManager : MonoBehaviour
     public UIManager uiManager;
     public PlayerManager playerManager;
     public ScoreManager scoreManager;
-    public JumpIndicator jumpIndicator;
+    public ArcJumpIndicator jumpIndicator;
     public MouseAngleTracker mouseAngleTracker;
     public SpeedTracker speedTracker;
     public TimelineController timelineController;
@@ -154,7 +154,7 @@ public class FullBhopSceneManager : MonoBehaviour
         surfCharacter.moveData.velocity = Vector3.zero;
         surfCharacter.moveData.wishJump = false;
         switchTimes.Clear();
-        jumpIndicator.deleteLines();
+        jumpIndicator.deleteDots();
         playerStart = false;
         mouseAngleTracker.isAttemptActive = false;
         //resetArrays(); 
@@ -279,7 +279,6 @@ public class FullBhopSceneManager : MonoBehaviour
             // Player landed after a jump, start timing the grounded period
             groundTimer = 0;
             hasJumped = false; // Reset jump status after landing
-            jumpIndicator.EndJump();
         }
 
         if (hasJumped == false && grounded == true && groundTimer >= 0 && playerStart == true)
@@ -296,19 +295,6 @@ public class FullBhopSceneManager : MonoBehaviour
             currentJumps++;
             //Debug.Log("Current jumps: " + currentJumps);
             groundTimer = -1; // Reset timer after recording
-            //check timer and assign a color based on performance
-            if(groundTimes[groundTimes.Count - 1] > 0.1)
-            {
-                jumpIndicator.changeLastLineColor(Color.red);
-            }
-            else if(groundTimes[groundTimes.Count - 1] > 0.05)
-            {
-                jumpIndicator.changeLastLineColor(Color.yellow);
-            }
-            else
-            {
-                jumpIndicator.changeLastLineColor(Color.green);
-            }
             //tell player to switch directions
             arrow.transform.Rotate(0, 180, 0);
         }
