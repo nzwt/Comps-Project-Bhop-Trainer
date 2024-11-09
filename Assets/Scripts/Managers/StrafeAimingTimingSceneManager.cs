@@ -317,54 +317,112 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
             //calculate offset of D press from switch
 
             //calculate offset of all D presses from switch
+            // for(int i = 0; i < rightLookTimes.Count-1; i++)
+            // {
+            //     if(DPressedTimestamps[i] < rightLookTimes[i] && DPressedTimestamps[i] > rightLookTimes[i] - 0.2f)
+            //     {
+            //         DPressedOffset[i] = rightLookTimes[i] - DPressedTimestamps[i];
+            //     }
+            //     else if(DPressedTimestamps[i] > rightLookTimes[i] && DPressedTimestamps[i] < rightLookTimes[i] + 0.2f)
+            //     {
+            //         DPressedOffset[i] = DPressedTimestamps[i] - rightLookTimes[i];
+            //     }               
+            // }
             for(int i = 0; i < rightLookTimes.Count-1; i++)
             {
-                if(DPressedTimestamps[i] < rightLookTimes[i] && DPressedTimestamps[i] > rightLookTimes[i] - 0.2f)
+                for(int j = 0; j < DPressedTimestamps.Count(); j++)
                 {
-                    DPressedOffset[i] = rightLookTimes[i] - DPressedTimestamps[i];
+                    if(DPressedTimestamps[j] < rightLookTimes[i] && DPressedTimestamps[j] > rightLookTimes[i] - 0.2f)
+                    {
+                        DPressedOffset[i] = rightLookTimes[i] - DPressedTimestamps[j];
+                    }
+                    else if(DPressedTimestamps[j] > rightLookTimes[i] && DPressedTimestamps[j] < rightLookTimes[i] + 0.2f)
+                    {
+                        DPressedOffset[i] = DPressedTimestamps[j] - rightLookTimes[i];
+                    }   
                 }
-                else if(DPressedTimestamps[i] > rightLookTimes[i] && DPressedTimestamps[i] < rightLookTimes[i] + 0.2f)
-                {
-                    DPressedOffset[i] = DPressedTimestamps[i] - rightLookTimes[i];
-                }               
             }
             //calculate offset of all D releases from switch
+            // for(int i = 0; i < rightLookTimes.Count-1; i++)
+            // {
+            //     float release = (DPressedOffset[i] + rightLookTimes[i]) + DPressedTimes[i];
+            //     if(release < leftLookTimes[i] && release > leftLookTimes[i] - 0.2f)
+            //     {
+            //         DReleasedOffset[i] = leftLookTimes[i] - release;
+            //     }
+            //     else if(release > leftLookTimes[i] && release < leftLookTimes[i] + 0.2f)
+            //     {
+            //         DReleasedOffset[i] = release - leftLookTimes[i];
+            //     }
+            // }
             for(int i = 0; i < rightLookTimes.Count-1; i++)
             {
-                float release = (DPressedOffset[i] + rightLookTimes[i]) + DPressedTimes[i];
-                if(release < leftLookTimes[i] && release > leftLookTimes[i] - 0.2f)
+                for(int j = 0; j < DPressedTimestamps.Count(); j++)
                 {
-                    DReleasedOffset[i] = leftLookTimes[i] - release;
-                }
-                else if(release > leftLookTimes[i] && release < leftLookTimes[i] + 0.2f)
-                {
-                    DReleasedOffset[i] = release - leftLookTimes[i];
+                    float release = (DPressedOffset[i] + rightLookTimes[i]) + DPressedTimes[j];
+                    if(release < leftLookTimes[i] && release > leftLookTimes[i] - 0.2f)
+                    {
+                        DReleasedOffset[i] = leftLookTimes[i] - release;
+                    }
+                    else if(release > leftLookTimes[i] && release < leftLookTimes[i] + 0.2f)
+                    {
+                        DReleasedOffset[i] = release - leftLookTimes[i];
+                    }
                 }
             }
 
             //calculate offset of all A presses from switch
+            // for(int i = 0; i < leftLookTimes.Count; i++)
+            // {
+            //     if(APressedTimestamps[i] < leftLookTimes[i] && APressedTimestamps[i] > leftLookTimes[i] - 0.2f)
+            //     {
+            //         APressedOffset[i] = leftLookTimes[i] - APressedTimestamps[i];
+            //     }
+            //     else if(APressedTimestamps[i] > leftLookTimes[i] && APressedTimestamps[i] < leftLookTimes[i] + 0.2f)
+            //     {
+            //         APressedOffset[i] = APressedTimestamps[i] - leftLookTimes[i];
+            //     }
+            // }
             for(int i = 0; i < leftLookTimes.Count; i++)
             {
-                if(APressedTimestamps[i] < leftLookTimes[i] && APressedTimestamps[i] > leftLookTimes[i] - 0.2f)
+                for(int j = 0; j < APressedTimestamps.Count(); j++)
                 {
-                    APressedOffset[i] = leftLookTimes[i] - APressedTimestamps[i];
-                }
-                else if(APressedTimestamps[i] > leftLookTimes[i] && APressedTimestamps[i] < leftLookTimes[i] + 0.2f)
-                {
-                    APressedOffset[i] = APressedTimestamps[i] - leftLookTimes[i];
+                    if(APressedTimestamps[j] < leftLookTimes[i] && APressedTimestamps[j] > leftLookTimes[i] - 0.2f)
+                    {
+                        APressedOffset[i] = leftLookTimes[i] - APressedTimestamps[j];
+                    }
+                    else if(APressedTimestamps[j] > leftLookTimes[i] && APressedTimestamps[j] < leftLookTimes[i] + 0.2f)
+                    {
+                        APressedOffset[i] = APressedTimestamps[j] - leftLookTimes[i];
+                    }
                 }
             }
             //calculate offset of all A releases from switch
+            // for(int i = 0; i < leftLookTimes.Count; i++)
+            // {
+            //     float release = (APressedOffset[i] + leftLookTimes[i]) + APressedTimes[i];
+            //     if(release < rightLookTimes[i] && release > rightLookTimes[i] - 0.2f)
+            //     {
+            //         AReleasedOffset[i] = rightLookTimes[i] - release;
+            //     }
+            //     else if(release > rightLookTimes[i] && release < rightLookTimes[i] + 0.2f)
+            //     {
+            //         AReleasedOffset[i] = release - rightLookTimes[i] ;
+            //     }
+            // }
             for(int i = 0; i < leftLookTimes.Count; i++)
             {
-                float release = (APressedOffset[i] + leftLookTimes[i]) + APressedTimes[i];
-                if(release < rightLookTimes[i] && release > rightLookTimes[i] - 0.2f)
+                for(int j = 0; j < APressedTimestamps.Count(); j++)
                 {
-                    AReleasedOffset[i] = rightLookTimes[i] - release;
-                }
-                else if(release > rightLookTimes[i] && release < rightLookTimes[i] + 0.2f)
-                {
-                    AReleasedOffset[i] = release - rightLookTimes[i] ;
+                    float release = (APressedOffset[i] + leftLookTimes[i]) + APressedTimes[j];
+                    if(release < rightLookTimes[i] && release > rightLookTimes[i] - 0.2f)
+                    {
+                        AReleasedOffset[i] = rightLookTimes[i] - release;
+                    }
+                    else if(release > rightLookTimes[i] && release < rightLookTimes[i] + 0.2f)
+                    {
+                        AReleasedOffset[i] = release - rightLookTimes[i] ;
+                    }
                 }
             }
 

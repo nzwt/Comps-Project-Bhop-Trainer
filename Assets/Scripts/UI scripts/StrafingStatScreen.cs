@@ -15,6 +15,7 @@ public class StrafingStatScreen : MonoBehaviour
     public TextMeshProUGUI strafeTimingOffset;
     public TextMeshProUGUI StrafingTendency;
     public TextMeshProUGUI totalScore;
+    public bool isFirstTime = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,6 +24,10 @@ public class StrafingStatScreen : MonoBehaviour
 
     public void updateStats()
     {
+        if(lastJumpAttempt.scenarioNumber == currentJumpAttempt.scenarioNumber)
+        {
+            
+        }
         if(currentJumpAttempt.strafeTimingOffset < 0)
         {
             StrafingTendency.text = "Early";

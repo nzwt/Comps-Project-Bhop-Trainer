@@ -105,6 +105,7 @@ public class FullBhopSceneManager : MonoBehaviour
 
     public void startAttempt()
     {
+        resetArrays();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         timelineController.RemoveAllPips();
@@ -156,7 +157,7 @@ public class FullBhopSceneManager : MonoBehaviour
         jumpIndicator.deleteLines();
         playerStart = false;
         mouseAngleTracker.isAttemptActive = false;
-        resetArrays();
+        //resetArrays(); 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         
@@ -235,17 +236,11 @@ public class FullBhopSceneManager : MonoBehaviour
                 leftSwitchCount = -1;
                 ATimer = 0;
                 DTimer = 0;
+                globalTimer = 0;
+                switchTimer = 0;
                 //You should look right first
                 lookDirection = true;
                 playerStart = true;
-                //Debug.Log("Player is looking left");
-                switchTimer = 0;
-                globalTimer = 0;
-                rightSwitchCount = 0;
-                leftSwitchCount = -1;
-                ATimer = 0;
-                DTimer = 0;
-                lookDirection = true;
                 if(firstJump == true)
                 {
                     firstJump = false;
@@ -270,7 +265,7 @@ public class FullBhopSceneManager : MonoBehaviour
             grounded = false;
         }
 
-        if (hasJumped == false && grounded == false)
+        if (hasJumped == false && grounded == false && playerStart == true)
         {
             // Player has jumped, register the jump
             //print("Jumped");
@@ -279,7 +274,7 @@ public class FullBhopSceneManager : MonoBehaviour
             jumpIndicator.StartJump();
         }
 
-        if (hasJumped == true && grounded == true && groundTimer == -1)
+        if (hasJumped == true && grounded == true && groundTimer == -1 && playerStart == true)
         {
             // Player landed after a jump, start timing the grounded period
             groundTimer = 0;
@@ -287,13 +282,13 @@ public class FullBhopSceneManager : MonoBehaviour
             jumpIndicator.EndJump();
         }
 
-        if (hasJumped == false && grounded == true && groundTimer >= 0)
+        if (hasJumped == false && grounded == true && groundTimer >= 0 && playerStart == true)
         {
             // Player is on the ground, increment ground time
             groundTimer += Time.deltaTime;
         }
 
-        if (hasJumped == true && grounded == false && groundTimer >= 0)
+        if (hasJumped == true && grounded == false && groundTimer >= 0 && playerStart == true)
         {
             // Player has jumped, add the ground time to the list
             groundTimes.Add(groundTimer);
@@ -453,55 +448,113 @@ public class FullBhopSceneManager : MonoBehaviour
             float endTime = globalTimer;
             //calculate strafe accuracy
 
-            //calculate offset of all D presses from switch
-            for(int i = 0; i < rightLookTimes.Count; i++)
-            {
-                if(DPressedTimestamps[i] < rightLookTimes[i] && DPressedTimestamps[i] > rightLookTimes[i] - 0.2f)
-                {
-                    DPressedOffset[i] = rightLookTimes[i] - DPressedTimestamps[i];
-                }
-                else if(DPressedTimestamps[i] > rightLookTimes[i] && DPressedTimestamps[i] < rightLookTimes[i] + 0.2f)
-                {
-                    DPressedOffset[i] = DPressedTimestamps[i] - rightLookTimes[i];
-                }               
-            }
-            //calculate offset of all D releases from switch
+           //calculate offset of all D presses from switch
+            // for(int i = 0; i < rightLookTimes.Count-1; i++)
+            // {
+            //     if(DPressedTimestamps[i] < rightLookTimes[i] && DPressedTimestamps[i] > rightLookTimes[i] - 0.2f)
+            //     {
+            //         DPressedOffset[i] = rightLookTimes[i] - DPressedTimestamps[i];
+            //     }
+            //     else if(DPressedTimestamps[i] > rightLookTimes[i] && DPressedTimestamps[i] < rightLookTimes[i] + 0.2f)
+            //     {
+            //         DPressedOffset[i] = DPressedTimestamps[i] - rightLookTimes[i];
+            //     }               
+            // }
             for(int i = 0; i < rightLookTimes.Count-1; i++)
             {
-                float release = (DPressedOffset[i] + rightLookTimes[i]) + DPressedTimes[i];
-                if(release < leftLookTimes[i] && release > leftLookTimes[i] - 0.2f)
+                for(int j = 0; j < DPressedTimestamps.Count(); j++)
                 {
-                    DReleasedOffset[i] = leftLookTimes[i] - release;
+                    if(DPressedTimestamps[j] < rightLookTimes[i] && DPressedTimestamps[j] > rightLookTimes[i] - 0.2f)
+                    {
+                        DPressedOffset[i] = rightLookTimes[i] - DPressedTimestamps[j];
+                    }
+                    else if(DPressedTimestamps[j] > rightLookTimes[i] && DPressedTimestamps[j] < rightLookTimes[i] + 0.2f)
+                    {
+                        DPressedOffset[i] = DPressedTimestamps[j] - rightLookTimes[i];
+                    }   
                 }
-                else if(release > leftLookTimes[i] && release < leftLookTimes[i] + 0.2f)
+            }
+            //calculate offset of all D releases from switch
+            // for(int i = 0; i < rightLookTimes.Count-1; i++)
+            // {
+            //     float release = (DPressedOffset[i] + rightLookTimes[i]) + DPressedTimes[i];
+            //     if(release < leftLookTimes[i] && release > leftLookTimes[i] - 0.2f)
+            //     {
+            //         DReleasedOffset[i] = leftLookTimes[i] - release;
+            //     }
+            //     else if(release > leftLookTimes[i] && release < leftLookTimes[i] + 0.2f)
+            //     {
+            //         DReleasedOffset[i] = release - leftLookTimes[i];
+            //     }
+            // }
+            for(int i = 0; i < rightLookTimes.Count-1; i++)
+            {
+                for(int j = 0; j < DPressedTimestamps.Count(); j++)
                 {
-                    DReleasedOffset[i] = release - leftLookTimes[i];
+                    float release = (DPressedOffset[i] + rightLookTimes[i]) + DPressedTimes[j];
+                    if(release < leftLookTimes[i] && release > leftLookTimes[i] - 0.2f)
+                    {
+                        DReleasedOffset[i] = leftLookTimes[i] - release;
+                    }
+                    else if(release > leftLookTimes[i] && release < leftLookTimes[i] + 0.2f)
+                    {
+                        DReleasedOffset[i] = release - leftLookTimes[i];
+                    }
                 }
             }
 
             //calculate offset of all A presses from switch
+            // for(int i = 0; i < leftLookTimes.Count; i++)
+            // {
+            //     if(APressedTimestamps[i] < leftLookTimes[i] && APressedTimestamps[i] > leftLookTimes[i] - 0.2f)
+            //     {
+            //         APressedOffset[i] = leftLookTimes[i] - APressedTimestamps[i];
+            //     }
+            //     else if(APressedTimestamps[i] > leftLookTimes[i] && APressedTimestamps[i] < leftLookTimes[i] + 0.2f)
+            //     {
+            //         APressedOffset[i] = APressedTimestamps[i] - leftLookTimes[i];
+            //     }
+            // }
             for(int i = 0; i < leftLookTimes.Count; i++)
             {
-                if(APressedTimestamps[i] < leftLookTimes[i] && APressedTimestamps[i] > leftLookTimes[i] - 0.2f)
+                for(int j = 0; j < APressedTimestamps.Count(); j++)
                 {
-                    APressedOffset[i] = leftLookTimes[i] - APressedTimestamps[i];
-                }
-                else if(APressedTimestamps[i] > leftLookTimes[i] && APressedTimestamps[i] < leftLookTimes[i] + 0.2f)
-                {
-                    APressedOffset[i] = APressedTimestamps[i] - leftLookTimes[i];
+                    if(APressedTimestamps[j] < leftLookTimes[i] && APressedTimestamps[j] > leftLookTimes[i] - 0.2f)
+                    {
+                        APressedOffset[i] = leftLookTimes[i] - APressedTimestamps[j];
+                    }
+                    else if(APressedTimestamps[j] > leftLookTimes[i] && APressedTimestamps[j] < leftLookTimes[i] + 0.2f)
+                    {
+                        APressedOffset[i] = APressedTimestamps[j] - leftLookTimes[i];
+                    }
                 }
             }
             //calculate offset of all A releases from switch
+            // for(int i = 0; i < leftLookTimes.Count; i++)
+            // {
+            //     float release = (APressedOffset[i] + leftLookTimes[i]) + APressedTimes[i];
+            //     if(release < rightLookTimes[i] && release > rightLookTimes[i] - 0.2f)
+            //     {
+            //         AReleasedOffset[i] = rightLookTimes[i] - release;
+            //     }
+            //     else if(release > rightLookTimes[i] && release < rightLookTimes[i] + 0.2f)
+            //     {
+            //         AReleasedOffset[i] = release - rightLookTimes[i] ;
+            //     }
+            // }
             for(int i = 0; i < leftLookTimes.Count; i++)
             {
-                float release = (APressedOffset[i] + leftLookTimes[i]) + APressedTimes[i];
-                if(release < rightLookTimes[i] && release > rightLookTimes[i] - 0.2f)
+                for(int j = 0; j < APressedTimestamps.Count(); j++)
                 {
-                    AReleasedOffset[i] = rightLookTimes[i] - release;
-                }
-                else if(release > rightLookTimes[i] && release < rightLookTimes[i] + 0.2f)
-                {
-                    AReleasedOffset[i] = release - rightLookTimes[i] ;
+                    float release = (APressedOffset[i] + leftLookTimes[i]) + APressedTimes[j];
+                    if(release < rightLookTimes[i] && release > rightLookTimes[i] - 0.2f)
+                    {
+                        AReleasedOffset[i] = rightLookTimes[i] - release;
+                    }
+                    else if(release > rightLookTimes[i] && release < rightLookTimes[i] + 0.2f)
+                    {
+                        AReleasedOffset[i] = release - rightLookTimes[i] ;
+                    }
                 }
             }
 
