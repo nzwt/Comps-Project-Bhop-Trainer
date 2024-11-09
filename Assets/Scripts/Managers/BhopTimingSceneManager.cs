@@ -10,7 +10,7 @@ public class BhopTimingSceneManager : MonoBehaviour
     public UIManager uiManager;
     public PlayerManager playerManager;
     public ScoreManager scoreManager;
-    public JumpIndicator jumpIndicator;
+    public ArcJumpIndicator jumpIndicator;
 
     // game objects
     public JumpAttempt currentJumpAttempt;
@@ -84,7 +84,7 @@ public class BhopTimingSceneManager : MonoBehaviour
         uiManager.StatScreen.GetComponent<BhopStatScreen>().lastJumpAttempt = lastJumpAttempt;
         uiManager.StatScreen.GetComponent<BhopStatScreen>().updateStats();
         //reset vars
-        jumpIndicator.deleteLines();
+        jumpIndicator.deleteDots();
         currentJumps = 0;
         groundTimes.Clear();
         hasJumped = false;
@@ -191,7 +191,6 @@ public class BhopTimingSceneManager : MonoBehaviour
             // Player landed after a jump, start timing the grounded period
             groundTimer = 0;
             hasJumped = false; // Reset jump status after landing
-            jumpIndicator.EndJump();
         }
 
         if (hasJumped == false && grounded == true && groundTimer >= 0)
@@ -208,19 +207,6 @@ public class BhopTimingSceneManager : MonoBehaviour
             currentJumps++;
             //Debug.Log("Current jumps: " + currentJumps);
             groundTimer = -1; // Reset timer after recording
-            //check timer and assign a color based on performance
-            if(groundTimes[groundTimes.Count - 1] > 0.1)
-            {
-                jumpIndicator.changeLastLineColor(Color.red);
-            }
-            else if(groundTimes[groundTimes.Count - 1] > 0.05)
-            {
-                jumpIndicator.changeLastLineColor(Color.yellow);
-            }
-            else
-            {
-                jumpIndicator.changeLastLineColor(Color.green);
-            }
         }
 
         if (currentJumps >= maxJumps)
