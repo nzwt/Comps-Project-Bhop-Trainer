@@ -11,7 +11,7 @@ public class AimingTimingSceneManager : MonoBehaviour
     public UIManager uiManager;
     public PlayerManager playerManager;
     public ScoreManager scoreManager;
-    public JumpIndicator jumpIndicator;
+    public ArcJumpIndicator jumpIndicator;
     public MouseAngleTracker mouseAngleTracker;
     public OrbController orbController;
 
@@ -99,7 +99,7 @@ public class AimingTimingSceneManager : MonoBehaviour
         surfCharacter.moveData.velocity = Vector3.zero;
         surfCharacter.moveData.wishJump = false;
         switchTimes.Clear();
-        jumpIndicator.deleteLines();
+        jumpIndicator.deleteDots();
         playerStart = false;
         mouseAngleTracker.isAttemptActive = false;
         Cursor.lockState = CursorLockMode.None;
