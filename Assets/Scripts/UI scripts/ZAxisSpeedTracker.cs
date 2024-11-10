@@ -1,19 +1,23 @@
 using UnityEngine;
 using TMPro;
 
-public class YAxisSpeedTracker : MonoBehaviour
+public class ZAxisSpeedTracker : MonoBehaviour
 {
+    //THIS IS A Z axis speed tracker
     public TextMeshProUGUI speedText;   // TextMeshProUGUI to display speed
 
     private float lastZPosition;
     private float speed;
     public float updateInterval = 0.1f; // Update interval (0.1 seconds)
     private float timer = 0f;
+    public bool isAttemptActive;
+    private float totalSpeed;
+    private int speedInstances;
 
     void Start()
     {
-        // Store the initial Y position of the object
-        lastZPosition = transform.position.y;
+        // Store the initial Z position of the object
+        lastZPosition = transform.position.z;
     }
 
     void Update()
@@ -30,16 +34,21 @@ public class YAxisSpeedTracker : MonoBehaviour
             // Reset the timer
             timer = 0f;
         }
+        if(isAttemptActive && speed > 0)
+        {
+            totalSpeed += speed;
+            speedInstances++;
+        }
     }
 
     void CalculateZSpeed()
     {
-        // Calculate speed based on the Y-axis distance traveled
+        // Calculate speed based on the Z-axis distance traveled
         float currentZPosition = transform.position.z;
-        float distanceY = currentZPosition - lastZPosition;
-        speed = distanceY / updateInterval; // Speed = distance / time (0.1 seconds in this case)
+        float distanceZ = currentZPosition - lastZPosition;
+        speed = distanceZ / updateInterval; // Speed = distance / time (0.1 seconds in this case)
 
-        // Update the last Y position
+        // Update the last Z position
         lastZPosition = currentZPosition;
     }
 
@@ -50,5 +59,17 @@ public class YAxisSpeedTracker : MonoBehaviour
         {
             speedText.text = "Speed (Z): " + speed.ToString("F2") + " units/s";
         }
+    }
+    
+    public float calculateAttemptSpeed()
+    {
+        float attemptSpeed = totalSpeed / speedInstances;
+        return attemptSpeed;
+    }
+
+    public void reset()
+    {
+        totalSpeed = 0;
+        speedInstances = 0;
     }
 }

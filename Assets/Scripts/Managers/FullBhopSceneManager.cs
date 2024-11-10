@@ -15,6 +15,7 @@ public class FullBhopSceneManager : MonoBehaviour
     public ArcJumpIndicator jumpIndicator;
     public MouseAngleTracker mouseAngleTracker;
     public SpeedTracker speedTracker;
+    public ZAxisSpeedTracker zAxisSpeedTracker;
     public TimelineController timelineController;
     // game objects
     public JumpAttempt currentJumpAttempt;
@@ -141,7 +142,7 @@ public class FullBhopSceneManager : MonoBehaviour
         // Reset the currentJumpAttempt
         bhopAccuracy = calculateBhopAccuracy();
         float score = (0.65f - Math.Abs(lookOffset))*5f + (0.65f - Math.Abs(strafeTimingOffset))*5f + (1-bhopAccuracy)*10 - scorePenalties;
-        currentJumpAttempt = new JumpAttempt(4,attemptNumber, strafeTimingOffset, 0, 0, 0, 0, score, 0, lookOffset, bhopAccuracy, date: System.DateTime.Now);
+        currentJumpAttempt = new JumpAttempt(4,attemptNumber, strafeTimingOffset, 0, 0, 0, zAxisSpeedTracker.calculateAttemptSpeed(), score, 0, lookOffset, bhopAccuracy, date: System.DateTime.Now);
         scoreManager.SaveScore(currentJumpAttempt);
         //TODO: stats are going to be different depending on the scene, this should probably be dont in the scene manager but I dont know
         //jank, fix later
@@ -231,6 +232,7 @@ public class FullBhopSceneManager : MonoBehaviour
         {
             if(surfCharacter.transform.position.z <= 1.2 && surfCharacter.transform.position.z >= 1)
             {
+                zAxisSpeedTracker.isAttemptActive = true;
                 playerStart = true;
                 rightSwitchCount = 0;
                 leftSwitchCount = -1;
@@ -617,6 +619,7 @@ public class FullBhopSceneManager : MonoBehaviour
             timelineController.strafeStartTimestamps = APressedTimestamps;
             timelineController.strafeEndTimestamps = DPressedTimestamps;
             timelineController.jumpTimestamps = jumpTimestamps;
+            zAxisSpeedTracker.isAttemptActive = false;
 
             endAttempt();
             resetScene();
