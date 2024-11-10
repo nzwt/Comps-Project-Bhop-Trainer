@@ -23,6 +23,10 @@ public class FullBhopSceneManager : MonoBehaviour
     public int attemptNumber = 0;
     public GameObject cameraHolder;
     public GameObject arrow; //flip x to aim left
+    //Race Values
+    public bool isRace = false;
+    public float finishLine = 15;
+    private float raceTimer = 0;
     
     // managment bools
     public bool lastScoreLoaded = false;
@@ -72,6 +76,7 @@ public class FullBhopSceneManager : MonoBehaviour
     public bool firstJump = true;
     public bool allowPlayerMovement = true;
     // jump management values
+    [SerializeField]
     public int maxJumps = 5;
     private int currentJumps = 0;
     public List<float> groundTimes = new List<float>();
@@ -131,6 +136,10 @@ public class FullBhopSceneManager : MonoBehaviour
         scorePenalties = 0;
         switchCount = 1;
         currentJumps = 0;
+        if(isRace)
+        {
+            raceTimer = 0;
+        }
     }
 
     public void endAttempt()
@@ -142,7 +151,7 @@ public class FullBhopSceneManager : MonoBehaviour
         // Reset the currentJumpAttempt
         bhopAccuracy = calculateBhopAccuracy();
         float score = (0.65f - Math.Abs(lookOffset))*5f + (0.65f - Math.Abs(strafeTimingOffset))*5f + (1-bhopAccuracy)*10 - scorePenalties;
-        currentJumpAttempt = new JumpAttempt(4,attemptNumber, strafeTimingOffset, 0, 0, 0, zAxisSpeedTracker.calculateAttemptSpeed(), score, 0, lookOffset, bhopAccuracy, date: System.DateTime.Now);
+        currentJumpAttempt = new JumpAttempt(4,attemptNumber, strafeTimingOffset, raceTimer, 0, 0, zAxisSpeedTracker.calculateAttemptSpeed(), score, 0, lookOffset, bhopAccuracy, date: System.DateTime.Now);
         scoreManager.SaveScore(currentJumpAttempt);
         //TODO: stats are going to be different depending on the scene, this should probably be dont in the scene manager but I dont know
         //jank, fix later
@@ -318,6 +327,10 @@ public class FullBhopSceneManager : MonoBehaviour
         {
             globalTimer += Time.deltaTime;
             switchTimer += Time.deltaTime;
+            if(isRace)
+            {
+                raceTimer += Time.deltaTime;
+            }
             //Strafe logic
             //TODO: Bug - if the player holds D then lets go and taps A a bunch of times before looking left, it makes the array too big
             if(Input.GetKeyDown(KeyCode.A)  && APressedTimestamps[leftSwitchCount] == -1000)//&& DHeld == false)
@@ -420,7 +433,7 @@ public class FullBhopSceneManager : MonoBehaviour
             startAttempt();
         }
 
-        if ((switchTimes.Count >= maxSwitches || currentJumps >= maxJumps) && playerStart == true)
+        if ((switchTimes.Count >= maxSwitches || currentJumps >= maxJumps) && playerStart == true || (isRace &&(surfCharacter.transform.position.z <= finishLine + 0.2 && surfCharacter.transform.position.z >= finishLine)))
         {
             // Player has reached max switches, end the attempt
             //If the player did not let go of the key, end the time
