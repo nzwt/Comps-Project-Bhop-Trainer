@@ -123,7 +123,7 @@ public class FullBhopSceneManager : MonoBehaviour
         lookDirection = true;
         mouseAngleTracker.resetAngleChange();
         mouseAngleTracker.isAttemptActive = true;
-        arrow.transform.rotation = Quaternion.Euler(0, 180, 0);
+        arrow.transform.rotation = Quaternion.Euler(0, 0, 0);
         firstJump = true;
         speedTracker.isAttemptActive = true;
         bhopAccuracy = 0;
