@@ -2414,6 +2414,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 780841930}
     m_Modifications:
+    - target: {fileID: 192016236997714737, guid: 972bd1ae68c134a4eb7a79199b90109a, type: 3}
+      propertyPath: m_text
+      value: Jump as soon as you hit the ground, the indicator top left shows where
+        you are in your jump
+      objectReference: {fileID: 0}
     - target: {fileID: 2708228839537148783, guid: 972bd1ae68c134a4eb7a79199b90109a, type: 3}
       propertyPath: m_Name
       value: StartElements

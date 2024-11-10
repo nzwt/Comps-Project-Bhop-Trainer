@@ -146,9 +146,9 @@ public class FullBhopSceneManager : MonoBehaviour
         scoreManager.SaveScore(currentJumpAttempt);
         //TODO: stats are going to be different depending on the scene, this should probably be dont in the scene manager but I dont know
         //jank, fix later
-        uiManager.StatScreen.GetComponent<StrafingStatScreen>().currentJumpAttempt = currentJumpAttempt;
-        uiManager.StatScreen.GetComponent<StrafingStatScreen>().lastJumpAttempt = lastJumpAttempt;
-        uiManager.StatScreen.GetComponent<StrafingStatScreen>().updateStats();
+        uiManager.StatScreen.GetComponent<FullBhopStatScreen>().currentJumpAttempt = currentJumpAttempt;
+        uiManager.StatScreen.GetComponent<FullBhopStatScreen>().lastJumpAttempt = lastJumpAttempt;
+        uiManager.StatScreen.GetComponent<FullBhopStatScreen>().updateStats();
         timelineController.CalculateTimestamps();
         //reset vars
         lastJumpAttempt = currentJumpAttempt;
