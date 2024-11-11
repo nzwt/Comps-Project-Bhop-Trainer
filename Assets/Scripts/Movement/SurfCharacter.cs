@@ -66,7 +66,7 @@ namespace Fragsurf.Movement {
 
         private List<Collider> triggers = new List<Collider> ();
         private int numberOfTriggers = 0;
-        private float _wishJumpScroll;
+        public float wishJumpScroll;
 
         private bool underwater = false;
 
@@ -285,10 +285,10 @@ namespace Fragsurf.Movement {
             _moveData.verticalAxis = Input.GetAxisRaw ("Vertical");
             _moveData.horizontalAxis = Input.GetAxisRaw ("Horizontal");
             //scrollwheelJump
-            if(_wishJumpScroll >= 0f)
-                _wishJumpScroll -= Time.deltaTime*0.5f;
+            if(wishJumpScroll >= 0f)
+                wishJumpScroll -= Time.deltaTime*0.5f;
             float mouseWheelAxis = Mathf.Abs(Input.GetAxisRaw("Mouse ScrollWheel"));
-            _wishJumpScroll = Mathf.Clamp(Mathf.Lerp(0, _wishJumpScroll+mouseWheelAxis*20f, 0.5f), 0f, 2f);
+            wishJumpScroll = Mathf.Clamp(Mathf.Lerp(0, wishJumpScroll+mouseWheelAxis*20f, 0.5f), 0f, 2f);
 
             _moveData.sprinting = Input.GetButton ("Sprint");
             
@@ -320,7 +320,7 @@ namespace Fragsurf.Movement {
             
             
 
-            if (Input.GetButtonDown ("Jump") || _wishJumpScroll >= 0.04f || mouseWheelAxis >= 0.05f)
+            if (Input.GetButtonDown ("Jump") || wishJumpScroll >= 0.04f || mouseWheelAxis >= 0.05f)
                 _moveData.wishJump = true;
             else if (!Input.GetButton ("Jump"))    
                 _moveData.wishJump = false;

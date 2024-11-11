@@ -92,6 +92,7 @@ public class BhopTimingSceneManager : MonoBehaviour
         lastJumpAttempt = currentJumpAttempt;
         surfCharacter.moveData.velocity = Vector3.zero;
         surfCharacter.moveData.wishJump = false;
+        surfCharacter.wishJumpScroll = 0;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         

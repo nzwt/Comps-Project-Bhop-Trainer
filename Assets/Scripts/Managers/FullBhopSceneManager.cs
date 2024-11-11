@@ -172,6 +172,7 @@ public class FullBhopSceneManager : MonoBehaviour
         lastJumpAttempt = currentJumpAttempt;
         surfCharacter.moveData.velocity = Vector3.zero;
         surfCharacter.moveData.wishJump = false;
+        surfCharacter.wishJumpScroll = 0;
         switchTimes.Clear();
         jumpIndicator.deleteDots();
         playerStart = false;
