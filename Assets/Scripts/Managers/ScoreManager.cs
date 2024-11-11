@@ -6,22 +6,20 @@ public class ScoreManager : MonoBehaviour
 {
     public List<JumpAttempt> scoreList = new List<JumpAttempt>();
     public bool isLoaded = false;
+    public int sceneNumber;
 
     private string filePath;
 
     void Start()
     {
-        // Set the file path to save in a persistent location
-        filePath = Path.Combine(Application.persistentDataPath, "JumpAttempt.json");
-
-        Debug.Log("File path: " + filePath);
-
-        // Load scores if file exists
-        LoadScores();
+        // Initialize without loading scores, as we might want to specify the scene when loading
+        Debug.Log("ScoreManager initialized.");
     }
 
-    public void SaveScore(int scenarioNumber,int attemptNumber, float jumpForce, float time, float distance, float height, float speed, float score, float angle, float aimSmoothness, float bhopAccuracy)
+    public void SaveScore(int sceneNumber, int attemptNumber, float jumpForce, float time, float distance, float height, float speed, float score, float angle, float aimSmoothness, float bhopAccuracy)
     {
+        SetFilePath(sceneNumber);
+
         if (string.IsNullOrEmpty(filePath))
         {
             Debug.LogError("File path is null or empty!");
@@ -29,7 +27,7 @@ public class ScoreManager : MonoBehaviour
         }
 
         // Create a new score entry
-        JumpAttempt newScore = new JumpAttempt(scenarioNumber, attemptNumber, jumpForce, time, distance, height, speed, score, angle, aimSmoothness, bhopAccuracy, date: System.DateTime.Now);
+        JumpAttempt newScore = new JumpAttempt(sceneNumber, attemptNumber, jumpForce, time, distance, height, speed, score, angle, aimSmoothness, bhopAccuracy, date: System.DateTime.Now);
 
         // Add the new score to the list
         scoreList.Add(newScore);
@@ -43,8 +41,10 @@ public class ScoreManager : MonoBehaviour
         Debug.Log("Score saved to: " + filePath);
     }
 
-    public void SaveScore(JumpAttempt newScore)
+    public void SaveScore(int sceneNumber, JumpAttempt newScore)
     {
+        SetFilePath(sceneNumber);
+
         if (string.IsNullOrEmpty(filePath))
         {
             Debug.LogError("File path is null or empty!");
@@ -63,12 +63,13 @@ public class ScoreManager : MonoBehaviour
         Debug.Log("Score saved to: " + filePath);
     }
 
-    public void LoadScores()
+    public void LoadScores(int sceneNumber)
     {
+        SetFilePath(sceneNumber);
+
         if (string.IsNullOrEmpty(filePath))
         {
             Debug.LogError("File path is null or empty!");
-            //Debug.Break();
             return;
         }
 
@@ -82,13 +83,20 @@ public class ScoreManager : MonoBehaviour
             ScoreListWrapper loadedData = JsonUtility.FromJson<ScoreListWrapper>(json);
             scoreList = loadedData.scores;
 
-            Debug.Log("Scores loaded from file.");
+            Debug.Log("Scores loaded from file for scene " + sceneNumber);
         }
         else
         {
-            Debug.Log("No save file found, starting fresh.");
+            Debug.Log("No save file found for scene " + sceneNumber + ", starting fresh.");
+            scoreList.Clear();
         }
         isLoaded = true;
+    }
+
+    private void SetFilePath(int sceneNumber)
+    {
+        filePath = Path.Combine(Application.persistentDataPath, "JumpAttempt_Scene_" + sceneNumber + ".json");
+        Debug.Log("File path set to: " + filePath);
     }
 
     public JumpAttempt GetLastJumpAttempt()
@@ -99,7 +107,7 @@ public class ScoreManager : MonoBehaviour
         }
         else
         {
-            return new JumpAttempt(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, date: System.DateTime.Now);;
+            return new JumpAttempt(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, date: System.DateTime.Now);
         }
     }
 

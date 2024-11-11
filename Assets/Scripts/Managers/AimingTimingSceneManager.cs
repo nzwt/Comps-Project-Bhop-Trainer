@@ -45,6 +45,7 @@ public class AimingTimingSceneManager : MonoBehaviour
 
      private void OnEnable()
     {
+        scoreManager.LoadScores(1);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         currentJumpAttempt = new JumpAttempt(1,attemptNumber, 0, 0, 0, 0, 0, 0, 0, 0, 0, date: System.DateTime.Now);
@@ -87,8 +88,8 @@ public class AimingTimingSceneManager : MonoBehaviour
         // Update the lastJumpAttempt to the currentJumpAttempt
         // Reset the currentJumpAttempt
         float score = (0.65f - Math.Abs(bhopAccuracy))*15.4f;
-        currentJumpAttempt = new JumpAttempt(3,attemptNumber, 0, 0, 0, 0, 0, score, 0, 0, bhopAccuracy, date: System.DateTime.Now);
-        scoreManager.SaveScore(currentJumpAttempt);
+        currentJumpAttempt = new JumpAttempt(1,attemptNumber, 0, 0, 0, 0, 0, score, 0, 0, bhopAccuracy, date: System.DateTime.Now);
+        scoreManager.SaveScore(1,currentJumpAttempt);
         //TODO: stats are going to be different depending on the scene, this should probably be dont in the scene manager but I dont know
         //jank, fix later
         uiManager.StatScreen.GetComponent<BhopStatScreen>().currentJumpAttempt = currentJumpAttempt;

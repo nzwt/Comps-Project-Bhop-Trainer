@@ -72,6 +72,7 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
 
      private void OnEnable()
     {
+        scoreManager.LoadScores(2);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         currentJumpAttempt = new JumpAttempt(1,attemptNumber, 0, 0, 0, 0, 0, 0, 0, 0, 0, date: System.DateTime.Now);
@@ -117,8 +118,8 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
         // Update the lastJumpAttempt to the currentJumpAttempt
         // Reset the currentJumpAttempt
         float score = (0.65f - Math.Abs(bhopAccuracy))*7.65f + (0.65f - Math.Abs(strafeTimingOffset))*7.65f;
-        currentJumpAttempt = new JumpAttempt(4,attemptNumber, strafeTimingOffset, 0, 0, 0, 0, score, 0, 0, bhopAccuracy, date: System.DateTime.Now);
-        scoreManager.SaveScore(currentJumpAttempt);
+        currentJumpAttempt = new JumpAttempt(2,attemptNumber, strafeTimingOffset, 0, 0, 0, 0, score, 0, 0, bhopAccuracy, date: System.DateTime.Now);
+        scoreManager.SaveScore(2,currentJumpAttempt);
         //TODO: stats are going to be different depending on the scene, this should probably be dont in the scene manager but I dont know
         //jank, fix later
         uiManager.StatScreen.GetComponent<StrafingStatScreen>().currentJumpAttempt = currentJumpAttempt;

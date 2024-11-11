@@ -38,6 +38,7 @@ public class BhopTimingSceneManager : MonoBehaviour
 
      private void OnEnable()
     {
+        scoreManager.LoadScores(0);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         currentJumpAttempt = new JumpAttempt(1,attemptNumber, 0, 0, 0, 0, 0, 0, 0, 0, 0, date: System.DateTime.Now);
@@ -76,8 +77,8 @@ public class BhopTimingSceneManager : MonoBehaviour
         // Update the lastJumpAttempt to the currentJumpAttempt
         // Reset the currentJumpAttempt
         float score = speedTracker.CalculateAttemptSpeed() + (1-calculateBhopAccuracy())*10;
-        currentJumpAttempt = new JumpAttempt(1,attemptNumber, 0, 0, 0, 0, speedTracker.CalculateAttemptSpeed(), score, 0, 0, calculateBhopAccuracy(), date: System.DateTime.Now);
-        scoreManager.SaveScore(currentJumpAttempt);
+        currentJumpAttempt = new JumpAttempt(0,attemptNumber, 0, 0, 0, 0, speedTracker.CalculateAttemptSpeed(), score, 0, 0, calculateBhopAccuracy(), date: System.DateTime.Now);
+        scoreManager.SaveScore(0,currentJumpAttempt);
         //TODO: stats are going to be different depending on the scene, this should probably be dont in the scene manager but I dont know
         //jank, fix later
         uiManager.StatScreen.GetComponent<BhopStatScreen>().currentJumpAttempt = currentJumpAttempt;

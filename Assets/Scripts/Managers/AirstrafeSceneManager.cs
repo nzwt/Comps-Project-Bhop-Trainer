@@ -70,7 +70,7 @@ public class AirstrafeSceneManager : MonoBehaviour
         // Reset the currentJumpAttempt
         float score = speedTracker.CalculateAttemptSpeed() + (20 - System.Math.Abs(45 - mouseAngleTracker.CalculateAttemptAngleChange())); //+ mouseAngleTracker.CalculateAverageAttemptAngleSmoothness();//(10 - Math.Abs(mouseAngleTracker.CalculateAverageAttemptAngleSmoothness()));
         currentJumpAttempt = new JumpAttempt(3, attemptNumber, 0, 0, 0, 0, speedTracker.CalculateAttemptSpeed(), score, mouseAngleTracker.CalculateAttemptAngleChange(), mouseAngleTracker.CalculateAverageAttemptAngleSmoothness(), 0, date: System.DateTime.Now);
-        scoreManager.SaveScore(currentJumpAttempt);
+        scoreManager.SaveScore(10000,currentJumpAttempt);
         //TODO: stats are going to be different depending on the scene, this should probably be dont in the scene manager but I dont know
         //jank, fix later
         uiManager.StatScreen.GetComponent<StatScreen>().currentJumpAttempt = currentJumpAttempt;
