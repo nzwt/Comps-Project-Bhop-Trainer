@@ -68,6 +68,11 @@ public class BhopTimingSceneManager : MonoBehaviour
         SceneManager.LoadScene("Aiming timing scene");
     }
 
+    public void LoadMainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+
     public void endAttempt()
     {
         //stop the movement

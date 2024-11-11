@@ -80,6 +80,11 @@ public class AimingTimingSceneManager : MonoBehaviour
         SceneManager.LoadScene("Strafe Aiming timing scene");
     }
 
+    public void LoadMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+
     public void endAttempt()
     {
         playerManager.DisableMouseLook();

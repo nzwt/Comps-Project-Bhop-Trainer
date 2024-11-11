@@ -110,6 +110,12 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
         SceneManager.LoadScene("Full Bhop Scene");
     }
 
+        public void LoadMainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+
+
     public void endAttempt()
     {
         playerManager.DisableMouseLook();

@@ -5,6 +5,7 @@ using Fragsurf.Movement;
 using System;
 using System.Linq;
 using UnityEngine.Analytics;
+using UnityEngine.SceneManagement;
 
 public class FullBhopSceneManager : MonoBehaviour
 {
@@ -208,6 +209,12 @@ public class FullBhopSceneManager : MonoBehaviour
         uiManager.EnableStartElements();
         startTriggered = false;
     }
+
+        public void LoadMainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+
 
     public float calculateBhopAccuracy()
     {
