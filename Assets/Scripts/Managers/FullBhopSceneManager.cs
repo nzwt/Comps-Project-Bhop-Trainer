@@ -98,7 +98,14 @@ public class FullBhopSceneManager : MonoBehaviour
 
      private void OnEnable()
     {
-        scoreManager.LoadScores(3);
+        if(isRace)
+        {
+            scoreManager.LoadScores(4);
+        }
+        else
+        {
+            scoreManager.LoadScores(3);
+        }
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         currentJumpAttempt = new JumpAttempt(3,attemptNumber, 0, 0, 0, 0, 0, 0, 0, 0, 0, date: System.DateTime.Now);
@@ -154,7 +161,14 @@ public class FullBhopSceneManager : MonoBehaviour
         bhopAccuracy = calculateBhopAccuracy();
         float score = (0.65f - Math.Abs(lookOffset))*5f + (0.65f - Math.Abs(strafeTimingOffset))*5f + (1-bhopAccuracy)*10 - scorePenalties;
         currentJumpAttempt = new JumpAttempt(4,attemptNumber, strafeTimingOffset, raceTimer, 0, 0, zAxisSpeedTracker.calculateAttemptSpeed(), score, 0, lookOffset, bhopAccuracy, date: System.DateTime.Now);
-        scoreManager.SaveScore(3, currentJumpAttempt);
+        if(isRace)
+        {
+            scoreManager.SaveScore(4, currentJumpAttempt);
+        }
+        else
+        {
+            scoreManager.SaveScore(3, currentJumpAttempt);
+        }
         //TODO: stats are going to be different depending on the scene, this should probably be dont in the scene manager but I dont know
         //jank, fix later
         if(!isRace)

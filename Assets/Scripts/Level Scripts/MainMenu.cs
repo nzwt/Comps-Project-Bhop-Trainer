@@ -18,6 +18,13 @@ public class MainMenu : MonoBehaviour
     {
         settingsMenu.SetActive(true);
     }
+
+    public void CloseSettings()
+    {
+        settingsMenuScript.ApplySettings();
+        settingsMenuScript.SaveSettings();
+        settingsMenu.SetActive(false);
+    }
     public void LoadScene()
     {
         SceneManager.LoadScene("Airstrafe");
