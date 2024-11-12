@@ -27,6 +27,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Tutorial scenes/Full Bhop Scene.unity
     guid: 27a8c91be5b7c7146b89b5ac38df848f
   - enabled: 1
+    path: Assets/Scenes/Tutorial scenes/Race Full Bhop Scene.unity
+    guid: fc3a0e692c90559479157ccb0193ce5a
+  - enabled: 1
     path: Assets/Scenes/Tutorial scenes/Strafe Aiming timing scene.unity
     guid: c5ce4d8221feb81438d4ebe646c009c2
   m_configObjects: {}
