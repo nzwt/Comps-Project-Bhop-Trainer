@@ -61,6 +61,10 @@ public class FullBhopSceneManager : MonoBehaviour
     public float[] DPressedOffset ;
     public float[] AReleasedOffset ;
     public float[] DReleasedOffset ;
+    public float[] AStrafeTimeline;
+    public float[] DStrafeTimeline;
+    public float[] AStrafeTimelineEnd;
+    public float[] DStrafeTimelineEnd;
     private float ATimer = -1;
     private float DTimer = -1;
     private float switchTimer = -1;
@@ -70,6 +74,8 @@ public class FullBhopSceneManager : MonoBehaviour
     [SerializeField]
     private int leftSwitchCount = -1;
     //false is left, true is right
+    private int AHeldCount = 0;
+    private int DHeldCount = 0;
     public bool lookDirection = false;
 
     // Jumping Variables
@@ -202,14 +208,18 @@ public class FullBhopSceneManager : MonoBehaviour
 
     public void resetArrays()
     {
-        APressedTimestamps = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
-        DPressedTimestamps = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
-        APressedTimes = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
-        DPressedTimes = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
+        APressedTimestamps = Enumerable.Repeat(-1000f, 1000).ToArray();
+        DPressedTimestamps = Enumerable.Repeat(-1000f, 1000).ToArray();
+        APressedTimes = Enumerable.Repeat(-1000f, 1000).ToArray();
+        DPressedTimes = Enumerable.Repeat(-1000f, 1000).ToArray();
         APressedOffset = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
         DPressedOffset = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
         AReleasedOffset = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
         DReleasedOffset = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
+        AStrafeTimeline = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
+        DStrafeTimeline = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
+        AStrafeTimelineEnd = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
+        DStrafeTimelineEnd = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
         rightLookTimes = new List<float>();
         leftLookTimes = new List<float>();
         jumpTimestamps = Enumerable.Repeat(-1000f, maxJumps).ToArray();
@@ -277,6 +287,8 @@ public class FullBhopSceneManager : MonoBehaviour
                 playerStart = true;
                 rightSwitchCount = 0;
                 leftSwitchCount = -1;
+                AHeldCount = 0;
+                DHeldCount = 0;
                 ATimer = 0;
                 DTimer = 0;
                 globalTimer = 0;
@@ -365,17 +377,17 @@ public class FullBhopSceneManager : MonoBehaviour
             }
             //Strafe logic
             //TODO: Bug - if the player holds D then lets go and taps A a bunch of times before looking left, it makes the array too big
-            if(Input.GetKeyDown(KeyCode.A)  && APressedTimestamps[leftSwitchCount] == -1000)//&& DHeld == false)
+            if( leftSwitchCount != -1 && Input.GetKeyDown(KeyCode.A)  && APressedTimestamps[AHeldCount] == -1000)//&& DHeld == false)
             {
                 AHeld = true;
-                APressedTimestamps[leftSwitchCount] = (globalTimer);
+                APressedTimestamps[AHeldCount] = (globalTimer);
                 // Debug.Log("A pressed");
                 // Debug.Log(globalTimer);
             }
-            if(Input.GetKeyDown(KeyCode.D) && DPressedTimestamps[rightSwitchCount] == -1000)//&& AHeld == false)
+            if(Input.GetKeyDown(KeyCode.D) && DPressedTimestamps[DHeldCount] == -1000)//&& AHeld == false)
             {
                 DHeld = true;
-                DPressedTimestamps[rightSwitchCount] = (globalTimer);
+                DPressedTimestamps[DHeldCount] = (globalTimer);
                 // Debug.Log("D pressed");
             }
             if(Input.GetKey(KeyCode.A) && AHeld == true)
@@ -389,14 +401,16 @@ public class FullBhopSceneManager : MonoBehaviour
             if(Input.GetKeyUp(KeyCode.A) && AHeld == true)
             {
                 AHeld = false;
-                APressedTimes[leftSwitchCount] = ATimer;
+                APressedTimes[AHeldCount] = ATimer;
+                AHeldCount++;
                 ATimer = 0;
                 // Debug.Log("A released");
             }
             if(Input.GetKeyUp(KeyCode.D) && DHeld == true)
             {
                 DHeld = false;
-                DPressedTimes[rightSwitchCount] = DTimer;
+                DPressedTimes[DHeldCount] = DTimer;
+                DHeldCount++;
                 DTimer = 0;
                 // Debug.Log("D released");
             }
@@ -467,6 +481,10 @@ public class FullBhopSceneManager : MonoBehaviour
 
         if ((switchTimes.Count >= maxSwitches || currentJumps >= maxJumps) && playerStart == true || (isRace &&(surfCharacter.transform.position.z <= finishLine + 0.2 && surfCharacter.transform.position.z >= finishLine)))
         {
+            if(leftSwitchCount == -1)
+            {
+                leftSwitchCount = 0;
+            }
             // Player has reached max switches, end the attempt
             //If the player did not let go of the key, end the time
             if(AHeld == true)
@@ -495,15 +513,21 @@ public class FullBhopSceneManager : MonoBehaviour
             // }
             for(int i = 0; i < rightLookTimes.Count-1; i++)
             {
-                for(int j = 0; j < DPressedTimestamps.Count(); j++)
+                for(int j = 0; j < DHeldCount; j++)
                 {
                     if(DPressedTimestamps[j] < rightLookTimes[i] && DPressedTimestamps[j] > rightLookTimes[i] - 0.2f)
                     {
                         DPressedOffset[i] = rightLookTimes[i] - DPressedTimestamps[j];
+                        DStrafeTimeline[i] = DPressedTimestamps[j];
+                        DStrafeTimelineEnd[i] = DPressedTimestamps[j] + DPressedTimes[j];
+                        break;
                     }
                     else if(DPressedTimestamps[j] > rightLookTimes[i] && DPressedTimestamps[j] < rightLookTimes[i] + 0.2f)
                     {
                         DPressedOffset[i] = DPressedTimestamps[j] - rightLookTimes[i];
+                        DStrafeTimeline[i] = DPressedTimestamps[j];
+                        DStrafeTimelineEnd[i] = DPressedTimestamps[j] + DPressedTimes[j];
+                        break;
                     }   
                 }
             }
@@ -522,16 +546,18 @@ public class FullBhopSceneManager : MonoBehaviour
             // }
             for(int i = 0; i < rightLookTimes.Count-1; i++)
             {
-                for(int j = 0; j < DPressedTimestamps.Count(); j++)
+                for(int j = 0; j < DHeldCount; j++)
                 {
                     float release = (DPressedOffset[i] + rightLookTimes[i]) + DPressedTimes[j];
                     if(release < leftLookTimes[i] && release > leftLookTimes[i] - 0.2f)
                     {
                         DReleasedOffset[i] = leftLookTimes[i] - release;
+                        break;
                     }
                     else if(release > leftLookTimes[i] && release < leftLookTimes[i] + 0.2f)
                     {
                         DReleasedOffset[i] = release - leftLookTimes[i];
+                        break;
                     }
                 }
             }
@@ -555,10 +581,14 @@ public class FullBhopSceneManager : MonoBehaviour
                     if(APressedTimestamps[j] < leftLookTimes[i] && APressedTimestamps[j] > leftLookTimes[i] - 0.2f)
                     {
                         APressedOffset[i] = leftLookTimes[i] - APressedTimestamps[j];
+                        AStrafeTimeline[i] = APressedTimestamps[j];
+                        AStrafeTimelineEnd[i] = APressedTimestamps[j] + APressedTimes[j];
                     }
                     else if(APressedTimestamps[j] > leftLookTimes[i] && APressedTimestamps[j] < leftLookTimes[i] + 0.2f)
                     {
                         APressedOffset[i] = APressedTimestamps[j] - leftLookTimes[i];
+                        AStrafeTimeline[i] = APressedTimestamps[j];
+                        AStrafeTimelineEnd[i] = APressedTimestamps[j] + APressedTimes[j];
                     }
                 }
             }

@@ -2416,6 +2416,7 @@ MonoBehaviour:
   scoreList: []
   isLoaded: 0
   sceneNumber: 0
+  user: 
 --- !u!114 &2098334203
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2978,6 +2979,10 @@ PrefabInstance:
     - target: {fileID: 2356478791690472450, guid: 5a0aa4bc3e204ee4fa5816d76460e8b0, type: 3}
       propertyPath: speedText
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2611578334253585977, guid: 5a0aa4bc3e204ee4fa5816d76460e8b0, type: 3}
+      propertyPath: sensitivityMultiplier
+      value: 4.2
       objectReference: {fileID: 0}
     - target: {fileID: 2611578335327444060, guid: 5a0aa4bc3e204ee4fa5816d76460e8b0, type: 3}
       propertyPath: m_Name
