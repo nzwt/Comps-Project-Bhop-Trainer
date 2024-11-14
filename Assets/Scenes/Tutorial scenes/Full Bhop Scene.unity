@@ -2003,6 +2003,7 @@ MonoBehaviour:
   scoreList: []
   isLoaded: 0
   sceneNumber: 0
+  user: Compton
 --- !u!114 &2098334203
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2106,6 +2107,10 @@ MonoBehaviour:
   switchTimes: []
   rightLookTimes: []
   leftLookTimes: []
+  rightLookAttemptTimestamps: []
+  rightLookOffsets: []
+  leftLookAttemptTimestamps: []
+  leftLookOffsets: []
   jumpTimestamps: []
   APressedTimestamps: []
   DPressedTimestamps: []
@@ -2115,6 +2120,10 @@ MonoBehaviour:
   DPressedOffset: []
   AReleasedOffset: []
   DReleasedOffset: []
+  AStrafeTimeline: []
+  DStrafeTimeline: []
+  AStrafeTimelineEnd: []
+  DStrafeTimelineEnd: []
   rightSwitchCount: -1
   leftSwitchCount: -1
   lookDirection: 0
@@ -2137,7 +2146,7 @@ PrefabInstance:
     - target: {fileID: 192016236997714737, guid: 972bd1ae68c134a4eb7a79199b90109a, type: 3}
       propertyPath: m_text
       value: 'Strafe and aim in the direction of the arrow, changing after each jump.
-        Attempt starts when you cross the green line
+        Attempt starts when you cross the green line. Do not press W in the air.
 
 '
       objectReference: {fileID: 0}

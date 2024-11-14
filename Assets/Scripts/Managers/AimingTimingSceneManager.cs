@@ -23,6 +23,7 @@ public class AimingTimingSceneManager : MonoBehaviour
     public GameObject arrow; //flip x to aim left
     
     // managment bools
+    public bool startPressed = false;
     public bool lastScoreLoaded = false;
     public bool startTriggered = false;
     public bool playerStart = false;
@@ -60,6 +61,7 @@ public class AimingTimingSceneManager : MonoBehaviour
 
     public void startAttempt()
     {
+        startPressed = true;
         ///text appears: move mouse to either the left or the right to start an attempt, then switch targets by smoothly moving your mouse to the other target each time the 
         /// indicator changes color.
         Cursor.lockState = CursorLockMode.Locked;
@@ -112,6 +114,7 @@ public class AimingTimingSceneManager : MonoBehaviour
         mouseAngleTracker.isAttemptActive = false;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        startPressed = false;
     }
 
 
@@ -124,28 +127,6 @@ public class AimingTimingSceneManager : MonoBehaviour
         uiManager.EnableStartElements();
         startTriggered = false;
     }
-
-    // IEnumerator SwitchTargetsOnTime()
-    // {
-    //     while (true)
-    //     {
-    //         Debug.Log("Switching targets");
-    //         orbController.switchTarget();
-    //         switchTimer = 0;
-    //         if(currentTarget == leftTarget)
-    //         {
-    //             currentTarget = rightTarget;
-    //         }
-    //         else
-    //         {
-    //             currentTarget = leftTarget;
-    //         }
-    //         // Wait for 0.65 seconds before executing the next loop
-    //         yield return new WaitForSeconds(0.65f);
-    //     }
-    // }
-    
-    // Start is called before the first frame update
     void Start()
     {      
     }
@@ -167,7 +148,7 @@ public class AimingTimingSceneManager : MonoBehaviour
 
         //IN RUN LOGIC//
         //start attempt by moving over left orb
-        if(playerStart == false)
+        if(playerStart == false && startPressed == true)
         {
             if(mouseAngleTracker.angleChange < 0)
             {

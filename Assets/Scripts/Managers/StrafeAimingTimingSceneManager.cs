@@ -32,6 +32,7 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
     private bool AHeld = false;
     private bool DHeld = false;
     //management values
+    public bool startPressed = false;
     public int maxSwitches = 6;
     public List<float> switchTimes = new List<float>();
     public List<float> rightLookTimes = new List<float>();
@@ -86,6 +87,7 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
 
     public void startAttempt()
     {
+        startPressed = true;
         timelineController.RemoveAllPips();
         ///text appears: move mouse to either the left or the right to start an attempt, then switch targets by smoothly moving your mouse to the other target each time the 
         /// indicator changes color.
@@ -143,6 +145,7 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
         resetArrays();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        startPressed = false;
         
         
     }
@@ -193,7 +196,7 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
 
         //IN RUN LOGIC//
         //start attempt by moving over left orb
-        if(playerStart == false)
+        if(playerStart == false && startPressed == true)
         {
             if(mouseAngleTracker.angleChange < 0)
             {
