@@ -152,7 +152,7 @@ public class AimingTimingSceneManager : MonoBehaviour
         {
             if(mouseAngleTracker.angleChange < 0)
             {
-                if (mouseAngleTracker.angleChange < -40 && mouseAngleTracker.angleChange > -45)
+                if (mouseAngleTracker.angleChange < -87.5 && mouseAngleTracker.angleChange > -92.5)
                 {
                     playerStart = true;
                     //Debug.Log("Player is looking left");
@@ -174,7 +174,7 @@ public class AimingTimingSceneManager : MonoBehaviour
         {
             if(mouseAngleTracker.angleChange > 0)
             {
-                if(mouseAngleTracker.angleChange > 40 && mouseAngleTracker.angleChange < 45 && currentTarget == rightTarget && switchTimer > -1)
+                if(mouseAngleTracker.angleChange > 87.5 && mouseAngleTracker.angleChange < 92.5 && currentTarget == rightTarget && switchTimer > -1)
                 {
                     switchTimes.Add(switchTimer);
                     orbController.ShowRightAccuracy(switchTimer);
@@ -187,7 +187,7 @@ public class AimingTimingSceneManager : MonoBehaviour
             }
             else if(mouseAngleTracker.angleChange < 0)
             {
-                if (mouseAngleTracker.angleChange < -40 && mouseAngleTracker.angleChange > -45 && currentTarget == leftTarget && switchTimer > -1)
+                if (mouseAngleTracker.angleChange < -87.5 && mouseAngleTracker.angleChange > -92.5 && currentTarget == leftTarget && switchTimer > -1)
                 {
                     switchTimes.Add(switchTimer);
                     orbController.ShowLeftAccuracy(switchTimer);
