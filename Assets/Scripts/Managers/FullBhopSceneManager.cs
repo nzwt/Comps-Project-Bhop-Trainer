@@ -42,9 +42,12 @@ public class FullBhopSceneManager : MonoBehaviour
     public List<float> switchTimes = new List<float>();
     public List<float> rightLookTimes = new List<float>();
     public List<float> leftLookTimes = new List<float>();
+    //these are for the closest look attempts to the jump
+    public float[] rightLookAttemptTimestamps;
+    public float[] rightLookOffsets;
+    public float[] leftLookAttemptTimestamps;
+    public float[] leftLookOffsets;
     public float[] jumpTimestamps;
-    private float rightAngleStart = 0;
-    private float leftAngleStart = 0;
     private int switchCount = 0;
     private float switchTrackTimer = 0;
     private float switchTrackStart = 0;
@@ -222,6 +225,10 @@ public class FullBhopSceneManager : MonoBehaviour
         DStrafeTimelineEnd = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
         rightLookTimes = new List<float>();
         leftLookTimes = new List<float>();
+        rightLookAttemptTimestamps = Enumerable.Repeat(-1000f, maxJumps).ToArray();
+        leftLookAttemptTimestamps = Enumerable.Repeat(-1000f, maxJumps).ToArray();
+        rightLookOffsets = Enumerable.Repeat(-1000f, maxJumps).ToArray();
+        leftLookOffsets = Enumerable.Repeat(-1000f, maxJumps).ToArray();
         jumpTimestamps = Enumerable.Repeat(-1000f, maxJumps).ToArray();
         groundTimes = new List<float>();
     }
@@ -355,18 +362,6 @@ public class FullBhopSceneManager : MonoBehaviour
             arrow.transform.Rotate(0, 180, 0);
         }
 
-        // if (currentJumps >= maxJumps)
-        // {
-        //     // Player has reached max jumps, end the attempt
-        //     foreach (float time in groundTimes)
-        //     {
-        //         //Debug.Log(time);
-        //     }
-        //     endAttempt();
-        //     resetScene();
-        // }
-
-
         //if attempt is active, add time
         if(playerStart == true)
         {
@@ -431,26 +426,33 @@ public class FullBhopSceneManager : MonoBehaviour
                 //left is false, true is right
                 if(lookDirection == false)
                 {
-                    if( switchTrackEnd  > switchTrackStart + 3)
+                    if( switchTrackEnd  > switchTrackStart + (3 * 2.1))//SettingsManager.Instance.GetSensitivity()))
                     {
                         Debug.Log("going right");
+                        if(!lookDirection)
+                        {
+                            newDirection = true;
+                        }
                         lookDirection = true;
-                        newDirection = true;
+                        
                     }
                 }
                 else if(lookDirection == true)
                 {
-                    if( switchTrackEnd  < switchTrackStart - 3)
+                    if( switchTrackEnd  < switchTrackStart - (3 * 2.1))//SettingsManager.Instance.GetSensitivity()))
                     {
                         Debug.Log("going left");
+                        if(lookDirection)
+                        {
+                            newDirection = true;
+                        }
                         lookDirection = false;
-                        newDirection = true;
                     }
                 }
                 switchTrackTimer = 0;
                 switchTrackStart = switchTrackEnd;
             }
-            if(newDirection && lookDirection == false && switchCount == currentJumps) //you just switched from right to left
+            if(newDirection && lookDirection == false) //you just switched from right to left
             {
                 //TODO: I could track angle change here, new stat?
                 switchTimes.Add(switchTimer);
@@ -461,7 +463,7 @@ public class FullBhopSceneManager : MonoBehaviour
                 //Debug.Log("Player is looking right");
 
             }
-            else if(newDirection && lookDirection == true && switchCount == currentJumps) //you just switched from left to right
+            else if(newDirection && lookDirection == true) //you just switched from left to right
             {
                 switchTimes.Add(switchTimer);
                 switchTimer = 0;
@@ -480,7 +482,7 @@ public class FullBhopSceneManager : MonoBehaviour
             startAttempt();
         }
 
-        if ((switchTimes.Count >= maxSwitches || currentJumps >= maxJumps) && playerStart == true || (isRace &&(surfCharacter.transform.position.z <= finishLine + 0.2 && surfCharacter.transform.position.z >= finishLine)))
+        if ((currentJumps >= maxJumps) && playerStart == true || (isRace &&(surfCharacter.transform.position.z <= finishLine + 0.2 && surfCharacter.transform.position.z >= finishLine)))
         {
             if(leftSwitchCount == -1)
             {
@@ -500,142 +502,97 @@ public class FullBhopSceneManager : MonoBehaviour
             float endTime = globalTimer;
             //calculate strafe accuracy
 
-           //calculate offset of all D presses from switch
-            // for(int i = 0; i < rightLookTimes.Count-1; i++)
-            // {
-            //     if(DPressedTimestamps[i] < rightLookTimes[i] && DPressedTimestamps[i] > rightLookTimes[i] - 0.2f)
-            //     {
-            //         DPressedOffset[i] = rightLookTimes[i] - DPressedTimestamps[i];
-            //     }
-            //     else if(DPressedTimestamps[i] > rightLookTimes[i] && DPressedTimestamps[i] < rightLookTimes[i] + 0.2f)
-            //     {
-            //         DPressedOffset[i] = DPressedTimestamps[i] - rightLookTimes[i];
-            //     }               
-            // }
-            for(int i = 0; i < rightLookTimes.Count-1; i++)
+            //calculate closest look attempts to the jump
+            for(int i = 0; i< jumpTimestamps.Count(); i++)
             {
-                for(int j = 0; j < DHeldCount; j++)
+                bool right = true;
+                float closestRight = 1000;
+                float closestLeft = 1000;
+                if(right)
                 {
-                    if(DPressedTimestamps[j] < rightLookTimes[i] && DPressedTimestamps[j] > rightLookTimes[i] - 0.2f)
+                    for(int j = 0; j < rightLookTimes.Count(); j++)
                     {
-                        DPressedOffset[i] = rightLookTimes[i] - DPressedTimestamps[j];
-                        DStrafeTimeline[i] = DPressedTimestamps[j];
-                        DStrafeTimelineEnd[i] = DPressedTimestamps[j] + DPressedTimes[j];
-                        break;
-                    }
-                    else if(DPressedTimestamps[j] > rightLookTimes[i] && DPressedTimestamps[j] < rightLookTimes[i] + 0.2f)
-                    {
-                        DPressedOffset[i] = DPressedTimestamps[j] - rightLookTimes[i];
-                        DStrafeTimeline[i] = DPressedTimestamps[j];
-                        DStrafeTimelineEnd[i] = DPressedTimestamps[j] + DPressedTimes[j];
-                        break;
-                    }   
-                }
-            }
-            //calculate offset of all D releases from switch
-            for(int i = 0; i < rightLookTimes.Count-1; i++)
-            {
-                for(int j = 0; j < DHeldCount; j++)
-                {
-                    if(leftLookTimes.Count-1 < i)
-                    {
-                        DReleasedOffset[i] = -1000;
-                        break;
-                    }
-                    float release = (DPressedOffset[i] + rightLookTimes[i]) + DPressedTimes[j];
-                    if(release < leftLookTimes[i] && release > leftLookTimes[i] - 0.2f)
-                    {
-                        DReleasedOffset[i] = leftLookTimes[i] - release;
-                        break;
-                    }
-                    else if(release > leftLookTimes[i] && release < leftLookTimes[i] + 0.2f)
-                    {
-                        DReleasedOffset[i] = release - leftLookTimes[i];
-                        break;
+                        if(Math.Abs(jumpTimestamps[i] - rightLookTimes[j]) < closestRight)
+                        {
+                            closestRight = Math.Abs(jumpTimestamps[i] - rightLookTimes[j]);
+                            rightLookAttemptTimestamps[i] = rightLookTimes[j];
+                            rightLookOffsets[i] = closestRight;
+                        }
+                        if(jumpTimestamps[i] - rightLookTimes[j] > closestRight)
+                        {
+                            right = false;
+                            break;
+                        }
                     }
                 }
+                else
+                {
+                    for(int j = 0; j < leftLookTimes.Count(); j++)
+                    {
+                        if(Math.Abs(jumpTimestamps[i] - leftLookTimes[j]) < closestLeft)
+                        {
+                            closestLeft = Math.Abs(jumpTimestamps[i] - leftLookTimes[j]);
+                            leftLookAttemptTimestamps[i] = leftLookTimes[j];
+                            leftLookOffsets[i] = closestLeft;
+                        }
+                        if(jumpTimestamps[i] - leftLookTimes[j] > closestLeft )
+                        {
+                            right = true;
+                            break;
+                        }
+                    }
+                    
+                }
             }
+
+            //calculate offset of all D presses from rightLookAttemptTimestamps
+            for(int i = 0; i < rightLookAttemptTimestamps.Count(); i++)
+            {
+                float closestRight = 1000;
+                for(int j = 0; j < DHeldCount; j++)
+                {
+                    if(Math.Abs(rightLookAttemptTimestamps[i] - DPressedTimestamps[j]) < closestRight)
+                    {
+                        closestRight = Math.Abs(rightLookAttemptTimestamps[i] - DPressedTimestamps[j]);
+                        DPressedOffset[i] = closestRight;
+                        DStrafeTimeline[i] = DPressedTimestamps[j];
+                        //unsure if I need this, but could be helpful
+                        DStrafeTimelineEnd[i] = DPressedTimestamps[j] + DPressedTimes[j];
+                    }
+                    if(rightLookAttemptTimestamps[i] - DPressedTimestamps[j] > closestRight)
+                    {
+                        break;
+                    }
+                }
+            }
+
 
             //calculate offset of all A presses from switch
-            // for(int i = 0; i < leftLookTimes.Count; i++)
-            // {
-            //     if(APressedTimestamps[i] < leftLookTimes[i] && APressedTimestamps[i] > leftLookTimes[i] - 0.2f)
-            //     {
-            //         APressedOffset[i] = leftLookTimes[i] - APressedTimestamps[i];
-            //     }
-            //     else if(APressedTimestamps[i] > leftLookTimes[i] && APressedTimestamps[i] < leftLookTimes[i] + 0.2f)
-            //     {
-            //         APressedOffset[i] = APressedTimestamps[i] - leftLookTimes[i];
-            //     }
-            // }
-            for(int i = 0; i < leftLookTimes.Count; i++)
+            for(int i =0; i < leftLookAttemptTimestamps.Count(); i++)
             {
-                for(int j = 0; j < APressedTimestamps.Count(); j++)
+                float closestLeft = 1000;
+                for(int j = 0; j < AHeldCount; j++)
                 {
-                    if(APressedTimestamps[j] < leftLookTimes[i] && APressedTimestamps[j] > leftLookTimes[i] - 0.2f)
+                    if(Math.Abs(leftLookAttemptTimestamps[i] - APressedTimestamps[j]) < closestLeft)
                     {
-                        APressedOffset[i] = leftLookTimes[i] - APressedTimestamps[j];
+                        closestLeft = Math.Abs(leftLookAttemptTimestamps[i] - APressedTimestamps[j]);
+                        APressedOffset[i] = closestLeft;
                         AStrafeTimeline[i] = APressedTimestamps[j];
                         AStrafeTimelineEnd[i] = APressedTimestamps[j] + APressedTimes[j];
-                        break;
                     }
-                    else if(APressedTimestamps[j] > leftLookTimes[i] && APressedTimestamps[j] < leftLookTimes[i] + 0.2f)
+                    if(leftLookAttemptTimestamps[i] - APressedTimestamps[j] > closestLeft)
                     {
-                        APressedOffset[i] = APressedTimestamps[j] - leftLookTimes[i];
-                        AStrafeTimeline[i] = APressedTimestamps[j];
-                        AStrafeTimelineEnd[i] = APressedTimestamps[j] + APressedTimes[j];
                         break;
                     }
                 }
             }
-            //calculate offset of all A releases from switch
-            // for(int i = 0; i < leftLookTimes.Count; i++)
-            // {
-            //     float release = (APressedOffset[i] + leftLookTimes[i]) + APressedTimes[i];
-            //     if(release < rightLookTimes[i] && release > rightLookTimes[i] - 0.2f)
-            //     {
-            //         AReleasedOffset[i] = rightLookTimes[i] - release;
-            //     }
-            //     else if(release > rightLookTimes[i] && release < rightLookTimes[i] + 0.2f)
-            //     {
-            //         AReleasedOffset[i] = release - rightLookTimes[i] ;
-            //     }
-            // }
-            for(int i = 0; i < leftLookTimes.Count; i++)
-            {
-                for(int j = 0; j < APressedTimestamps.Count(); j++)
-                {
-                    if(rightLookTimes.Count-1 < i)
-                    {
-                        AReleasedOffset[i] = -1000;
-                        break;
-                    }
-                    float release = (APressedOffset[i] + leftLookTimes[i]) + APressedTimes[j];
-                    if(release < rightLookTimes[i] && release > rightLookTimes[i] - 0.2f)
-                    {
-                        AReleasedOffset[i] = rightLookTimes[i] - release;
-                        break;
-                    }
-                    else if(release > rightLookTimes[i] && release < rightLookTimes[i] + 0.2f)
-                    {
-                        AReleasedOffset[i] = release - rightLookTimes[i] ;
-                        break;
-                    }
-                }
-            }
-
-          
-
-
 
             //calculate strafe accuracy
             Debug.Log("A Held Accuracy");
             float totalOffset = 0;
             int totalCounted = 0;
-            for(int i = 0; i < leftLookTimes.Count; i++)
+            for(int i = 0; i < leftLookAttemptTimestamps.Count(); i++)
             {
-                Debug.Log(APressedOffset[i]);
-                Debug.Log(AReleasedOffset[i]);
                 if(APressedOffset[i] != -1000)
                 {
                     totalOffset += APressedOffset[i];
@@ -659,7 +616,7 @@ public class FullBhopSceneManager : MonoBehaviour
             }
 
             Debug.Log("D Held Accuracy");
-            for(int i = 0; i < rightLookTimes.Count; i++)
+            for(int i = 0; i < rightLookAttemptTimestamps.Count(); i++)
             {
                 Debug.Log(DPressedOffset[i]);
                 Debug.Log(DReleasedOffset[i]);
@@ -684,18 +641,39 @@ public class FullBhopSceneManager : MonoBehaviour
             }
             strafeTimingOffset = totalOffset / totalCounted;
 
+            int switches = 0;
             //calculate timing offset
-            foreach (float time in switchTimes)
+            foreach (float offset in rightLookOffsets)
             {
-                lookOffset += time - 0.65f;
+                if(offset != -1000)
+                {
+                    switches++;
+                    lookOffset += offset;
+                }
+                else
+                {
+                    scorePenalties += 1;
+                }
             }
-            lookOffset = lookOffset / maxSwitches;
+            foreach (float offset in leftLookOffsets)
+            {
+                if(offset != -1000)
+                {
+                    switches++;
+                    lookOffset += offset;
+                }
+                else
+                {
+                    scorePenalties += 1;
+                }
+            }
+            lookOffset = lookOffset / switches;
             Debug.Log("Look Offset: " + lookOffset);
 
             timelineController.startLookTimestamps = leftLookTimes.ToArray();
             timelineController.endLookTimestamps = rightLookTimes.ToArray();
-            timelineController.strafeStartTimestamps = APressedTimestamps;
-            timelineController.strafeEndTimestamps = DPressedTimestamps;
+            timelineController.strafeStartTimestamps = DStrafeTimeline;
+            timelineController.strafeEndTimestamps = AStrafeTimeline;
             timelineController.jumpTimestamps = jumpTimestamps;
             zAxisSpeedTracker.isAttemptActive = false;
 
