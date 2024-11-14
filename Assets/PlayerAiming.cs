@@ -41,8 +41,8 @@ public class PlayerAiming : MonoBehaviour
 	private void Start()
 	{
 		// Lock the mouse
-		Cursor.lockState = CursorLockMode.Locked;
-		Cursor.visible   = false;
+		// Cursor.lockState = CursorLockMode.Locked;
+		// Cursor.visible   = false;
 	}
 
 	private void Update()
