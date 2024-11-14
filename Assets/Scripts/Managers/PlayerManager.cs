@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Fragsurf.Movement;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
@@ -10,6 +11,7 @@ public class PlayerManager : MonoBehaviour
     public MouseAngleTracker mouseAngleTracker;
     public SpeedTracker speedTracker;
     public PlayerAiming playerAiming;
+
     public void ResetPlayer( float x, float y, float z)
     {
         // Reset the player's position and rotation

@@ -32,6 +32,7 @@ public class AimingTimingSceneManager : MonoBehaviour
     public List<float> switchTimes = new List<float>();
     private float switchTimer = -1;
     private float globalTimer = -1;
+    private float sensitivity;
     //0 is left, 1 is right
     public Transform currentTarget;
     public Transform leftTarget;
@@ -54,6 +55,7 @@ public class AimingTimingSceneManager : MonoBehaviour
         uiManager.EnableStartElements();
         playerManager.ResetPlayer(xReset, yReset, zReset);
         currentTarget = leftTarget;
+        sensitivity = SettingsManager.Instance.GetSensitivity();
     }
 
     public void startAttempt()

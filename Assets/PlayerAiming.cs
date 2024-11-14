@@ -33,6 +33,11 @@ public class PlayerAiming : MonoBehaviour
 	[HideInInspector]
 	public Vector2 punchAngleVel;
 
+	private void OnEnable()
+	{
+		sensitivityMultiplier = SettingsManager.Instance.GetSensitivity();
+	}
+
 	private void Start()
 	{
 		// Lock the mouse

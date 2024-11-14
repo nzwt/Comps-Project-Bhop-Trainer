@@ -180,6 +180,7 @@ GameObject:
   - component: {fileID: 49984909}
   - component: {fileID: 49984908}
   - component: {fileID: 49984910}
+  - component: {fileID: 49984911}
   m_Layer: 5
   m_Name: SettingsPanel
   m_TagString: Untagged
@@ -266,6 +267,23 @@ MonoBehaviour:
   fullscreenToggle: {fileID: 454861692}
   sensitivitySlider: {fileID: 1554659583}
   settingsMenu: {fileID: 49984906}
+--- !u!114 &49984911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 49984906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d787ed30bc209054aa7ccb2481a3a806, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settingsData:
+    volume: 0
+    sensitvity: 0
+    graphicsQuality: 0
+    isFullscreen: 0
 --- !u!1 &101774512
 GameObject:
   m_ObjectHideFlags: 0

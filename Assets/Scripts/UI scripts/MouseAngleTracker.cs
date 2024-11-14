@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using Fragsurf.Movement;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class MouseAngleTracker : MonoBehaviour
 {
@@ -20,9 +21,14 @@ public class MouseAngleTracker : MonoBehaviour
     private List<float> angleChangePerIntervals = new List<float>();
     public bool isAttemptActive = false;
 
+
+    public void OnEnable()
+    {
+        float sensitivityMultiplier = SettingsManager.Instance.GetSensitivity();
+        mouseSensitivity = (playerAiming.horizontalSensitivity * sensitivityMultiplier) / 2.1f;
+    }
     void Start()
     {
-        mouseSensitivity = (playerAiming.horizontalSensitivity * playerAiming.sensitivityMultiplier) / 2.1f;
         // Capture the initial mouse position
         lastMouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
         lastMouseY = (Input.GetAxis("Mouse Y") * playerAiming.verticalSensitivity  * playerAiming.sensitivityMultiplier) / 2.1f;
@@ -31,7 +37,7 @@ public class MouseAngleTracker : MonoBehaviour
     void Update()
     {
         // Increment the timer by the time passed since the last frame
-        float mouseX = Input.GetAxis("Mouse X") ;
+        float mouseX = Input.GetAxis("Mouse X")*mouseSensitivity ;
         
         // Accumulate the angle change
         accumulatedAngle += mouseX;
