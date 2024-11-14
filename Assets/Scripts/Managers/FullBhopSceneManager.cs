@@ -211,24 +211,29 @@ public class FullBhopSceneManager : MonoBehaviour
 
     public void resetArrays()
     {
+        int rightJumps = maxJumps/2;
+        if(maxJumps%2 == 1)
+        {
+            rightJumps = (maxJumps/2)+1;
+        }
         APressedTimestamps = Enumerable.Repeat(-1000f, 1000).ToArray();
         DPressedTimestamps = Enumerable.Repeat(-1000f, 1000).ToArray();
         APressedTimes = Enumerable.Repeat(-1000f, 1000).ToArray();
         DPressedTimes = Enumerable.Repeat(-1000f, 1000).ToArray();
-        APressedOffset = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
-        DPressedOffset = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
-        AReleasedOffset = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
-        DReleasedOffset = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
-        AStrafeTimeline = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
-        DStrafeTimeline = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
-        AStrafeTimelineEnd = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
-        DStrafeTimelineEnd = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
+        APressedOffset = Enumerable.Repeat(-1000f, maxJumps/2).ToArray();
+        DPressedOffset = Enumerable.Repeat(-1000f, rightJumps).ToArray();
+        AReleasedOffset = Enumerable.Repeat(-1000f, maxJumps/2).ToArray();
+        DReleasedOffset = Enumerable.Repeat(-1000f, rightJumps).ToArray();
+        AStrafeTimeline = Enumerable.Repeat(-1000f, maxSwitches/2).ToArray();
+        DStrafeTimeline = Enumerable.Repeat(-1000f, rightJumps).ToArray();
+        AStrafeTimelineEnd = Enumerable.Repeat(-1000f, maxJumps/2).ToArray();
+        DStrafeTimelineEnd = Enumerable.Repeat(-1000f, rightJumps).ToArray();
         rightLookTimes = new List<float>();
         leftLookTimes = new List<float>();
-        rightLookAttemptTimestamps = Enumerable.Repeat(-1000f, maxJumps).ToArray();
-        leftLookAttemptTimestamps = Enumerable.Repeat(-1000f, maxJumps).ToArray();
-        rightLookOffsets = Enumerable.Repeat(-1000f, maxJumps).ToArray();
-        leftLookOffsets = Enumerable.Repeat(-1000f, maxJumps).ToArray();
+        rightLookAttemptTimestamps = Enumerable.Repeat(-1000f, rightJumps).ToArray();
+        leftLookAttemptTimestamps = Enumerable.Repeat(-1000f, maxJumps/2).ToArray();
+        rightLookOffsets = Enumerable.Repeat(-1000f, rightJumps).ToArray();
+        leftLookOffsets = Enumerable.Repeat(-1000f, maxJumps/2).ToArray();
         jumpTimestamps = Enumerable.Repeat(-1000f, maxJumps).ToArray();
         groundTimes = new List<float>();
     }
@@ -503,45 +508,46 @@ public class FullBhopSceneManager : MonoBehaviour
             //calculate strafe accuracy
 
             //calculate closest look attempts to the jump
-            for(int i = 0; i< jumpTimestamps.Count(); i++)
+            int rightIndex = 0;
+            int leftIndex = 0;
+            bool right = true;
+            for(int i = 0; i < jumpTimestamps.Length; i++)
             {
-                bool right = true;
-                float closestRight = 1000;
-                float closestLeft = 1000;
+                float closestRight = float.MaxValue;
+                float closestLeft = float.MaxValue;
+                print("i: " + i);
+                print("rightIndex: " + rightIndex);
+                print("leftIndex: " + leftIndex);
                 if(right)
                 {
-                    for(int j = 0; j < rightLookTimes.Count(); j++)
+                    for(int j = 0; j < rightLookTimes.Count; j++)
                     {
                         if(Math.Abs(jumpTimestamps[i] - rightLookTimes[j]) < closestRight)
                         {
                             closestRight = Math.Abs(jumpTimestamps[i] - rightLookTimes[j]);
-                            rightLookAttemptTimestamps[i] = rightLookTimes[j];
-                            rightLookOffsets[i] = closestRight;
-                        }
-                        if(jumpTimestamps[i] - rightLookTimes[j] > closestRight)
-                        {
-                            right = false;
-                            break;
+                            rightLookAttemptTimestamps[rightIndex] = rightLookTimes[j];
+                            rightLookOffsets[rightIndex] = closestRight;
                         }
                     }
+                    right = false;
+                    rightIndex++;
                 }
                 else
                 {
-                    for(int j = 0; j < leftLookTimes.Count(); j++)
+                    if (leftLookTimes.Count > 0)
                     {
-                        if(Math.Abs(jumpTimestamps[i] - leftLookTimes[j]) < closestLeft)
+                        for(int j = 0; j < leftLookTimes.Count; j++)
                         {
-                            closestLeft = Math.Abs(jumpTimestamps[i] - leftLookTimes[j]);
-                            leftLookAttemptTimestamps[i] = leftLookTimes[j];
-                            leftLookOffsets[i] = closestLeft;
-                        }
-                        if(jumpTimestamps[i] - leftLookTimes[j] > closestLeft )
-                        {
-                            right = true;
-                            break;
+                            if(Math.Abs(jumpTimestamps[i] - leftLookTimes[j]) < closestLeft)
+                            {
+                                closestLeft = Math.Abs(jumpTimestamps[i] - leftLookTimes[j]);
+                                leftLookAttemptTimestamps[leftIndex] = leftLookTimes[j];
+                                leftLookOffsets[leftIndex] = closestLeft;
+                            }
                         }
                     }
-                    
+                    right = true;
+                    leftIndex++;
                 }
             }
 
@@ -549,7 +555,7 @@ public class FullBhopSceneManager : MonoBehaviour
             for(int i = 0; i < rightLookAttemptTimestamps.Count(); i++)
             {
                 float closestRight = 1000;
-                for(int j = 0; j < DHeldCount; j++)
+                for(int j = 0; j < DPressedTimestamps.Length; j++)
                 {
                     if(Math.Abs(rightLookAttemptTimestamps[i] - DPressedTimestamps[j]) < closestRight)
                     {
@@ -568,10 +574,10 @@ public class FullBhopSceneManager : MonoBehaviour
 
 
             //calculate offset of all A presses from switch
-            for(int i =0; i < leftLookAttemptTimestamps.Count(); i++)
+            for(int i = 0; i < leftLookAttemptTimestamps.Count(); i++)
             {
                 float closestLeft = 1000;
-                for(int j = 0; j < AHeldCount; j++)
+                for(int j = 0; j < APressedTimestamps.Length; j++)
                 {
                     if(Math.Abs(leftLookAttemptTimestamps[i] - APressedTimestamps[j]) < closestLeft)
                     {
