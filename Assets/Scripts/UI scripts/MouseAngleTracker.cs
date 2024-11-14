@@ -3,6 +3,7 @@ using TMPro;
 using Fragsurf.Movement;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using System;
 
 public class MouseAngleTracker : MonoBehaviour
 {
@@ -20,9 +21,15 @@ public class MouseAngleTracker : MonoBehaviour
     public float attemptAngleChange = 0;
     private List<float> angleChanges = new List<float>();
     private List<float> angleChangePerIntervals = new List<float>();
-    private List<float> smoothnessValues = new List<float>();
     public bool isAttemptActive = false;
-
+    //Smoothness
+    private float startAngle;
+    private float elapsedTime;
+    private bool tracking;
+    private List<float> deviations;
+    public float targetAngle = 90f;
+    public float targetDuration = 0.65f;
+    public List<float> smoothnessPerAttempt = new List<float>();
 
     public void OnEnable()
     {
@@ -49,14 +56,6 @@ public class MouseAngleTracker : MonoBehaviour
         // Track time
         timer += Time.deltaTime;
 
-        if(timer >= updateInterval)
-        {
-            CalculateMouseAngleSmoothness();
-        }
-
-        //amount of angle change per second, check per delta time
-        //0.65*90
-
         //for recording the angle change of an attempt
         if (!isAttemptActive && angleChanges.Count > 0) // When attempt is finished, calculate average.
         {
@@ -64,6 +63,23 @@ public class MouseAngleTracker : MonoBehaviour
             Debug.Log("Average Angle Change: " + attemptAngleChange);
             angleChanges = new List<float>(); // Reset for the next attempt.
             angleChange = 0;
+        }
+
+        //Smoothness:
+        if (tracking)
+        {
+            elapsedTime += Time.deltaTime;
+
+            float expectedAngle = (elapsedTime / targetDuration) * targetAngle*mouseSensitivity;
+            float currentAngle = Math.Abs(startAngle + mouseX);
+            float deviation = currentAngle - expectedAngle;
+            deviations.Add(deviation);
+
+            // Stop tracking after target duration
+            if (elapsedTime >= targetDuration)
+            {
+                smoothnessPerAttempt.Add(CalculateAverageAttemptAngleSmoothness());
+            }
         }
     }
     public void resetAngleChange()
@@ -104,27 +120,24 @@ public class MouseAngleTracker : MonoBehaviour
 
     public float CalculateAverageAttemptAngleSmoothness()
     {
-        float totalChange = 0;
-        foreach (float change in angleChanges)
-        {
-            totalChange += change;
-        }
-        return totalChange / angleChanges.Count;
+        tracking = false;
 
-        // foreach (float change in angleChangePerIntervals)
-        // {
-        //     totalChange += change;
-        // }
-        // return totalChange / angleChangePerIntervals.Count;
+        // Calculate consistency score (lower score = more consistent)
+        float totalDeviation = 0f;
+        foreach (float deviation in deviations)
+        {
+            totalDeviation += Mathf.Abs(deviation);
+        }
+        float consistencyScore = totalDeviation / deviations.Count;
+        return consistencyScore;
+
     }
 
-    void DisplayMouseAngleChange()
+    public void StartTrackingSmoothness()
     {
-        // Display the mouse angle change on the UI (TextMeshPro)
-        if (angleText != null)
-        {
-            // Display X and Y axis change (or just one if you prefer)
-            angleText.text = "Mouse Angle Change: X = " + accumulatedAngle.ToString("F2") + "°/s";
-        }
+        startAngle = Input.GetAxis("Mouse X")*2.1f;
+        elapsedTime = 0f;
+        deviations = new List<float>();
+        tracking = true;
     }
 }

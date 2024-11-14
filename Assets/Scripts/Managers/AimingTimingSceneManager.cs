@@ -97,6 +97,10 @@ public class AimingTimingSceneManager : MonoBehaviour
         // Update the lastJumpAttempt to the currentJumpAttempt
         // Reset the currentJumpAttempt
         float score = (0.65f - Math.Abs(bhopAccuracy))*15.4f;
+        for(int i = 0; i < mouseAngleTracker.smoothnessPerAttempt.Count; i++)
+        {
+            Debug.Log(mouseAngleTracker.smoothnessPerAttempt[i]);
+        }
         currentJumpAttempt = new JumpAttempt(1,attemptNumber, 0, 0, 0, 0, 0, score, 0, 0, bhopAccuracy, date: System.DateTime.Now);
         scoreManager.SaveScore(1,currentJumpAttempt);
         //TODO: stats are going to be different depending on the scene, this should probably be dont in the scene manager but I dont know
@@ -115,6 +119,7 @@ public class AimingTimingSceneManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         startPressed = false;
+        //mouseAngleTracker.smoothnessPerAttempt.Clear();
     }
 
 
@@ -183,6 +188,7 @@ public class AimingTimingSceneManager : MonoBehaviour
                     currentTarget = leftTarget;
                     jumpIndicator.StartJump();
                     //Debug.Log("Player is looking right");
+                    mouseAngleTracker.StartTrackingSmoothness();
                 }
             }
             else if(mouseAngleTracker.angleChange < 0)
@@ -195,6 +201,7 @@ public class AimingTimingSceneManager : MonoBehaviour
                     arrow.transform.Rotate(0, 180, 0);
                     currentTarget = rightTarget;
                     jumpIndicator.StartJump();
+                    mouseAngleTracker.StartTrackingSmoothness();
                     //Debug.Log("Player is looking left");
                 }
             }
