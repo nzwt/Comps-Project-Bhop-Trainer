@@ -223,6 +223,7 @@ public class FullBhopSceneManager : MonoBehaviour
         rightLookTimes = new List<float>();
         leftLookTimes = new List<float>();
         jumpTimestamps = Enumerable.Repeat(-1000f, maxJumps).ToArray();
+        groundTimes = new List<float>();
     }
 
     public void resetScene()
@@ -532,22 +533,15 @@ public class FullBhopSceneManager : MonoBehaviour
                 }
             }
             //calculate offset of all D releases from switch
-            // for(int i = 0; i < rightLookTimes.Count-1; i++)
-            // {
-            //     float release = (DPressedOffset[i] + rightLookTimes[i]) + DPressedTimes[i];
-            //     if(release < leftLookTimes[i] && release > leftLookTimes[i] - 0.2f)
-            //     {
-            //         DReleasedOffset[i] = leftLookTimes[i] - release;
-            //     }
-            //     else if(release > leftLookTimes[i] && release < leftLookTimes[i] + 0.2f)
-            //     {
-            //         DReleasedOffset[i] = release - leftLookTimes[i];
-            //     }
-            // }
             for(int i = 0; i < rightLookTimes.Count-1; i++)
             {
                 for(int j = 0; j < DHeldCount; j++)
                 {
+                    if(leftLookTimes.Count-1 < i)
+                    {
+                        DReleasedOffset[i] = -1000;
+                        break;
+                    }
                     float release = (DPressedOffset[i] + rightLookTimes[i]) + DPressedTimes[j];
                     if(release < leftLookTimes[i] && release > leftLookTimes[i] - 0.2f)
                     {
@@ -583,12 +577,14 @@ public class FullBhopSceneManager : MonoBehaviour
                         APressedOffset[i] = leftLookTimes[i] - APressedTimestamps[j];
                         AStrafeTimeline[i] = APressedTimestamps[j];
                         AStrafeTimelineEnd[i] = APressedTimestamps[j] + APressedTimes[j];
+                        break;
                     }
                     else if(APressedTimestamps[j] > leftLookTimes[i] && APressedTimestamps[j] < leftLookTimes[i] + 0.2f)
                     {
                         APressedOffset[i] = APressedTimestamps[j] - leftLookTimes[i];
                         AStrafeTimeline[i] = APressedTimestamps[j];
                         AStrafeTimelineEnd[i] = APressedTimestamps[j] + APressedTimes[j];
+                        break;
                     }
                 }
             }
@@ -609,14 +605,21 @@ public class FullBhopSceneManager : MonoBehaviour
             {
                 for(int j = 0; j < APressedTimestamps.Count(); j++)
                 {
+                    if(rightLookTimes.Count-1 < i)
+                    {
+                        AReleasedOffset[i] = -1000;
+                        break;
+                    }
                     float release = (APressedOffset[i] + leftLookTimes[i]) + APressedTimes[j];
                     if(release < rightLookTimes[i] && release > rightLookTimes[i] - 0.2f)
                     {
                         AReleasedOffset[i] = rightLookTimes[i] - release;
+                        break;
                     }
                     else if(release > rightLookTimes[i] && release < rightLookTimes[i] + 0.2f)
                     {
                         AReleasedOffset[i] = release - rightLookTimes[i] ;
+                        break;
                     }
                 }
             }
