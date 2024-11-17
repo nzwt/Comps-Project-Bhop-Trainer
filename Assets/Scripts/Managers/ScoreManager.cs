@@ -9,7 +9,7 @@ public class ScoreManager : MonoBehaviour
     public int sceneNumber;
 
     private string filePath;
-    public string user = "Compton";
+    public string user = "TateCantrell";
 
     void Start()
     {

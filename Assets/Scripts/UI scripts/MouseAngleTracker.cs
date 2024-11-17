@@ -26,7 +26,12 @@ public class MouseAngleTracker : MonoBehaviour
 
     public void OnEnable()
     {
-        float sensitivityMultiplier = SettingsManager.Instance.GetSensitivity();
+        float sensitivityMultiplier = 2.1f;
+        if(SettingsManager.Instance != null)
+        {
+            sensitivityMultiplier = SettingsManager.Instance.GetSensitivity();
+            mouseSensitivity = (playerAiming.horizontalSensitivity * sensitivityMultiplier) / 2.1f;
+        }
         mouseSensitivity = (playerAiming.horizontalSensitivity * sensitivityMultiplier) / 2.1f;
     }
     void Start()
@@ -38,8 +43,8 @@ public class MouseAngleTracker : MonoBehaviour
 
     void Update()
     {
-        // Increment the timer by the time passed since the last frame
-        float mouseX = Input.GetAxis("Mouse X")*2.1f;//mouseSensitivity ;
+        // Increment the timer by the time passed since the last frame   
+        float mouseX = Input.GetAxis("Mouse X")*mouseSensitivity;
         
         // Accumulate the angle change
         accumulatedAngle += mouseX;
