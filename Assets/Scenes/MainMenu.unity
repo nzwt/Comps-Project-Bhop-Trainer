@@ -263,7 +263,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   volumeSlider: {fileID: 1554267379}
-  graphicsDropdown: {fileID: 0}
   fullscreenToggle: {fileID: 454861692}
   sensitivitySlider: {fileID: 1554659583}
   settingsMenu: {fileID: 49984906}
@@ -1535,7 +1534,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1057, y: 433}
+  m_AnchoredPosition: {x: 924.91, y: 494.4}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &705047861

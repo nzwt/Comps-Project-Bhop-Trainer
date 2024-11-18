@@ -30,9 +30,8 @@ public class MouseAngleTracker : MonoBehaviour
         if(SettingsManager.Instance != null)
         {
             sensitivityMultiplier = SettingsManager.Instance.GetSensitivity();
-            mouseSensitivity = (playerAiming.horizontalSensitivity * sensitivityMultiplier) / 2.1f;
         }
-        mouseSensitivity = (playerAiming.horizontalSensitivity * sensitivityMultiplier) / 2.1f;
+        mouseSensitivity = (playerAiming.horizontalSensitivity * sensitivityMultiplier);
     }
     void Start()
     {
