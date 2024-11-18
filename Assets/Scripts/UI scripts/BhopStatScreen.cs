@@ -32,7 +32,7 @@ public class BhopStatScreen : MonoBehaviour
             averageSpeed.color = Color.red;
         }
         //changeInAngle.text = "Change in Angle: " + lastJumpAttempt.angle.ToString("F2") + " degrees";
-        if(lastJumpAttempt.bhopAccuracy <= currentJumpAttempt.bhopAccuracy)
+        if(lastJumpAttempt.bhopAccuracy >= currentJumpAttempt.bhopAccuracy)
         {
             bhopAccuracy.text =currentJumpAttempt.bhopAccuracy.ToString("F2") + " (" + lastJumpAttempt.bhopAccuracy.ToString("F2") + "▲)";
             bhopAccuracy.color = Color.green;
