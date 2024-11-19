@@ -101,9 +101,9 @@ public class AimingTimingSceneManager : MonoBehaviour
         scoreManager.SaveScore(1,currentJumpAttempt);
         //TODO: stats are going to be different depending on the scene, this should probably be dont in the scene manager but I dont know
         //jank, fix later
-        uiManager.StatScreen.GetComponent<BhopStatScreen>().currentJumpAttempt = currentJumpAttempt;
-        uiManager.StatScreen.GetComponent<BhopStatScreen>().lastJumpAttempt = lastJumpAttempt;
-        uiManager.StatScreen.GetComponent<BhopStatScreen>().updateStats();
+        uiManager.StatScreen.GetComponent<AimingStatScreen>().currentJumpAttempt = currentJumpAttempt;
+        uiManager.StatScreen.GetComponent<AimingStatScreen>().lastJumpAttempt = lastJumpAttempt;
+        uiManager.StatScreen.GetComponent<AimingStatScreen>().updateStats();
         //reset vars
         lastJumpAttempt = currentJumpAttempt;
         surfCharacter.moveData.velocity = Vector3.zero;

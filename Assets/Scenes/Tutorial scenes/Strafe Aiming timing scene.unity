@@ -3685,7 +3685,7 @@ MonoBehaviour:
   startTriggered: 0
   playerStart: 0
   startPressed: 0
-  maxSwitches: 3
+  maxSwitches: 9
   switchTimes: []
   rightLookTimes: []
   leftLookTimes: []

@@ -26,12 +26,12 @@ public class MouseAngleTracker : MonoBehaviour
 
     public void OnEnable()
     {
-        float sensitivityMultiplier = 2.1f;
-        if(SettingsManager.Instance != null)
-        {
-            sensitivityMultiplier = SettingsManager.Instance.GetSensitivity();
-        }
-        mouseSensitivity = (playerAiming.horizontalSensitivity * sensitivityMultiplier);
+        // float sensitivityMultiplier = 2.1f;
+        // if(SettingsManager.Instance != null)
+        // {
+        //     sensitivityMultiplier = SettingsManager.Instance.GetSensitivity();
+        // }
+        mouseSensitivity = (playerAiming.horizontalSensitivity * SettingsManager.Instance.GetSensitivity());
     }
     void Start()
     {
