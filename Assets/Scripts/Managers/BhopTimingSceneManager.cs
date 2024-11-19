@@ -58,6 +58,7 @@ public class BhopTimingSceneManager : MonoBehaviour
         surfCharacter.DisableNonJumpInput();
         StartCoroutine(allowJump());
         //playerManager.EnableMouseLook();
+        surfCharacter.noMovementWithJump = true;
         surfCharacter.controller.moveForward = true;
         speedTracker.isAttemptActive = true;
         startTriggered = true;
@@ -142,7 +143,7 @@ public class BhopTimingSceneManager : MonoBehaviour
         {
             yield return null;
         }
-        surfCharacter.movementEnabled = true;
+        //surfCharacter.movementEnabled = true;
     }
 
     void Update()

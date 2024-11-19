@@ -2178,7 +2178,6 @@ MonoBehaviour:
   scoreList: []
   isLoaded: 0
   sceneNumber: 0
-  user: Compton
 --- !u!114 &2098334203
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2765,6 +2764,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2611578335327444061, guid: 5a0aa4bc3e204ee4fa5816d76460e8b0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2611578335327444062, guid: 5a0aa4bc3e204ee4fa5816d76460e8b0, type: 3}
+      propertyPath: movementEnabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7880296073372609873, guid: 5a0aa4bc3e204ee4fa5816d76460e8b0, type: 3}

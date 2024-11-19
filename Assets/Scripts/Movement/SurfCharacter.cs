@@ -41,6 +41,7 @@ namespace Fragsurf.Movement {
         public bool laddersEnabled = true;
         public bool supportAngledLadders = true;
         public bool movementEnabled = true;
+        public bool noMovementWithJump = false;
 
         [Header ("Step offset (can be buggy, enable at your own risk)")]
         public bool useStepOffset = false;
@@ -222,7 +223,7 @@ namespace Fragsurf.Movement {
 
             _colliderObject.transform.rotation = Quaternion.identity;
 
-            if(movementEnabled)
+            if(movementEnabled || noMovementWithJump)
             {
                 UpdateMoveData ();
             }
@@ -281,6 +282,20 @@ namespace Fragsurf.Movement {
         }
 
         private void UpdateMoveData () {
+            if(noMovementWithJump == true)
+            {
+                if(wishJumpScroll >= 0f)
+                {
+                    wishJumpScroll -= Time.deltaTime*0.5f;
+                }
+                float localMouseWheelAxis = Mathf.Abs(Input.GetAxisRaw("Mouse ScrollWheel"));
+                wishJumpScroll = Mathf.Clamp(Mathf.Lerp(0, wishJumpScroll+localMouseWheelAxis*20f, 0.5f), 0f, 2f);
+                if (Input.GetButtonDown ("Jump") || wishJumpScroll >= 0.04f || localMouseWheelAxis >= 0.05f)
+                    _moveData.wishJump = true;
+                else if (!Input.GetButton ("Jump"))    
+                    _moveData.wishJump = false;
+                return;
+            }
             
             _moveData.verticalAxis = Input.GetAxisRaw ("Vertical");
             _moveData.horizontalAxis = Input.GetAxisRaw ("Horizontal");
