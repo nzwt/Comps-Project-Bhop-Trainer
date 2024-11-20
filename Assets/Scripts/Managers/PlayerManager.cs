@@ -36,6 +36,12 @@ public class PlayerManager : MonoBehaviour
     {
         playerAiming.canAim = true;
     }
+
+    public void DisableMouseLookNoReset()
+    {
+        playerAiming.canAim = false;
+    }
+    
     // Start is called before the first frame update
     void Start()
     {

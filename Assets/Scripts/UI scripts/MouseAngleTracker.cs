@@ -22,6 +22,7 @@ public class MouseAngleTracker : MonoBehaviour
     private List<float> angleChangePerIntervals = new List<float>();
     private List<float> smoothnessValues = new List<float>();
     public bool isAttemptActive = false;
+    public bool isPaused = false;
 
 
     public void OnEnable()
@@ -42,6 +43,10 @@ public class MouseAngleTracker : MonoBehaviour
 
     void Update()
     {
+        if(isPaused)
+        {
+            return;
+        }
         // Increment the timer by the time passed since the last frame   
         float mouseX = Input.GetAxis("Mouse X")*mouseSensitivity;
         
