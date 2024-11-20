@@ -16,6 +16,7 @@ public class ArcJumpIndicator : MonoBehaviour
     private float panelWidth;                // The width of the panel
     private bool isGrounded;                 // Whether the player is on the ground
     private bool isJumping;                  // Whether the player is jumping
+    public bool isPaused = false;
 
     private float currentTime;               // Tracks the time since the jump
 
@@ -29,13 +30,12 @@ public class ArcJumpIndicator : MonoBehaviour
 
     void Update()
     {
-        // Example condition to detect when the player jumps (replace with your actual jump detection)
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             StartJump();
         }
 
-        // Example condition to detect when the player hits the ground (replace with your actual ground detection)
+
         if (isGrounded && isJumping)
         {
             EndJump();
@@ -83,6 +83,10 @@ public class ArcJumpIndicator : MonoBehaviour
         // Continue moving the dot along the arc
         while (elapsedTime < jumpDuration)
         {
+            while (isPaused)
+            {
+                yield return null; // Wait for the next frame while paused
+            }
             elapsedTime += Time.deltaTime;
             float t = Mathf.Clamp01(elapsedTime / jumpDuration);
 

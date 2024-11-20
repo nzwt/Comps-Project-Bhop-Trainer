@@ -71,6 +71,8 @@ namespace Fragsurf.Movement {
 
         private bool underwater = false;
 
+        private Vector3 pausedVelocity;
+
         ///// Properties /////
 
         public MoveType moveType { get { return MoveType.Walk; } }
@@ -217,6 +219,31 @@ namespace Fragsurf.Movement {
             _moveData.useStepOffset = useStepOffset;
             _moveData.stepOffset = stepOffset;
 
+        }
+
+        public void SetPaused(bool paused)
+        {
+            if (paused)
+            {
+                pausedVelocity = moveData.velocity; // Store current velocity
+                moveData.velocity = Vector3.zero;   // Stop movement
+                FreezeRigidbody(true);               // Freeze rigidbody
+            }
+            else
+            {
+                moveData.velocity = pausedVelocity; // Restore velocity
+                FreezeRigidbody(false);              // Unfreeze rigidbody
+            }
+        }
+
+        public void FreezeRigidbody(bool freeze)
+        {
+            rb.isKinematic = freeze;
+            if (freeze)
+            {
+                rb.velocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
         }
 
         private void Update () {
