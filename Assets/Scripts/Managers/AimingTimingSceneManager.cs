@@ -56,7 +56,7 @@ public class AimingTimingSceneManager : MonoBehaviour
         uiManager.EnableStartElements();
         playerManager.ResetPlayer(xReset, yReset, zReset);
         currentTarget = leftTarget;
-        sensitivity = SettingsManager.Instance.GetSensitivity();
+        sensitivity = 2.1f;//SettingsManager.Instance.GetSensitivity();
     }
 
     public void startAttempt()
@@ -74,6 +74,7 @@ public class AimingTimingSceneManager : MonoBehaviour
         currentTarget = leftTarget;
         mouseAngleTracker.resetAngleChange();
         mouseAngleTracker.isAttemptActive = true;
+        mouseAngleTracker.smoothnessPerAttempt = new List<float>();
         arrow.transform.rotation = Quaternion.Euler(0, 0, 0);
         orbController.resetTargets();
         bhopAccuracy = 0;
@@ -95,19 +96,20 @@ public class AimingTimingSceneManager : MonoBehaviour
         // Save the score, values are placeholders for now
         attemptNumber++;
         // Update the lastJumpAttempt to the currentJumpAttempt
-        // Reset the currentJumpAttempt
+        // Reset the currentJumpAttempt]
+        float smoothness = mouseAngleTracker.CalculateAverageAttemptAngleSmoothness();
         float score = (0.65f - Math.Abs(bhopAccuracy))*15.4f;
         for(int i = 0; i < mouseAngleTracker.smoothnessPerAttempt.Count; i++)
         {
             Debug.Log(mouseAngleTracker.smoothnessPerAttempt[i]);
         }
-        currentJumpAttempt = new JumpAttempt(1,attemptNumber, 0, 0, 0, 0, 0, score, 0, 0, bhopAccuracy, date: System.DateTime.Now);
+        currentJumpAttempt = new JumpAttempt(1,attemptNumber, 0, 0, smoothness, 0, 0, score, 0, 0, bhopAccuracy, date: System.DateTime.Now);
         scoreManager.SaveScore(1,currentJumpAttempt);
         //TODO: stats are going to be different depending on the scene, this should probably be dont in the scene manager but I dont know
         //jank, fix later
-        uiManager.StatScreen.GetComponent<BhopStatScreen>().currentJumpAttempt = currentJumpAttempt;
-        uiManager.StatScreen.GetComponent<BhopStatScreen>().lastJumpAttempt = lastJumpAttempt;
-        uiManager.StatScreen.GetComponent<BhopStatScreen>().updateStats();
+        uiManager.StatScreen.GetComponent<AimingStatScreen>().currentJumpAttempt = currentJumpAttempt;
+        uiManager.StatScreen.GetComponent<AimingStatScreen>().lastJumpAttempt = lastJumpAttempt;
+        uiManager.StatScreen.GetComponent<AimingStatScreen>().updateStats();
         //reset vars
         lastJumpAttempt = currentJumpAttempt;
         surfCharacter.moveData.velocity = Vector3.zero;
@@ -189,6 +191,7 @@ public class AimingTimingSceneManager : MonoBehaviour
                     jumpIndicator.StartJump();
                     //Debug.Log("Player is looking right");
                     mouseAngleTracker.StartTrackingSmoothness();
+                    mouseAngleTracker.movePositive = false;
                 }
             }
             else if(mouseAngleTracker.angleChange < 0)
@@ -202,6 +205,7 @@ public class AimingTimingSceneManager : MonoBehaviour
                     currentTarget = rightTarget;
                     jumpIndicator.StartJump();
                     mouseAngleTracker.StartTrackingSmoothness();
+                    mouseAngleTracker.movePositive = true;
                     //Debug.Log("Player is looking left");
                 }
             }
@@ -223,6 +227,7 @@ public class AimingTimingSceneManager : MonoBehaviour
             {
                 bhopAccuracy += time - 0.65f;
             }
+            //this stat is actually look offset accuracy
             bhopAccuracy = bhopAccuracy / maxSwitches;
             endAttempt();
             resetScene();

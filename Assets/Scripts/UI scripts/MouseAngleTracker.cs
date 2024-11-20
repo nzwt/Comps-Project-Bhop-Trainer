@@ -15,7 +15,6 @@ public class MouseAngleTracker : MonoBehaviour
     private float lastMouseY;
     private float accumulatedAngle = 0f;
     public float angleChange = 0f;
-    private float angleChangePerInterval = 0f;
     private float timer = 0f;
     public float jumpTimer = 0f;
     public float attemptAngleChange = 0;
@@ -25,21 +24,26 @@ public class MouseAngleTracker : MonoBehaviour
     //Smoothness
     private float startAngle;
     private float elapsedTime;
+    private float smoothnessTimer;
+    private float smoothnessStartAngle;
     private bool tracking;
-    private List<float> deviations;
+    public List<float> deviations;
     public float targetAngle = 90f;
     public float targetDuration = 0.65f;
     public List<float> smoothnessPerAttempt = new List<float>();
+    public bool movePositive = true;
+    int changeCounter = 0;
 
     public void OnEnable()
     {
         float sensitivityMultiplier = SettingsManager.Instance.GetSensitivity();
-        mouseSensitivity = (playerAiming.horizontalSensitivity * sensitivityMultiplier) / 2.1f;
+        mouseSensitivity = 2.1f;//(playerAiming.horizontalSensitivity * sensitivityMultiplier) ;
     }
     void Start()
     {
         // Capture the initial mouse position
         lastMouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
+        smoothnessStartAngle = lastMouseX;
         lastMouseY = (Input.GetAxis("Mouse Y") * playerAiming.verticalSensitivity  * playerAiming.sensitivityMultiplier) / 2.1f;
     }
 
@@ -69,43 +73,39 @@ public class MouseAngleTracker : MonoBehaviour
         if (tracking)
         {
             elapsedTime += Time.deltaTime;
+            smoothnessTimer += Time.deltaTime;
 
-            float expectedAngle = (elapsedTime / targetDuration) * targetAngle*mouseSensitivity;
-            float currentAngle = Math.Abs(startAngle + mouseX);
-            float deviation = currentAngle - expectedAngle;
-            deviations.Add(deviation);
+            if(smoothnessTimer >= 0.05)
+            {
+                float expectedAngle = (targetAngle/13) * changeCounter;
+                float currentAngle = smoothnessStartAngle + mouseX;
+                float deviation = 1000;
+                if( movePositive)
+                {
+                    deviation = Mathf.Abs((currentAngle - smoothnessStartAngle) - expectedAngle);
+                }
+                else
+                {
+                    deviation = Mathf.Abs((currentAngle - smoothnessStartAngle) + expectedAngle);
+                }
+                deviations.Add(deviation);
+                smoothnessTimer = 0;
+                smoothnessStartAngle = currentAngle;
+                changeCounter++;
+            }
 
             // Stop tracking after target duration
             if (elapsedTime >= targetDuration)
             {
-                smoothnessPerAttempt.Add(CalculateAverageAttemptAngleSmoothness());
+                smoothnessTimer = 0;
+                smoothnessPerAttempt.Add(CalculateIntervalSmoothness());
+                smoothnessStartAngle = mouseX;
             }
         }
     }
     public void resetAngleChange()
     {
         angleChange = 0;
-    }
-
-    void CalculateMouseAngleSmoothness()
-    {
-
-        angleChangePerInterval = accumulatedAngle / timer;
-
-            // Output the angle change for the interval
-        //Debug.Log("Angle Change Per Interval: " + angleChangePerInterval);
-        if(isAttemptActive)
-        {
-            //Debug.Log("Angle Change: " + accumulatedAngle);
-            angleChanges.Add(accumulatedAngle);
-            angleChangePerIntervals.Add(angleChangePerInterval);
-        }
-            
-        // Reset timer and accumulated angle for the next interval
-        timer = 0f;
-        accumulatedAngle = 0f;
-
-        
     }
 
     public float CalculateAttemptAngleChange()
@@ -118,11 +118,11 @@ public class MouseAngleTracker : MonoBehaviour
         return totalChange;
     }
 
-    public float CalculateAverageAttemptAngleSmoothness()
+    public float CalculateIntervalSmoothness()
     {
         tracking = false;
 
-        // Calculate consistency score (lower score = more consistent)
+        // Calculate consistency score (lower = more consistent)
         float totalDeviation = 0f;
         foreach (float deviation in deviations)
         {
@@ -133,11 +133,25 @@ public class MouseAngleTracker : MonoBehaviour
 
     }
 
+    public float CalculateAverageAttemptAngleSmoothness()
+    {
+        tracking = false;
+        float averageSmoothness = 0f;
+        foreach (float smoothness in smoothnessPerAttempt)
+        {
+            averageSmoothness += smoothness;
+        }
+        return averageSmoothness / smoothnessPerAttempt.Count;
+
+    }
+
     public void StartTrackingSmoothness()
     {
-        startAngle = Input.GetAxis("Mouse X")*2.1f;
+        //TODO replace with sensitivity
+        startAngle = Input.GetAxis("Mouse X")*mouseSensitivity;
         elapsedTime = 0f;
         deviations = new List<float>();
         tracking = true;
+        changeCounter = 0;
     }
 }
