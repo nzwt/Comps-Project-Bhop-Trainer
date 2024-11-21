@@ -16,8 +16,10 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
     public MouseAngleTracker mouseAngleTracker;
     public OrbController orbController;
     public TimelineController timelineController;
+    public SettingsMenu settingsMenuScript;
 
     // game objects
+    public GameObject settingsMenu;
     public JumpAttempt currentJumpAttempt;
     public JumpAttempt lastJumpAttempt;
     public int attemptNumber = 0;
@@ -181,337 +183,368 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
 
     void Update()
     {
-
-        //load the scores
-        if(scoreManager.isLoaded == true && lastScoreLoaded == false && scoreManager.GetLastJumpAttempt() != null)
+        if(settingsMenu.active == true)
         {
-
-            //load the most recent score
-            lastJumpAttempt = scoreManager.GetLastJumpAttempt();
-            attemptNumber = lastJumpAttempt.attemptNumber + 1;
-            lastScoreLoaded = true; 
-        }
-
-        //CheckAimAccuracy();
-
-        //IN RUN LOGIC//
-        //start attempt by moving over left orb
-        if(playerStart == false && startPressed == true)
-        {
-            if(mouseAngleTracker.angleChange < 0)
+            if (Input.GetKeyDown(KeyCode.Escape) && settingsMenu.active == true)
             {
-                if (mouseAngleTracker.angleChange < -87.5 && mouseAngleTracker.angleChange > -92.5)
+                settingsMenuScript.ApplySettings();
+                settingsMenuScript.SaveSettings();
+                settingsMenu.SetActive(false);
+                if(startPressed == true)
                 {
-                    playerStart = true;
-                    //Debug.Log("Player is looking left");
-                    switchTimer = 0;
-                    globalTimer = 0;
-                    rightSwitchCount = 0;
-                    leftSwitchCount = -1;
+                    jumpIndicator.isPaused = false;
+                    Time.timeScale = 1;
+                    playerManager.EnableMouseLook();
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
+                    mouseAngleTracker.isPaused = false;
+                }
+            }
+        }
+        else
+        {
+            if (Input.GetKeyDown(KeyCode.Escape) && settingsMenu.active == false)
+            {
+                settingsMenu.SetActive(true);
+                if(startPressed == true)
+                {
+                    playerManager.DisableMouseLookNoReset();
+                    jumpIndicator.isPaused = true;
+                    Time.timeScale = 0;
+                    mouseAngleTracker.isPaused = true;
+                }
+            }
+
+            //load the scores
+            if(scoreManager.isLoaded == true && lastScoreLoaded == false && scoreManager.GetLastJumpAttempt() != null)
+            {
+
+                //load the most recent score
+                lastJumpAttempt = scoreManager.GetLastJumpAttempt();
+                attemptNumber = lastJumpAttempt.attemptNumber + 1;
+                lastScoreLoaded = true; 
+            }
+
+            //CheckAimAccuracy();
+
+            //IN RUN LOGIC//
+            //start attempt by moving over left orb
+            if(playerStart == false && startPressed == true)
+            {
+                if(mouseAngleTracker.angleChange < 0)
+                {
+                    if (mouseAngleTracker.angleChange < -87.5 && mouseAngleTracker.angleChange > -92.5)
+                    {
+                        playerStart = true;
+                        //Debug.Log("Player is looking left");
+                        switchTimer = 0;
+                        globalTimer = 0;
+                        rightSwitchCount = 0;
+                        leftSwitchCount = -1;
+                        ATimer = 0;
+                        DTimer = 0;
+                        currentTarget = rightTarget;
+                        orbController.TargetLeft();
+                        arrow.transform.rotation = Quaternion.Euler(0, 0, 0);
+                        jumpIndicator.StartJump();
+                        rightLookTimes.Add(globalTimer);
+                    }
+                }
+            }
+            //if attempt is active, add time
+            if(playerStart == true)
+            {
+                globalTimer += Time.deltaTime;
+                switchTimer += Time.deltaTime;
+                //TODO: Bug - if the player holds D then lets go and taps A a bunch of times before looking left, it makes the array too big
+                if(Input.GetKeyDown(KeyCode.A)  && APressedTimestamps[leftSwitchCount] == -1000)//&& DHeld == false)
+                {
+                    AHeld = true;
+                    APressedTimestamps[leftSwitchCount] = (globalTimer);
+                    // Debug.Log("A pressed");
+                    // Debug.Log(globalTimer);
+                }
+                if(Input.GetKeyDown(KeyCode.D) && DPressedTimestamps[rightSwitchCount] == -1000)//&& AHeld == false)
+                {
+                    DHeld = true;
+                    DPressedTimestamps[rightSwitchCount] = (globalTimer);
+                    // Debug.Log("D pressed");
+                }
+                if(Input.GetKey(KeyCode.A) && AHeld == true)
+                {
+                    ATimer += Time.deltaTime;
+                }
+                if(Input.GetKey(KeyCode.D) && DHeld == true)
+                {
+                    DTimer += Time.deltaTime;
+                }
+                if(Input.GetKeyUp(KeyCode.A) && AHeld == true)
+                {
+                    AHeld = false;
+                    APressedTimes[leftSwitchCount] = ATimer;
                     ATimer = 0;
+                    // Debug.Log("A released");
+                }
+                if(Input.GetKeyUp(KeyCode.D) && DHeld == true)
+                {
+                    DHeld = false;
+                    DPressedTimes[rightSwitchCount] = DTimer;
                     DTimer = 0;
-                    currentTarget = rightTarget;
-                    orbController.TargetLeft();
-                    arrow.transform.rotation = Quaternion.Euler(0, 0, 0);
-                    jumpIndicator.StartJump();
-                    rightLookTimes.Add(globalTimer);
+                    // Debug.Log("D released");
                 }
+            }
+            //check if the player has started the attempt, if not, are they looking at a target?
+            if(playerStart == true)
+            {
+                if(mouseAngleTracker.angleChange > 0)
+                {
+                    if(mouseAngleTracker.angleChange > 87.5 && mouseAngleTracker.angleChange < 92.5 && currentTarget == rightTarget && switchTimer > -1)
+                    {
+                        switchTimes.Add(switchTimer);
+                        orbController.ShowRightAccuracy(switchTimer);
+                        switchTimer = 0;
+                        arrow.transform.Rotate(0, 180, 0);
+                        currentTarget = leftTarget;
+                        jumpIndicator.StartJump();
+                        leftLookTimes.Add(globalTimer);
+                        leftSwitchCount++;
+                        //Debug.Log("Player is looking right");
+                    }
+                }
+                else if(mouseAngleTracker.angleChange < 0)
+                {
+                    if (mouseAngleTracker.angleChange < -87.5 && mouseAngleTracker.angleChange > -92.5 && currentTarget == leftTarget && switchTimer > -1)
+                    {
+                        switchTimes.Add(switchTimer);
+                        orbController.ShowLeftAccuracy(switchTimer);
+                        switchTimer = 0;
+                        arrow.transform.Rotate(0, 180, 0);
+                        currentTarget = rightTarget;
+                        jumpIndicator.StartJump();
+                        rightLookTimes.Add(globalTimer);
+                        rightSwitchCount++;
+                        //Debug.Log("Player is looking left");
+                    }
+                }
+            }
+
+            //TODO - need to update this to have checks for starting level
+            if (Input.GetMouseButtonDown(0) && firstTime == true)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                firstTime = false;
+                startAttempt();
+            }
+
+            if (switchTimes.Count >= maxSwitches)
+            {
+                // Player has reached max switches, end the attempt
+                //If the player did not let go of the key, end the time
+                if(AHeld == true)
+                {
+                    APressedTimes[leftSwitchCount] = ATimer;
+                }
+                else if(DHeld == true)
+                {
+                    DPressedTimes[rightSwitchCount] = DTimer;
+                }
+                //calculate look accuracy
+                float endTime = globalTimer;
+                foreach (float time in switchTimes)
+                {
+                    bhopAccuracy += time - 0.65f;
+                }
+                bhopAccuracy = bhopAccuracy / maxSwitches;
+                //calculate strafe accuracy
+                //calculate offset of D press from switch
+
+                //calculate offset of all D presses from switch
+                // for(int i = 0; i < rightLookTimes.Count-1; i++)
+                // {
+                //     if(DPressedTimestamps[i] < rightLookTimes[i] && DPressedTimestamps[i] > rightLookTimes[i] - 0.2f)
+                //     {
+                //         DPressedOffset[i] = rightLookTimes[i] - DPressedTimestamps[i];
+                //     }
+                //     else if(DPressedTimestamps[i] > rightLookTimes[i] && DPressedTimestamps[i] < rightLookTimes[i] + 0.2f)
+                //     {
+                //         DPressedOffset[i] = DPressedTimestamps[i] - rightLookTimes[i];
+                //     }               
+                // }
+                for(int i = 0; i < rightLookTimes.Count-1; i++)
+                {
+                    for(int j = 0; j < DPressedTimestamps.Count(); j++)
+                    {
+                        if(DPressedTimestamps[j] < rightLookTimes[i] && DPressedTimestamps[j] > rightLookTimes[i] - 0.2f)
+                        {
+                            DPressedOffset[i] = rightLookTimes[i] - DPressedTimestamps[j];
+                        }
+                        else if(DPressedTimestamps[j] > rightLookTimes[i] && DPressedTimestamps[j] < rightLookTimes[i] + 0.2f)
+                        {
+                            DPressedOffset[i] = DPressedTimestamps[j] - rightLookTimes[i];
+                        }   
+                    }
+                }
+                //calculate offset of all D releases from switch
+                // for(int i = 0; i < rightLookTimes.Count-1; i++)
+                // {
+                //     float release = (DPressedOffset[i] + rightLookTimes[i]) + DPressedTimes[i];
+                //     if(release < leftLookTimes[i] && release > leftLookTimes[i] - 0.2f)
+                //     {
+                //         DReleasedOffset[i] = leftLookTimes[i] - release;
+                //     }
+                //     else if(release > leftLookTimes[i] && release < leftLookTimes[i] + 0.2f)
+                //     {
+                //         DReleasedOffset[i] = release - leftLookTimes[i];
+                //     }
+                // }
+                for(int i = 0; i < rightLookTimes.Count-1; i++)
+                {
+                    for(int j = 0; j < DPressedTimestamps.Count(); j++)
+                    {
+                        float release = (DPressedOffset[i] + rightLookTimes[i]) + DPressedTimes[j];
+                        if(release < leftLookTimes[i] && release > leftLookTimes[i] - 0.2f)
+                        {
+                            DReleasedOffset[i] = leftLookTimes[i] - release;
+                        }
+                        else if(release > leftLookTimes[i] && release < leftLookTimes[i] + 0.2f)
+                        {
+                            DReleasedOffset[i] = release - leftLookTimes[i];
+                        }
+                    }
+                }
+
+                //calculate offset of all A presses from switch
+                // for(int i = 0; i < leftLookTimes.Count; i++)
+                // {
+                //     if(APressedTimestamps[i] < leftLookTimes[i] && APressedTimestamps[i] > leftLookTimes[i] - 0.2f)
+                //     {
+                //         APressedOffset[i] = leftLookTimes[i] - APressedTimestamps[i];
+                //     }
+                //     else if(APressedTimestamps[i] > leftLookTimes[i] && APressedTimestamps[i] < leftLookTimes[i] + 0.2f)
+                //     {
+                //         APressedOffset[i] = APressedTimestamps[i] - leftLookTimes[i];
+                //     }
+                // }
+                for(int i = 0; i < leftLookTimes.Count; i++)
+                {
+                    for(int j = 0; j < APressedTimestamps.Count(); j++)
+                    {
+                        if(APressedTimestamps[j] < leftLookTimes[i] && APressedTimestamps[j] > leftLookTimes[i] - 0.2f)
+                        {
+                            APressedOffset[i] = leftLookTimes[i] - APressedTimestamps[j];
+                        }
+                        else if(APressedTimestamps[j] > leftLookTimes[i] && APressedTimestamps[j] < leftLookTimes[i] + 0.2f)
+                        {
+                            APressedOffset[i] = APressedTimestamps[j] - leftLookTimes[i];
+                        }
+                    }
+                }
+                //calculate offset of all A releases from switch
+                // for(int i = 0; i < leftLookTimes.Count; i++)
+                // {
+                //     float release = (APressedOffset[i] + leftLookTimes[i]) + APressedTimes[i];
+                //     if(release < rightLookTimes[i] && release > rightLookTimes[i] - 0.2f)
+                //     {
+                //         AReleasedOffset[i] = rightLookTimes[i] - release;
+                //     }
+                //     else if(release > rightLookTimes[i] && release < rightLookTimes[i] + 0.2f)
+                //     {
+                //         AReleasedOffset[i] = release - rightLookTimes[i] ;
+                //     }
+                // }
+                for(int i = 0; i < leftLookTimes.Count; i++)
+                {
+                    for(int j = 0; j < APressedTimestamps.Count(); j++)
+                    {
+                        float release = (APressedOffset[i] + leftLookTimes[i]) + APressedTimes[j];
+                        if(release < rightLookTimes[i] && release > rightLookTimes[i] - 0.2f)
+                        {
+                            AReleasedOffset[i] = rightLookTimes[i] - release;
+                        }
+                        else if(release > rightLookTimes[i] && release < rightLookTimes[i] + 0.2f)
+                        {
+                            AReleasedOffset[i] = release - rightLookTimes[i] ;
+                        }
+                    }
+                }
+
+            
+
+
+
+                //calculate strafe accuracy
+                Debug.Log("A Held Accuracy");
+                float totalOffset = 0;
+                int totalCounted = 0;
+                for(int i = 0; i < leftLookTimes.Count; i++)
+                {
+                    Debug.Log(APressedOffset[i]);
+                    Debug.Log(AReleasedOffset[i]);
+                    if(APressedOffset[i] != -1000)
+                    {
+                        totalOffset += APressedOffset[i];
+                        totalCounted += 1;
+                    }
+                    else
+                    {
+                        scorePenalties += 1;
+                    }
+                    //if they missed by too much, apply a score penalty but dont change the accuracy timing
+                    //TODO: make a stat for total misses?
+                    if(AReleasedOffset[i] != -1000)
+                    {
+                        totalOffset += AReleasedOffset[i];
+                        totalCounted += 1;
+                    }
+                    else
+                    {
+                        scorePenalties += 1;
+                    }
+                }
+
+                Debug.Log("D Held Accuracy");
+                for(int i = 0; i < rightLookTimes.Count; i++)
+                {
+                    Debug.Log(DPressedOffset[i]);
+                    Debug.Log(DReleasedOffset[i]);
+                    if(DPressedOffset[i] != -1000)
+                    {
+                        totalOffset += DPressedOffset[i];
+                        totalCounted += 1;
+                    }
+                    else
+                    {
+                        scorePenalties += 1;
+                    }
+                    if(DReleasedOffset[i] != -1000)
+                    {
+                        totalOffset += DReleasedOffset[i];
+                        totalCounted += 1;
+                    }
+                    else
+                    {
+                        scorePenalties += 1;
+                    }
+                }
+                strafeTimingOffset = totalOffset / totalCounted;
+
+                //calculate timing offset
+                foreach (float time in switchTimes)
+                {
+                    bhopAccuracy += time - 0.65f;
+                }
+                bhopAccuracy = bhopAccuracy / maxSwitches;
+                //for each switch, check from halfway to last switch to halfway to next switch and determine accuracy
+                //add values to timeline
+                timelineController.startLookTimestamps = leftLookTimes.ToArray();
+                timelineController.endLookTimestamps = rightLookTimes.ToArray();
+                timelineController.strafeStartTimestamps = APressedTimestamps;
+                timelineController.strafeEndTimestamps = DPressedTimestamps;
+
+                endAttempt();
+                resetScene();
             }
         }
-        //if attempt is active, add time
-        if(playerStart == true)
-        {
-            globalTimer += Time.deltaTime;
-            switchTimer += Time.deltaTime;
-            //TODO: Bug - if the player holds D then lets go and taps A a bunch of times before looking left, it makes the array too big
-            if(Input.GetKeyDown(KeyCode.A)  && APressedTimestamps[leftSwitchCount] == -1000)//&& DHeld == false)
-            {
-                AHeld = true;
-                APressedTimestamps[leftSwitchCount] = (globalTimer);
-                // Debug.Log("A pressed");
-                // Debug.Log(globalTimer);
-            }
-            if(Input.GetKeyDown(KeyCode.D) && DPressedTimestamps[rightSwitchCount] == -1000)//&& AHeld == false)
-            {
-                DHeld = true;
-                DPressedTimestamps[rightSwitchCount] = (globalTimer);
-                // Debug.Log("D pressed");
-            }
-            if(Input.GetKey(KeyCode.A) && AHeld == true)
-            {
-                ATimer += Time.deltaTime;
-            }
-            if(Input.GetKey(KeyCode.D) && DHeld == true)
-            {
-                DTimer += Time.deltaTime;
-            }
-            if(Input.GetKeyUp(KeyCode.A) && AHeld == true)
-            {
-                AHeld = false;
-                APressedTimes[leftSwitchCount] = ATimer;
-                ATimer = 0;
-                // Debug.Log("A released");
-            }
-            if(Input.GetKeyUp(KeyCode.D) && DHeld == true)
-            {
-                DHeld = false;
-                DPressedTimes[rightSwitchCount] = DTimer;
-                DTimer = 0;
-                // Debug.Log("D released");
-            }
-        }
-        //check if the player has started the attempt, if not, are they looking at a target?
-        if(playerStart == true)
-        {
-            if(mouseAngleTracker.angleChange > 0)
-            {
-                if(mouseAngleTracker.angleChange > 87.5 && mouseAngleTracker.angleChange < 92.5 && currentTarget == rightTarget && switchTimer > -1)
-                {
-                    switchTimes.Add(switchTimer);
-                    orbController.ShowRightAccuracy(switchTimer);
-                    switchTimer = 0;
-                    arrow.transform.Rotate(0, 180, 0);
-                    currentTarget = leftTarget;
-                    jumpIndicator.StartJump();
-                    leftLookTimes.Add(globalTimer);
-                    leftSwitchCount++;
-                    //Debug.Log("Player is looking right");
-                }
-            }
-            else if(mouseAngleTracker.angleChange < 0)
-            {
-                if (mouseAngleTracker.angleChange < -87.5 && mouseAngleTracker.angleChange > -92.5 && currentTarget == leftTarget && switchTimer > -1)
-                {
-                    switchTimes.Add(switchTimer);
-                    orbController.ShowLeftAccuracy(switchTimer);
-                    switchTimer = 0;
-                    arrow.transform.Rotate(0, 180, 0);
-                    currentTarget = rightTarget;
-                    jumpIndicator.StartJump();
-                    rightLookTimes.Add(globalTimer);
-                    rightSwitchCount++;
-                    //Debug.Log("Player is looking left");
-                }
-            }
-        }
-
-        //TODO - need to update this to have checks for starting level
-        if (Input.GetMouseButtonDown(0) && firstTime == true)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            firstTime = false;
-            startAttempt();
-        }
-
-        if (switchTimes.Count >= maxSwitches)
-        {
-            // Player has reached max switches, end the attempt
-            //If the player did not let go of the key, end the time
-            if(AHeld == true)
-            {
-                APressedTimes[leftSwitchCount] = ATimer;
-            }
-            else if(DHeld == true)
-            {
-                DPressedTimes[rightSwitchCount] = DTimer;
-            }
-            //calculate look accuracy
-            float endTime = globalTimer;
-            foreach (float time in switchTimes)
-            {
-                bhopAccuracy += time - 0.65f;
-            }
-            bhopAccuracy = bhopAccuracy / maxSwitches;
-            //calculate strafe accuracy
-            //calculate offset of D press from switch
-
-            //calculate offset of all D presses from switch
-            // for(int i = 0; i < rightLookTimes.Count-1; i++)
-            // {
-            //     if(DPressedTimestamps[i] < rightLookTimes[i] && DPressedTimestamps[i] > rightLookTimes[i] - 0.2f)
-            //     {
-            //         DPressedOffset[i] = rightLookTimes[i] - DPressedTimestamps[i];
-            //     }
-            //     else if(DPressedTimestamps[i] > rightLookTimes[i] && DPressedTimestamps[i] < rightLookTimes[i] + 0.2f)
-            //     {
-            //         DPressedOffset[i] = DPressedTimestamps[i] - rightLookTimes[i];
-            //     }               
-            // }
-            for(int i = 0; i < rightLookTimes.Count-1; i++)
-            {
-                for(int j = 0; j < DPressedTimestamps.Count(); j++)
-                {
-                    if(DPressedTimestamps[j] < rightLookTimes[i] && DPressedTimestamps[j] > rightLookTimes[i] - 0.2f)
-                    {
-                        DPressedOffset[i] = rightLookTimes[i] - DPressedTimestamps[j];
-                    }
-                    else if(DPressedTimestamps[j] > rightLookTimes[i] && DPressedTimestamps[j] < rightLookTimes[i] + 0.2f)
-                    {
-                        DPressedOffset[i] = DPressedTimestamps[j] - rightLookTimes[i];
-                    }   
-                }
-            }
-            //calculate offset of all D releases from switch
-            // for(int i = 0; i < rightLookTimes.Count-1; i++)
-            // {
-            //     float release = (DPressedOffset[i] + rightLookTimes[i]) + DPressedTimes[i];
-            //     if(release < leftLookTimes[i] && release > leftLookTimes[i] - 0.2f)
-            //     {
-            //         DReleasedOffset[i] = leftLookTimes[i] - release;
-            //     }
-            //     else if(release > leftLookTimes[i] && release < leftLookTimes[i] + 0.2f)
-            //     {
-            //         DReleasedOffset[i] = release - leftLookTimes[i];
-            //     }
-            // }
-            for(int i = 0; i < rightLookTimes.Count-1; i++)
-            {
-                for(int j = 0; j < DPressedTimestamps.Count(); j++)
-                {
-                    float release = (DPressedOffset[i] + rightLookTimes[i]) + DPressedTimes[j];
-                    if(release < leftLookTimes[i] && release > leftLookTimes[i] - 0.2f)
-                    {
-                        DReleasedOffset[i] = leftLookTimes[i] - release;
-                    }
-                    else if(release > leftLookTimes[i] && release < leftLookTimes[i] + 0.2f)
-                    {
-                        DReleasedOffset[i] = release - leftLookTimes[i];
-                    }
-                }
-            }
-
-            //calculate offset of all A presses from switch
-            // for(int i = 0; i < leftLookTimes.Count; i++)
-            // {
-            //     if(APressedTimestamps[i] < leftLookTimes[i] && APressedTimestamps[i] > leftLookTimes[i] - 0.2f)
-            //     {
-            //         APressedOffset[i] = leftLookTimes[i] - APressedTimestamps[i];
-            //     }
-            //     else if(APressedTimestamps[i] > leftLookTimes[i] && APressedTimestamps[i] < leftLookTimes[i] + 0.2f)
-            //     {
-            //         APressedOffset[i] = APressedTimestamps[i] - leftLookTimes[i];
-            //     }
-            // }
-            for(int i = 0; i < leftLookTimes.Count; i++)
-            {
-                for(int j = 0; j < APressedTimestamps.Count(); j++)
-                {
-                    if(APressedTimestamps[j] < leftLookTimes[i] && APressedTimestamps[j] > leftLookTimes[i] - 0.2f)
-                    {
-                        APressedOffset[i] = leftLookTimes[i] - APressedTimestamps[j];
-                    }
-                    else if(APressedTimestamps[j] > leftLookTimes[i] && APressedTimestamps[j] < leftLookTimes[i] + 0.2f)
-                    {
-                        APressedOffset[i] = APressedTimestamps[j] - leftLookTimes[i];
-                    }
-                }
-            }
-            //calculate offset of all A releases from switch
-            // for(int i = 0; i < leftLookTimes.Count; i++)
-            // {
-            //     float release = (APressedOffset[i] + leftLookTimes[i]) + APressedTimes[i];
-            //     if(release < rightLookTimes[i] && release > rightLookTimes[i] - 0.2f)
-            //     {
-            //         AReleasedOffset[i] = rightLookTimes[i] - release;
-            //     }
-            //     else if(release > rightLookTimes[i] && release < rightLookTimes[i] + 0.2f)
-            //     {
-            //         AReleasedOffset[i] = release - rightLookTimes[i] ;
-            //     }
-            // }
-            for(int i = 0; i < leftLookTimes.Count; i++)
-            {
-                for(int j = 0; j < APressedTimestamps.Count(); j++)
-                {
-                    float release = (APressedOffset[i] + leftLookTimes[i]) + APressedTimes[j];
-                    if(release < rightLookTimes[i] && release > rightLookTimes[i] - 0.2f)
-                    {
-                        AReleasedOffset[i] = rightLookTimes[i] - release;
-                    }
-                    else if(release > rightLookTimes[i] && release < rightLookTimes[i] + 0.2f)
-                    {
-                        AReleasedOffset[i] = release - rightLookTimes[i] ;
-                    }
-                }
-            }
-
-          
-
-
-
-            //calculate strafe accuracy
-            Debug.Log("A Held Accuracy");
-            float totalOffset = 0;
-            int totalCounted = 0;
-            for(int i = 0; i < leftLookTimes.Count; i++)
-            {
-                Debug.Log(APressedOffset[i]);
-                Debug.Log(AReleasedOffset[i]);
-                if(APressedOffset[i] != -1000)
-                {
-                    totalOffset += APressedOffset[i];
-                    totalCounted += 1;
-                }
-                else
-                {
-                    scorePenalties += 1;
-                }
-                //if they missed by too much, apply a score penalty but dont change the accuracy timing
-                //TODO: make a stat for total misses?
-                if(AReleasedOffset[i] != -1000)
-                {
-                    totalOffset += AReleasedOffset[i];
-                    totalCounted += 1;
-                }
-                else
-                {
-                    scorePenalties += 1;
-                }
-            }
-
-            Debug.Log("D Held Accuracy");
-            for(int i = 0; i < rightLookTimes.Count; i++)
-            {
-                Debug.Log(DPressedOffset[i]);
-                Debug.Log(DReleasedOffset[i]);
-                if(DPressedOffset[i] != -1000)
-                {
-                    totalOffset += DPressedOffset[i];
-                    totalCounted += 1;
-                }
-                else
-                {
-                    scorePenalties += 1;
-                }
-                if(DReleasedOffset[i] != -1000)
-                {
-                    totalOffset += DReleasedOffset[i];
-                    totalCounted += 1;
-                }
-                else
-                {
-                    scorePenalties += 1;
-                }
-            }
-            strafeTimingOffset = totalOffset / totalCounted;
-
-            //calculate timing offset
-            foreach (float time in switchTimes)
-            {
-                bhopAccuracy += time - 0.65f;
-            }
-            bhopAccuracy = bhopAccuracy / maxSwitches;
-            //for each switch, check from halfway to last switch to halfway to next switch and determine accuracy
-            //add values to timeline
-            timelineController.startLookTimestamps = leftLookTimes.ToArray();
-            timelineController.endLookTimestamps = rightLookTimes.ToArray();
-            timelineController.strafeStartTimestamps = APressedTimestamps;
-            timelineController.strafeEndTimestamps = DPressedTimestamps;
-
-            endAttempt();
-            resetScene();
-        }
-
     }
 }
