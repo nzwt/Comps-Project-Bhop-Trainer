@@ -75,6 +75,7 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
 
      private void OnEnable()
     {
+        settingsMenu.SetActive(false);
         scoreManager.LoadScores(2);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -360,17 +361,6 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
                 //calculate offset of D press from switch
 
                 //calculate offset of all D presses from switch
-                // for(int i = 0; i < rightLookTimes.Count-1; i++)
-                // {
-                //     if(DPressedTimestamps[i] < rightLookTimes[i] && DPressedTimestamps[i] > rightLookTimes[i] - 0.2f)
-                //     {
-                //         DPressedOffset[i] = rightLookTimes[i] - DPressedTimestamps[i];
-                //     }
-                //     else if(DPressedTimestamps[i] > rightLookTimes[i] && DPressedTimestamps[i] < rightLookTimes[i] + 0.2f)
-                //     {
-                //         DPressedOffset[i] = DPressedTimestamps[i] - rightLookTimes[i];
-                //     }               
-                // }
                 for(int i = 0; i < rightLookTimes.Count-1; i++)
                 {
                     for(int j = 0; j < DPressedTimestamps.Count(); j++)
@@ -386,18 +376,6 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
                     }
                 }
                 //calculate offset of all D releases from switch
-                // for(int i = 0; i < rightLookTimes.Count-1; i++)
-                // {
-                //     float release = (DPressedOffset[i] + rightLookTimes[i]) + DPressedTimes[i];
-                //     if(release < leftLookTimes[i] && release > leftLookTimes[i] - 0.2f)
-                //     {
-                //         DReleasedOffset[i] = leftLookTimes[i] - release;
-                //     }
-                //     else if(release > leftLookTimes[i] && release < leftLookTimes[i] + 0.2f)
-                //     {
-                //         DReleasedOffset[i] = release - leftLookTimes[i];
-                //     }
-                // }
                 for(int i = 0; i < rightLookTimes.Count-1; i++)
                 {
                     for(int j = 0; j < DPressedTimestamps.Count(); j++)
@@ -415,17 +393,6 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
                 }
 
                 //calculate offset of all A presses from switch
-                // for(int i = 0; i < leftLookTimes.Count; i++)
-                // {
-                //     if(APressedTimestamps[i] < leftLookTimes[i] && APressedTimestamps[i] > leftLookTimes[i] - 0.2f)
-                //     {
-                //         APressedOffset[i] = leftLookTimes[i] - APressedTimestamps[i];
-                //     }
-                //     else if(APressedTimestamps[i] > leftLookTimes[i] && APressedTimestamps[i] < leftLookTimes[i] + 0.2f)
-                //     {
-                //         APressedOffset[i] = APressedTimestamps[i] - leftLookTimes[i];
-                //     }
-                // }
                 for(int i = 0; i < leftLookTimes.Count; i++)
                 {
                     for(int j = 0; j < APressedTimestamps.Count(); j++)
@@ -441,18 +408,6 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
                     }
                 }
                 //calculate offset of all A releases from switch
-                // for(int i = 0; i < leftLookTimes.Count; i++)
-                // {
-                //     float release = (APressedOffset[i] + leftLookTimes[i]) + APressedTimes[i];
-                //     if(release < rightLookTimes[i] && release > rightLookTimes[i] - 0.2f)
-                //     {
-                //         AReleasedOffset[i] = rightLookTimes[i] - release;
-                //     }
-                //     else if(release > rightLookTimes[i] && release < rightLookTimes[i] + 0.2f)
-                //     {
-                //         AReleasedOffset[i] = release - rightLookTimes[i] ;
-                //     }
-                // }
                 for(int i = 0; i < leftLookTimes.Count; i++)
                 {
                     for(int j = 0; j < APressedTimestamps.Count(); j++)
