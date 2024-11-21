@@ -38,7 +38,25 @@ public class StrafingStatScreen : MonoBehaviour
         }
         float currentStrafeTimingOffset = Math.Abs(currentJumpAttempt.strafeTimingOffset);
         //changeInAngle.text = "Change in Angle: " + lastJumpAttempt.angle.ToString("F2") + " degrees";
-        if(Math.Abs(lastJumpAttempt.strafeTimingOffset) >= currentStrafeTimingOffset)
+        if(lastJumpAttempt.strafeTimingOffset == float.NaN)
+        {
+            if(currentStrafeTimingOffset == float.NaN)
+            {
+                strafeTimingOffset.text = "None (" + lastJumpAttempt.strafeTimingOffset.ToString("F2") + "None▲\\▼)";
+                strafeTimingOffset.color = Color.red;
+            }
+            else
+            {
+                strafeTimingOffset.text = currentStrafeTimingOffset.ToString("F2") + " (None▲\\▼)";
+                strafeTimingOffset.color = Color.green;
+            }
+        }
+        else if(currentStrafeTimingOffset == float.NaN)
+        {
+            strafeTimingOffset.text = "None (" + lastJumpAttempt.strafeTimingOffset.ToString("F2") + "▲\\▼)";
+            strafeTimingOffset.color = Color.green;
+        }
+        else if(Math.Abs(lastJumpAttempt.strafeTimingOffset) >= currentStrafeTimingOffset)
         {
             strafeTimingOffset.text = currentStrafeTimingOffset.ToString("F2") + " (" + lastJumpAttempt.strafeTimingOffset.ToString("F2") + "▲)";
             strafeTimingOffset.color = Color.green;

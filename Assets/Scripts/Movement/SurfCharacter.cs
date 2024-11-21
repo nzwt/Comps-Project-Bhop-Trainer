@@ -41,6 +41,7 @@ namespace Fragsurf.Movement {
         public bool laddersEnabled = true;
         public bool supportAngledLadders = true;
         public bool movementEnabled = true;
+        public bool noMovementWithJump = false;
 
         [Header ("Step offset (can be buggy, enable at your own risk)")]
         public bool useStepOffset = false;
@@ -69,6 +70,8 @@ namespace Fragsurf.Movement {
         public float wishJumpScroll;
 
         private bool underwater = false;
+
+        private Vector3 pausedVelocity;
 
         ///// Properties /////
 
@@ -218,11 +221,36 @@ namespace Fragsurf.Movement {
 
         }
 
+        public void SetPaused(bool paused)
+        {
+            if (paused)
+            {
+                pausedVelocity = moveData.velocity; // Store current velocity
+                moveData.velocity = Vector3.zero;   // Stop movement
+                FreezeRigidbody(true);               // Freeze rigidbody
+            }
+            else
+            {
+                moveData.velocity = pausedVelocity; // Restore velocity
+                FreezeRigidbody(false);              // Unfreeze rigidbody
+            }
+        }
+
+        public void FreezeRigidbody(bool freeze)
+        {
+            rb.isKinematic = freeze;
+            if (freeze)
+            {
+                rb.velocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
+        }
+
         private void Update () {
 
             _colliderObject.transform.rotation = Quaternion.identity;
 
-            if(movementEnabled)
+            if(movementEnabled || noMovementWithJump)
             {
                 UpdateMoveData ();
             }
@@ -281,6 +309,20 @@ namespace Fragsurf.Movement {
         }
 
         private void UpdateMoveData () {
+            if(noMovementWithJump == true)
+            {
+                if(wishJumpScroll >= 0f)
+                {
+                    wishJumpScroll -= Time.deltaTime*0.5f;
+                }
+                float localMouseWheelAxis = Mathf.Abs(Input.GetAxisRaw("Mouse ScrollWheel"));
+                wishJumpScroll = Mathf.Clamp(Mathf.Lerp(0, wishJumpScroll+localMouseWheelAxis*20f, 0.5f), 0f, 2f);
+                if (Input.GetButtonDown ("Jump") || wishJumpScroll >= 0.04f || localMouseWheelAxis >= 0.05f)
+                    _moveData.wishJump = true;
+                else if (!Input.GetButton ("Jump"))    
+                    _moveData.wishJump = false;
+                return;
+            }
             
             _moveData.verticalAxis = Input.GetAxisRaw ("Vertical");
             _moveData.horizontalAxis = Input.GetAxisRaw ("Horizontal");

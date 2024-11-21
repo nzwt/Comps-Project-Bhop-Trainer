@@ -14,8 +14,10 @@ public class AimingTimingSceneManager : MonoBehaviour
     public ArcJumpIndicator jumpIndicator;
     public MouseAngleTracker mouseAngleTracker;
     public OrbController orbController;
+    public SettingsMenu settingsMenuScript;
 
     // game objects
+    public GameObject settingsMenu;
     public JumpAttempt currentJumpAttempt;
     public JumpAttempt lastJumpAttempt;
     public int attemptNumber = 0;
@@ -47,6 +49,7 @@ public class AimingTimingSceneManager : MonoBehaviour
 
      private void OnEnable()
     {
+        settingsMenu.SetActive(false);
         scoreManager.LoadScores(1);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -110,6 +113,9 @@ public class AimingTimingSceneManager : MonoBehaviour
         uiManager.StatScreen.GetComponent<AimingStatScreen>().currentJumpAttempt = currentJumpAttempt;
         uiManager.StatScreen.GetComponent<AimingStatScreen>().lastJumpAttempt = lastJumpAttempt;
         uiManager.StatScreen.GetComponent<AimingStatScreen>().updateStats();
+        uiManager.StatScreen.GetComponent<AimingStatScreen>().currentJumpAttempt = currentJumpAttempt;
+        uiManager.StatScreen.GetComponent<AimingStatScreen>().lastJumpAttempt = lastJumpAttempt;
+        uiManager.StatScreen.GetComponent<AimingStatScreen>().updateStats();
         //reset vars
         lastJumpAttempt = currentJumpAttempt;
         surfCharacter.moveData.velocity = Vector3.zero;
@@ -140,100 +146,131 @@ public class AimingTimingSceneManager : MonoBehaviour
 
     void Update()
     {
-
-        //load the scores
-        if(scoreManager.isLoaded == true && lastScoreLoaded == false && scoreManager.GetLastJumpAttempt() != null)
+        if(settingsMenu.active == true)
         {
-
-            //load the most recent score
-            lastJumpAttempt = scoreManager.GetLastJumpAttempt();
-            attemptNumber = lastJumpAttempt.attemptNumber + 1;
-            lastScoreLoaded = true; 
-        }
-
-        //CheckAimAccuracy();
-
-        //IN RUN LOGIC//
-        //start attempt by moving over left orb
-        if(playerStart == false && startPressed == true)
-        {
-            if(mouseAngleTracker.angleChange < 0)
+            if (Input.GetKeyDown(KeyCode.Escape) && settingsMenu.active == true)
             {
-                if (mouseAngleTracker.angleChange < -87.5 && mouseAngleTracker.angleChange > -92.5)
+                settingsMenuScript.ApplySettings();
+                settingsMenuScript.SaveSettings();
+                settingsMenu.SetActive(false);
+                if(startPressed == true)
                 {
-                    playerStart = true;
-                    //Debug.Log("Player is looking left");
-                    switchTimer = 0;
-                    currentTarget = rightTarget;
-                    orbController.TargetLeft();
-                    arrow.transform.rotation = Quaternion.Euler(0, 0, 0);
-                    jumpIndicator.StartJump();
-                    mouseAngleTracker.StartTrackingSmoothness();
-                    mouseAngleTracker.movePositive = true;
+                    jumpIndicator.isPaused = false;
+                    Time.timeScale = 1;
+                    playerManager.EnableMouseLook();
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
+                    mouseAngleTracker.isPaused = false;
                 }
             }
         }
-        //if attempt is active, add time
-        if(playerStart == true)
+        else
         {
-            switchTimer += Time.deltaTime;
-        }
-        //check if the player has started the attempt, if not, are they looking at a target?
-        if(playerStart == true)
-        {
-            if(mouseAngleTracker.angleChange > 0)
+            if (Input.GetKeyDown(KeyCode.Escape) && settingsMenu.active == false)
             {
-                if(mouseAngleTracker.angleChange > 87.5 && mouseAngleTracker.angleChange < 92.5 && currentTarget == rightTarget && switchTimer > -1)
+                settingsMenu.SetActive(true);
+                if(startPressed == true)
                 {
-                    switchTimes.Add(switchTimer);
-                    orbController.ShowRightAccuracy(switchTimer);
-                    switchTimer = 0;
-                    arrow.transform.Rotate(0, 180, 0);
-                    currentTarget = leftTarget;
-                    jumpIndicator.StartJump();
-                    //Debug.Log("Player is looking right");
-                    mouseAngleTracker.StartTrackingSmoothness();
+                    playerManager.DisableMouseLookNoReset();
+                    jumpIndicator.isPaused = true;
+                    Time.timeScale = 0;
+                    mouseAngleTracker.isPaused = true;
+                }
+            }
+
+            //load the scores
+            if(scoreManager.isLoaded == true && lastScoreLoaded == false && scoreManager.GetLastJumpAttempt() != null)
+            {
+
+                //load the most recent score
+                lastJumpAttempt = scoreManager.GetLastJumpAttempt();
+                attemptNumber = lastJumpAttempt.attemptNumber + 1;
+                lastScoreLoaded = true; 
+            }
+
+            //CheckAimAccuracy();
+
+            //IN RUN LOGIC//
+            //start attempt by moving over left orb
+            if(playerStart == false && startPressed == true)
+            {
+                if(mouseAngleTracker.angleChange < 0)
+                {
+                    if (mouseAngleTracker.angleChange < -87.5 && mouseAngleTracker.angleChange > -92.5)
+                    {
+                        playerStart = true;
+                        //Debug.Log("Player is looking left");
+                        switchTimer = 0;
+                        currentTarget = rightTarget;
+                        orbController.TargetLeft();
+                        arrow.transform.rotation = Quaternion.Euler(0, 0, 0);
+                        jumpIndicator.StartJump();
+                        mouseAngleTracker.StartTrackingSmoothness();
+                    mouseAngleTracker.movePositive = true;
+                }
+                }
+            }
+            //if attempt is active, add time
+            if(playerStart == true)
+            {
+                switchTimer += Time.deltaTime;
+            }
+            //check if the player has started the attempt, if not, are they looking at a target?
+            if(playerStart == true)
+            {
+                if(mouseAngleTracker.angleChange > 0)
+                {
+                    if(mouseAngleTracker.angleChange > 87.5 && mouseAngleTracker.angleChange < 92.5 && currentTarget == rightTarget && switchTimer > -1)
+                    {
+                        switchTimes.Add(switchTimer);
+                        orbController.ShowRightAccuracy(switchTimer);
+                        switchTimer = 0;
+                        arrow.transform.Rotate(0, 180, 0);
+                        currentTarget = leftTarget;
+                        jumpIndicator.StartJump();
+                        //Debug.Log("Player is looking right");
+                        mouseAngleTracker.StartTrackingSmoothness();
                     mouseAngleTracker.movePositive = false;
                 }
-            }
-            else if(mouseAngleTracker.angleChange < 0)
-            {
-                if (mouseAngleTracker.angleChange < -87.5 && mouseAngleTracker.angleChange > -92.5 && currentTarget == leftTarget && switchTimer > -1)
+                }
+                else if(mouseAngleTracker.angleChange < 0)
                 {
-                    switchTimes.Add(switchTimer);
-                    orbController.ShowLeftAccuracy(switchTimer);
-                    switchTimer = 0;
-                    arrow.transform.Rotate(0, 180, 0);
-                    currentTarget = rightTarget;
-                    jumpIndicator.StartJump();
-                    mouseAngleTracker.StartTrackingSmoothness();
+                    if (mouseAngleTracker.angleChange < -87.5 && mouseAngleTracker.angleChange > -92.5 && currentTarget == leftTarget && switchTimer > -1)
+                    {
+                        switchTimes.Add(switchTimer);
+                        orbController.ShowLeftAccuracy(switchTimer);
+                        switchTimer = 0;
+                        arrow.transform.Rotate(0, 180, 0);
+                        currentTarget = rightTarget;
+                        jumpIndicator.StartJump();
+                        mouseAngleTracker.StartTrackingSmoothness();
                     mouseAngleTracker.movePositive = true;
                     //Debug.Log("Player is looking left");
+                    }
                 }
             }
-        }
 
-        //TODO - need to update this to have checks for starting level
-        if (Input.GetMouseButtonDown(0) && firstTime == true)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            firstTime = false;
-            startAttempt();
-        }
-
-        if (switchTimes.Count >= maxSwitches)
-        {
-            // Player has reached max switches, end the attempt
-            foreach (float time in switchTimes)
+            //TODO - need to update this to have checks for starting level
+            if (Input.GetMouseButtonDown(0) && firstTime == true)
             {
-                bhopAccuracy += time - 0.65f;
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                firstTime = false;
+                startAttempt();
             }
-            //this stat is actually look offset accuracy
-            bhopAccuracy = bhopAccuracy / maxSwitches;
-            endAttempt();
-            resetScene();
-        }
 
+            if (switchTimes.Count >= maxSwitches)
+            {
+                // Player has reached max switches, end the attempt
+                foreach (float time in switchTimes)
+                {
+                    bhopAccuracy += time - 0.65f;
+                }
+            //this stat is actually look offset accuracy
+                bhopAccuracy = bhopAccuracy / maxSwitches;
+                endAttempt();
+                resetScene();
+            }
+        }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -9,7 +10,7 @@ public class ScoreManager : MonoBehaviour
     public int sceneNumber;
 
     private string filePath;
-    public string user = "Compton";
+    private string user = "Nico";
 
     void Start()
     {
@@ -96,7 +97,8 @@ public class ScoreManager : MonoBehaviour
 
     private void SetFilePath(int sceneNumber)
     {
-        filePath = Path.Combine(Application.persistentDataPath, user +"Compton_JumpAttempt_Scene_" + sceneNumber + ".json");
+        String levelPath = user +"_JumpAttempt_Scene_" + sceneNumber + ".json";
+        filePath = Path.Combine(Application.persistentDataPath,levelPath);
         Debug.Log("File path set to: " + filePath);
     }
 

@@ -32,12 +32,17 @@ public class MouseAngleTracker : MonoBehaviour
     public float targetDuration = 0.65f;
     public List<float> smoothnessPerAttempt = new List<float>();
     public bool movePositive = true;
-    int changeCounter = 1;
+    int changeCounter = 1;    public bool isPaused = false;
+
 
     public void OnEnable()
     {
-        float sensitivityMultiplier = 2.1f;//SettingsManager.Instance.GetSensitivity();
-        mouseSensitivity = 2.1f;//(playerAiming.horizontalSensitivity * sensitivityMultiplier) ;
+        // float sensitivityMultiplier = 2.1f;
+        // if(SettingsManager.Instance != null)
+        // {
+        //     sensitivityMultiplier = SettingsManager.Instance.GetSensitivity();
+        // }
+        mouseSensitivity = (playerAiming.horizontalSensitivity * SettingsManager.Instance.GetSensitivity());
     }
     void Start()
     {
@@ -49,8 +54,12 @@ public class MouseAngleTracker : MonoBehaviour
 
     void Update()
     {
-        // Increment the timer by the time passed since the last frame
-        float mouseX = Input.GetAxis("Mouse X")*2.1f;//mouseSensitivity ;
+        if(isPaused)
+        {
+            return;
+        }
+        // Increment the timer by the time passed since the last frame   
+        float mouseX = Input.GetAxis("Mouse X")*mouseSensitivity;
         
         // Accumulate the angle change
         accumulatedAngle += mouseX;

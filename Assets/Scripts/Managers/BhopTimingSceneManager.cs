@@ -11,8 +11,10 @@ public class BhopTimingSceneManager : MonoBehaviour
     public PlayerManager playerManager;
     public ScoreManager scoreManager;
     public ArcJumpIndicator jumpIndicator;
+    public SettingsMenu settingsMenuScript;
 
     // game objects
+    public GameObject settingsMenu;
     public JumpAttempt currentJumpAttempt;
     public JumpAttempt lastJumpAttempt;
     public int attemptNumber = 0;
@@ -38,6 +40,7 @@ public class BhopTimingSceneManager : MonoBehaviour
 
      private void OnEnable()
     {
+        settingsMenu.SetActive(false);
         scoreManager.LoadScores(0);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -58,6 +61,7 @@ public class BhopTimingSceneManager : MonoBehaviour
         surfCharacter.DisableNonJumpInput();
         StartCoroutine(allowJump());
         //playerManager.EnableMouseLook();
+        surfCharacter.noMovementWithJump = true;
         surfCharacter.controller.moveForward = true;
         speedTracker.isAttemptActive = true;
         startTriggered = true;
@@ -99,6 +103,7 @@ public class BhopTimingSceneManager : MonoBehaviour
         surfCharacter.moveData.velocity = Vector3.zero;
         surfCharacter.moveData.wishJump = false;
         surfCharacter.wishJumpScroll = 0;
+        surfCharacter.noMovementWithJump = false;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         
@@ -142,121 +147,124 @@ public class BhopTimingSceneManager : MonoBehaviour
         {
             yield return null;
         }
-        surfCharacter.movementEnabled = true;
+        //surfCharacter.movementEnabled = true;
     }
 
     void Update()
-    {   bool grounded = true;
-        //skip first frame, otherwise the player will register an attempt
-        if(surfCharacter.groundObject == null)
+    {   
+        if(settingsMenu.active == true)
         {
-            grounded = false;
-        }
-        if(firstFrame)
-        {
-            grounded = true;
-            firstFrame = false;
-            surfCharacter.moveData.wishJump = false;
-        }
-        //load the scores
-        if(scoreManager.isLoaded == true && lastScoreLoaded == false && scoreManager.GetLastJumpAttempt() != null)
-        {
-
-            //load the most recent score
-            lastJumpAttempt = scoreManager.GetLastJumpAttempt();
-            attemptNumber = lastJumpAttempt.attemptNumber + 1;
-            lastScoreLoaded = true; 
-        }
-
-        //IN RUN LOGIC//
-        //check if the player crosses the line (maybe make this a trigger) (should this be the end of the attempt?)
-        //Debug.Log(surfCharacter.transform.position.z);
-        if(surfCharacter.transform.position.z <= 27.5 && surfCharacter.transform.position.z >= 27 && startTriggered == true)
-        {
-            endAttempt();
-            resetScene();
-        }
-        //calculate how long the player has been on the ground
-
-        if (Input.GetMouseButtonDown(0) && firstTime == true)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            firstTime = false;
-            startAttempt();
-        }
-        if (hasJumped == false && grounded == false)
-        {
-            // Player has jumped, register the jump
-            print("Jumped");
-            hasJumped = true;
-            jumpIndicator.StartJump();
-        }
-
-        if (hasJumped == true && grounded == true && groundTimer == -1)
-        {
-            // Player landed after a jump, start timing the grounded period
-            groundTimer = 0;
-            hasJumped = false; // Reset jump status after landing
-        }
-
-        if (hasJumped == false && grounded == true && groundTimer >= 0)
-        {
-            // Player is on the ground, increment ground time
-            groundTimer += Time.deltaTime;
-        }
-
-        if (hasJumped == true && grounded == false && groundTimer >= 0)
-        {
-            // Player has jumped, add the ground time to the list
-            groundTimes.Add(groundTimer);
-            //Debug.Log("Ground time recorded: " + groundTimer);
-            currentJumps++;
-            //Debug.Log("Current jumps: " + currentJumps);
-            groundTimer = -1; // Reset timer after recording
-        }
-
-        if (currentJumps >= maxJumps)
-        {
-            // Player has reached max jumps, end the attempt
-            foreach (float time in groundTimes)
+            if (Input.GetKeyDown(KeyCode.Escape) && settingsMenu.active == true)
             {
-                //Debug.Log(time);
+                settingsMenuScript.ApplySettings();
+                settingsMenuScript.SaveSettings();
+                settingsMenu.SetActive(false);
+                if(startTriggered == true)
+                {
+                    surfCharacter.controller.moveForward = true;
+                    jumpIndicator.isPaused = false;
+                    surfCharacter.noMovementWithJump = true;
+                    surfCharacter.SetPaused(false);
+                    Time.timeScale = 1;
+                }
             }
-            endAttempt();
-            resetScene();
         }
+        else
+        {
+            
+            if (Input.GetKeyDown(KeyCode.Escape) && settingsMenu.active == false)
+            {
+                settingsMenu.SetActive(true);
+                if(startTriggered == true)
+                {
+                    surfCharacter.controller.moveForward = false;
+                    jumpIndicator.isPaused = true;
+                    surfCharacter.noMovementWithJump = false;
+                    surfCharacter.SetPaused(true);
+                    Time.timeScale = 0;
+                }
+            }
+        
+            bool grounded = true;
+            //skip first frame, otherwise the player will register an attempt
+            if(surfCharacter.groundObject == null)
+            {
+                grounded = false;
+            }
+            if(firstFrame)
+            {
+                grounded = true;
+                firstFrame = false;
+                surfCharacter.moveData.wishJump = false;
+            }
+            //load the scores
+            if(scoreManager.isLoaded == true && lastScoreLoaded == false && scoreManager.GetLastJumpAttempt() != null)
+            {
 
-        // if( hasJumped == false && grounded == false)
-        // {
-        //     print("Jumped");
-        //     hasJumped = true;
-        // }
-        // if (hasJumped == true && grounded == true && currentJumps == maxJumps)
-        // {
-        //     foreach (float time in groundTimes)
-        //     {
-        //         Debug.Log(time);
-        //     }
-        //     //Debug.Log(groundTimes);
-        //     endAttempt();
-        //     resetScene();
-        // }
-        // if (hasJumped == true && grounded == true && groundTimer == -1)
-        // {
-        //     currentJumps++;
-        //     groundTimer = 0;
-        //     hasJumped = false;
-        // }
-        // else if (hasJumped == false && grounded == true && groundTimer >= 0)
-        // {
-        //     groundTimer += Time.deltaTime;
-        // }
-        // else if (hasJumped == true && grounded == false)
-        // {
-        //     groundTimes.Add(groundTimer);
-        //     groundTimer = -1;
-        // }
+                //load the most recent score
+                lastJumpAttempt = scoreManager.GetLastJumpAttempt();
+                attemptNumber = lastJumpAttempt.attemptNumber + 1;
+                lastScoreLoaded = true; 
+            }
 
+            //IN RUN LOGIC//
+            //check if the player crosses the line (maybe make this a trigger) (should this be the end of the attempt?)
+            //Debug.Log(surfCharacter.transform.position.z);
+            if(surfCharacter.transform.position.z <= 27.5 && surfCharacter.transform.position.z >= 27 && startTriggered == true)
+            {
+                endAttempt();
+                resetScene();
+            }
+            //calculate how long the player has been on the ground
+
+            if (Input.GetMouseButtonDown(0) && firstTime == true)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                firstTime = false;
+                startAttempt();
+            }
+            if (hasJumped == false && grounded == false)
+            {
+                // Player has jumped, register the jump
+                print("Jumped");
+                hasJumped = true;
+                jumpIndicator.StartJump();
+            }
+
+            if (hasJumped == true && grounded == true && groundTimer == -1)
+            {
+                // Player landed after a jump, start timing the grounded period
+                groundTimer = 0;
+                hasJumped = false; // Reset jump status after landing
+            }
+
+            if (hasJumped == false && grounded == true && groundTimer >= 0)
+            {
+                // Player is on the ground, increment ground time
+                groundTimer += Time.deltaTime;
+            }
+
+            if (hasJumped == true && grounded == false && groundTimer >= 0)
+            {
+                // Player has jumped, add the ground time to the list
+                groundTimes.Add(groundTimer);
+                //Debug.Log("Ground time recorded: " + groundTimer);
+                currentJumps++;
+                //Debug.Log("Current jumps: " + currentJumps);
+                groundTimer = -1; // Reset timer after recording
+            }
+
+            if (currentJumps >= maxJumps)
+            {
+                // Player has reached max jumps, end the attempt
+                foreach (float time in groundTimes)
+                {
+                    //Debug.Log(time);
+                }
+                endAttempt();
+                resetScene();
+            }
+        }
     }
 }
