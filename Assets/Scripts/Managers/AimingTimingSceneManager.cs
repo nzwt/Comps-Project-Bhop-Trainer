@@ -168,6 +168,8 @@ public class AimingTimingSceneManager : MonoBehaviour
                     orbController.TargetLeft();
                     arrow.transform.rotation = Quaternion.Euler(0, 0, 0);
                     jumpIndicator.StartJump();
+                    mouseAngleTracker.StartTrackingSmoothness();
+                    mouseAngleTracker.movePositive = true;
                 }
             }
         }
