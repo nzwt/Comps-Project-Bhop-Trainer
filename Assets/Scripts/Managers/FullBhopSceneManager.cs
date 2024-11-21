@@ -497,11 +497,11 @@ public class FullBhopSceneManager : MonoBehaviour
             //If the player did not let go of the key, end the time
             if(AHeld == true)
             {
-                APressedTimes[leftSwitchCount] = ATimer;
+                APressedTimes[AHeldCount] = ATimer;
             }
             else if(DHeld == true)
             {
-                DPressedTimes[rightSwitchCount] = DTimer;
+                DPressedTimes[DHeldCount] = DTimer;
             }
             //calculate look accuracy
             float endTime = globalTimer;
@@ -565,10 +565,6 @@ public class FullBhopSceneManager : MonoBehaviour
                         //unsure if I need this, but could be helpful
                         DStrafeTimelineEnd[i] = DPressedTimestamps[j] + DPressedTimes[j];
                     }
-                    if(rightLookAttemptTimestamps[i] - DPressedTimestamps[j] > closestRight)
-                    {
-                        break;
-                    }
                 }
             }
 
@@ -585,10 +581,6 @@ public class FullBhopSceneManager : MonoBehaviour
                         APressedOffset[i] = closestLeft;
                         AStrafeTimeline[i] = APressedTimestamps[j];
                         AStrafeTimelineEnd[i] = APressedTimestamps[j] + APressedTimes[j];
-                    }
-                    if(leftLookAttemptTimestamps[i] - APressedTimestamps[j] > closestLeft)
-                    {
-                        break;
                     }
                 }
             }

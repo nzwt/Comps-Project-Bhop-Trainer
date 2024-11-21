@@ -49,6 +49,12 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
     public float[] DPressedOffset ;
     public float[] AReleasedOffset ;
     public float[] DReleasedOffset ;
+    public float[] DStrafeTimeline;
+    public float[] DStrafeTimelineEnd;
+    public float[] AStrafeTimeline;
+    public float[] AStrafeTimelineEnd;
+    int AHeldCount = 0;
+    int DHeldCount = 0;
     private float ATimer = -1;
     private float DTimer = -1;
     private float switchTimer = -1;
@@ -90,6 +96,8 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
 
     public void startAttempt()
     {
+        //DEBUG ONLY
+        resetArrays();
         startPressed = true;
         timelineController.RemoveAllPips();
         ///text appears: move mouse to either the left or the right to start an attempt, then switch targets by smoothly moving your mouse to the other target each time the 
@@ -145,7 +153,7 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
         jumpIndicator.deleteDots();
         playerStart = false;
         mouseAngleTracker.isAttemptActive = false;
-        resetArrays();
+        //resetArrays();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         startPressed = false;
@@ -155,16 +163,26 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
 
     public void resetArrays()
     {
+        int rightJumps = maxSwitches/2;
+        if(maxSwitches%2 == 1)
+        {
+            rightJumps = (maxSwitches/2)+2;
+        }
         APressedTimestamps = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
         DPressedTimestamps = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
         APressedTimes = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
         DPressedTimes = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
-        APressedOffset = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
-        DPressedOffset = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
-        AReleasedOffset = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
-        DReleasedOffset = Enumerable.Repeat(-1000f, maxSwitches).ToArray();
+        APressedOffset = Enumerable.Repeat(-1000f, (maxSwitches/2)+1).ToArray();
+        DPressedOffset = Enumerable.Repeat(-1000f, rightJumps).ToArray();
+        AReleasedOffset = Enumerable.Repeat(-1000f, (maxSwitches/2)+1).ToArray();
+        DReleasedOffset = Enumerable.Repeat(-1000f, rightJumps).ToArray();
+        AStrafeTimeline = Enumerable.Repeat(-1000f, (maxSwitches/2)+1).ToArray();
+        DStrafeTimeline = Enumerable.Repeat(-1000f, rightJumps).ToArray();
+        AStrafeTimelineEnd = Enumerable.Repeat(-1000f, (maxSwitches/2)+1).ToArray();
+        DStrafeTimelineEnd = Enumerable.Repeat(-1000f, rightJumps).ToArray();
         rightLookTimes = new List<float>();
         leftLookTimes = new List<float>();
+
     }
 
     public void resetScene()
@@ -240,6 +258,8 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
                         //Debug.Log("Player is looking left");
                         switchTimer = 0;
                         globalTimer = 0;
+                        AHeldCount = 0;
+                        DHeldCount = 0;
                         rightSwitchCount = 0;
                         leftSwitchCount = -1;
                         ATimer = 0;
@@ -258,17 +278,17 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
                 globalTimer += Time.deltaTime;
                 switchTimer += Time.deltaTime;
                 //TODO: Bug - if the player holds D then lets go and taps A a bunch of times before looking left, it makes the array too big
-                if(Input.GetKeyDown(KeyCode.A)  && APressedTimestamps[leftSwitchCount] == -1000)//&& DHeld == false)
+                if( leftSwitchCount != -1 && Input.GetKeyDown(KeyCode.A)  && APressedTimestamps[AHeldCount] == -1000)//&& DHeld == false)
                 {
                     AHeld = true;
-                    APressedTimestamps[leftSwitchCount] = (globalTimer);
+                    APressedTimestamps[AHeldCount] = (globalTimer);
                     // Debug.Log("A pressed");
                     // Debug.Log(globalTimer);
                 }
-                if(Input.GetKeyDown(KeyCode.D) && DPressedTimestamps[rightSwitchCount] == -1000)//&& AHeld == false)
+                if(Input.GetKeyDown(KeyCode.D) && DPressedTimestamps[DHeldCount] == -1000)//&& AHeld == false)
                 {
                     DHeld = true;
-                    DPressedTimestamps[rightSwitchCount] = (globalTimer);
+                    DPressedTimestamps[DHeldCount] = (globalTimer);
                     // Debug.Log("D pressed");
                 }
                 if(Input.GetKey(KeyCode.A) && AHeld == true)
@@ -282,14 +302,16 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
                 if(Input.GetKeyUp(KeyCode.A) && AHeld == true)
                 {
                     AHeld = false;
-                    APressedTimes[leftSwitchCount] = ATimer;
+                    APressedTimes[AHeldCount] = ATimer;
+                    AHeldCount++;
                     ATimer = 0;
                     // Debug.Log("A released");
                 }
                 if(Input.GetKeyUp(KeyCode.D) && DHeld == true)
                 {
                     DHeld = false;
-                    DPressedTimes[rightSwitchCount] = DTimer;
+                    DPressedTimes[DHeldCount] = DTimer;
+                    DHeldCount++;
                     DTimer = 0;
                     // Debug.Log("D released");
                 }
@@ -344,11 +366,11 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
                 //If the player did not let go of the key, end the time
                 if(AHeld == true)
                 {
-                    APressedTimes[leftSwitchCount] = ATimer;
+                    APressedTimes[AHeldCount] = ATimer;
                 }
                 else if(DHeld == true)
                 {
-                    DPressedTimes[rightSwitchCount] = DTimer;
+                    DPressedTimes[DHeldCount] = DTimer;
                 }
                 //calculate look accuracy
                 float endTime = globalTimer;
@@ -361,72 +383,38 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
                 //calculate offset of D press from switch
 
                 //calculate offset of all D presses from switch
-                for(int i = 0; i < rightLookTimes.Count-1; i++)
+                //calculate offset of all D presses from rightLookAttemptTimestamps
+                for(int i = 0; i < rightLookTimes.Count(); i++)
                 {
-                    for(int j = 0; j < DPressedTimestamps.Count(); j++)
+                    float closestRight = 1000;
+                    for(int j = 0; j < DPressedTimestamps.Length; j++)
                     {
-                        if(DPressedTimestamps[j] < rightLookTimes[i] && DPressedTimestamps[j] > rightLookTimes[i] - 0.2f)
+                        if(Math.Abs(rightLookTimes[i] - DPressedTimestamps[j]) < closestRight)
                         {
-                            DPressedOffset[i] = rightLookTimes[i] - DPressedTimestamps[j];
-                        }
-                        else if(DPressedTimestamps[j] > rightLookTimes[i] && DPressedTimestamps[j] < rightLookTimes[i] + 0.2f)
-                        {
-                            DPressedOffset[i] = DPressedTimestamps[j] - rightLookTimes[i];
-                        }   
-                    }
-                }
-                //calculate offset of all D releases from switch
-                for(int i = 0; i < rightLookTimes.Count-1; i++)
-                {
-                    for(int j = 0; j < DPressedTimestamps.Count(); j++)
-                    {
-                        float release = (DPressedOffset[i] + rightLookTimes[i]) + DPressedTimes[j];
-                        if(release < leftLookTimes[i] && release > leftLookTimes[i] - 0.2f)
-                        {
-                            DReleasedOffset[i] = leftLookTimes[i] - release;
-                        }
-                        else if(release > leftLookTimes[i] && release < leftLookTimes[i] + 0.2f)
-                        {
-                            DReleasedOffset[i] = release - leftLookTimes[i];
+                            closestRight = Math.Abs(rightLookTimes[i] - DPressedTimestamps[j]);
+                            DPressedOffset[i] = closestRight;
+                            DStrafeTimeline[i] = DPressedTimestamps[j];
+                            //unsure if I need this, but could be helpful
+                            DStrafeTimelineEnd[i] = DPressedTimestamps[j] + DPressedTimes[j];
                         }
                     }
                 }
 
                 //calculate offset of all A presses from switch
-                for(int i = 0; i < leftLookTimes.Count; i++)
+                for(int i = 0; i < leftLookTimes.Count(); i++)
                 {
-                    for(int j = 0; j < APressedTimestamps.Count(); j++)
+                    float closestLeft = 1000;
+                    for(int j = 0; j < APressedTimestamps.Length; j++)
                     {
-                        if(APressedTimestamps[j] < leftLookTimes[i] && APressedTimestamps[j] > leftLookTimes[i] - 0.2f)
+                        if(Math.Abs(leftLookTimes[i] - APressedTimestamps[j]) < closestLeft)
                         {
-                            APressedOffset[i] = leftLookTimes[i] - APressedTimestamps[j];
-                        }
-                        else if(APressedTimestamps[j] > leftLookTimes[i] && APressedTimestamps[j] < leftLookTimes[i] + 0.2f)
-                        {
-                            APressedOffset[i] = APressedTimestamps[j] - leftLookTimes[i];
+                            closestLeft = Math.Abs(leftLookTimes[i] - APressedTimestamps[j]);
+                            APressedOffset[i] = closestLeft;
+                            AStrafeTimeline[i] = APressedTimestamps[j];
+                            AStrafeTimelineEnd[i] = APressedTimestamps[j] + APressedTimes[j];
                         }
                     }
                 }
-                //calculate offset of all A releases from switch
-                for(int i = 0; i < leftLookTimes.Count; i++)
-                {
-                    for(int j = 0; j < APressedTimestamps.Count(); j++)
-                    {
-                        float release = (APressedOffset[i] + leftLookTimes[i]) + APressedTimes[j];
-                        if(release < rightLookTimes[i] && release > rightLookTimes[i] - 0.2f)
-                        {
-                            AReleasedOffset[i] = rightLookTimes[i] - release;
-                        }
-                        else if(release > rightLookTimes[i] && release < rightLookTimes[i] + 0.2f)
-                        {
-                            AReleasedOffset[i] = release - rightLookTimes[i] ;
-                        }
-                    }
-                }
-
-            
-
-
 
                 //calculate strafe accuracy
                 Debug.Log("A Held Accuracy");
@@ -494,8 +482,8 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
                 //add values to timeline
                 timelineController.startLookTimestamps = leftLookTimes.ToArray();
                 timelineController.endLookTimestamps = rightLookTimes.ToArray();
-                timelineController.strafeStartTimestamps = APressedTimestamps;
-                timelineController.strafeEndTimestamps = DPressedTimestamps;
+                timelineController.strafeStartTimestamps = AStrafeTimeline;
+                timelineController.strafeEndTimestamps = DStrafeTimeline;
 
                 endAttempt();
                 resetScene();
