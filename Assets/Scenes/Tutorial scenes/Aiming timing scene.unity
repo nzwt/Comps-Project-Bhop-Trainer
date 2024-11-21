@@ -392,6 +392,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 207569370}
     m_Modifications:
     - target: {fileID: 7514983105897103651, guid: 155a82ab7d35b404aa1d0b839ba7c19d, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7514983105897103651, guid: 155a82ab7d35b404aa1d0b839ba7c19d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2098334206}
@@ -1992,7 +1996,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -3435,6 +3439,10 @@ PrefabInstance:
     - target: {fileID: 7695883015097066913, guid: 147eeb4b1031d884c941e633829910b6, type: 3}
       propertyPath: m_Name
       value: Menu
+      objectReference: {fileID: 0}
+    - target: {fileID: 8615628518940958194, guid: 147eeb4b1031d884c941e633829910b6, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8615628518940958194, guid: 147eeb4b1031d884c941e633829910b6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target

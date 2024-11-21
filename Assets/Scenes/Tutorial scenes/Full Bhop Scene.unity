@@ -2002,6 +2002,10 @@ PrefabInstance:
       value: Menu
       objectReference: {fileID: 0}
     - target: {fileID: 8615628518940958194, guid: 147eeb4b1031d884c941e633829910b6, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8615628518940958194, guid: 147eeb4b1031d884c941e633829910b6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2098334209}
@@ -2713,7 +2717,6 @@ MonoBehaviour:
   scoreList: []
   isLoaded: 0
   sceneNumber: 0
-  user: Compton
 --- !u!114 &2098334203
 MonoBehaviour:
   m_ObjectHideFlags: 0
