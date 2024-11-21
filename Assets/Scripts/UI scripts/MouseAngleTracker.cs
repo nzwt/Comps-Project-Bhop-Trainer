@@ -36,21 +36,21 @@ public class MouseAngleTracker : MonoBehaviour
 
     public void OnEnable()
     {
-        float sensitivityMultiplier = 4.2f;//SettingsManager.Instance.GetSensitivity();
-        mouseSensitivity = 4.2f;//(playerAiming.horizontalSensitivity * sensitivityMultiplier) ;
+        float sensitivityMultiplier = 2.1f;//SettingsManager.Instance.GetSensitivity();
+        mouseSensitivity = 2.1f;//(playerAiming.horizontalSensitivity * sensitivityMultiplier) ;
     }
     void Start()
     {
         // Capture the initial mouse position
         lastMouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
         smoothnessStartAngle = lastMouseX;
-        lastMouseY = (Input.GetAxis("Mouse Y") * playerAiming.verticalSensitivity  * playerAiming.sensitivityMultiplier) / 4.2f;
+        lastMouseY = (Input.GetAxis("Mouse Y") * playerAiming.verticalSensitivity  * playerAiming.sensitivityMultiplier) / 2.1f;
     }
 
     void Update()
     {
         // Increment the timer by the time passed since the last frame
-        float mouseX = Input.GetAxis("Mouse X")*4.2f;//mouseSensitivity ;
+        float mouseX = Input.GetAxis("Mouse X")*2.1f;//mouseSensitivity ;
         
         // Accumulate the angle change
         accumulatedAngle += mouseX;
