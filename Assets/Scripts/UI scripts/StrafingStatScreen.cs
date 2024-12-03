@@ -66,14 +66,14 @@ public class StrafingStatScreen : MonoBehaviour
             strafeTimingOffset.text = currentStrafeTimingOffset.ToString("F2") + " (" + lastJumpAttempt.strafeTimingOffset.ToString("F2") + "▼)";
             strafeTimingOffset.color = Color.red;
         }
-        if( Math.Abs(lastJumpAttempt.bhopAccuracy)  >= Math.Abs(currentJumpAttempt.bhopAccuracy) )
+        if( Math.Abs(lastJumpAttempt.lookOffset)  >= Math.Abs(currentJumpAttempt.lookOffset) )
         {
-            timingOffset.text = currentJumpAttempt.bhopAccuracy.ToString("F2") + " (" + lastJumpAttempt.bhopAccuracy.ToString("F2") + "▲)";
+            timingOffset.text = currentJumpAttempt.lookOffset.ToString("F2") + " (" + lastJumpAttempt.lookOffset.ToString("F2") + "▲)";
             timingOffset.color = Color.green;
         }
         else
         {
-            timingOffset.text = currentJumpAttempt.bhopAccuracy.ToString("F2") + " (" + lastJumpAttempt.bhopAccuracy.ToString("F2") + "▼)";
+            timingOffset.text = currentJumpAttempt.lookOffset.ToString("F2") + " (" + lastJumpAttempt.lookOffset.ToString("F2") + "▼)";
             timingOffset.color = Color.red;
         }
         //totalScore.text = "Total Score: " + lastJumpAttempt.score.ToString();

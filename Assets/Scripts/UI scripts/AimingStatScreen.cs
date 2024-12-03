@@ -32,14 +32,14 @@ public class AimingStatScreen : MonoBehaviour
             aimSmoothness.text =currentJumpAttempt.aimSmoothness.ToString("F2") + " (" + lastJumpAttempt.aimSmoothness.ToString("F2") + "▼)";
             aimSmoothness.color = Color.red;
         }
-        if( Math.Abs(lastJumpAttempt.bhopAccuracy)  <= Math.Abs(currentJumpAttempt.bhopAccuracy) )
+        if( Math.Abs(lastJumpAttempt.lookOffset)  <= Math.Abs(currentJumpAttempt.lookOffset) )
         {
-            bhopAccuracy.text = currentJumpAttempt.bhopAccuracy.ToString("F2") + " (" + lastJumpAttempt.bhopAccuracy.ToString("F2") + "▲)";
+            bhopAccuracy.text = currentJumpAttempt.lookOffset.ToString("F2") + " (" + lastJumpAttempt.lookOffset.ToString("F2") + "▲)";
             bhopAccuracy.color = Color.green;
         }
         else
         {
-            bhopAccuracy.text = currentJumpAttempt.bhopAccuracy.ToString("F2") + " (" + lastJumpAttempt.bhopAccuracy.ToString("F2") + "▼)";
+            bhopAccuracy.text = currentJumpAttempt.lookOffset.ToString("F2") + " (" + lastJumpAttempt.lookOffset.ToString("F2") + "▼)";
             bhopAccuracy.color = Color.red;
         }
         //totalScore.text = "Total Score: " + lastJumpAttempt.score.ToString();

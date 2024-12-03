@@ -7,7 +7,7 @@ using System.Linq;
 using UnityEngine.Analytics;
 using UnityEngine.SceneManagement;
 
-public class FullBhopSceneManager : MonoBehaviour
+public class FullBhopRaceManager : MonoBehaviour
 {
     public SurfCharacter surfCharacter;
     public UIManager uiManager;
@@ -687,4 +687,3 @@ public class FullBhopSceneManager : MonoBehaviour
 
     }
 }
-

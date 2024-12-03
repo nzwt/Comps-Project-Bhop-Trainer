@@ -10,7 +10,7 @@ public class ScoreManager : MonoBehaviour
     public int sceneNumber;
 
     private string filePath;
-    private string user = "Nico";
+    private string user = "";
 
     void Start()
     {
@@ -97,7 +97,7 @@ public class ScoreManager : MonoBehaviour
 
     private void SetFilePath(int sceneNumber)
     {
-        String levelPath = user +"_JumpAttempt_Scene_" + sceneNumber + ".json";
+        String levelPath = user +"Ethan_JumpAttempt_Scene_" + sceneNumber + ".json";
         filePath = Path.Combine(Application.persistentDataPath,levelPath);
         Debug.Log("File path set to: " + filePath);
     }

@@ -342,47 +342,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2603158585071332444, guid: d84b59a00a206bf448a01a4268df4d3c, type: 3}
   m_PrefabInstance: {fileID: 990453128933974216}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &207569372
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 207569369}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f26e6de56e67a1f4abbcefd4dbfb071e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameManager: {fileID: 2098334198}
-  statScreen: {fileID: 207569369}
-  lastJumpAttempt:
-    scenarioNumber: 0
-    attemptNumber: 0
-    strafeTimingOffset: 0
-    time: 0
-    aimSmoothness: 0
-    height: 0
-    speed: 0
-    score: 0
-    angle: 0
-    lookOffset: 0
-    bhopAccuracy: 0
-  currentJumpAttempt:
-    scenarioNumber: 0
-    attemptNumber: 0
-    strafeTimingOffset: 0
-    time: 0
-    aimSmoothness: 0
-    height: 0
-    speed: 0
-    score: 0
-    angle: 0
-    lookOffset: 0
-    bhopAccuracy: 0
-  averageSpeed: {fileID: 373999258}
-  bhopAccuracy: {fileID: 1657174318}
-  totalScore: {fileID: 591366314}
 --- !u!114 &207569373
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2698,7 +2657,6 @@ MonoBehaviour:
   scoreList: []
   isLoaded: 0
   sceneNumber: 0
-  user: Compton
 --- !u!114 &2098334203
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2778,7 +2736,6 @@ MonoBehaviour:
   attemptNumber: 0
   cameraHolder: {fileID: 926023497}
   arrow: {fileID: 1726983691}
-  startPressed: 0
   startPressed: 0
   lastScoreLoaded: 0
   startTriggered: 0

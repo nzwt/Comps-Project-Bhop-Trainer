@@ -137,7 +137,8 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
         // Update the lastJumpAttempt to the currentJumpAttempt
         // Reset the currentJumpAttempt
         float score = (0.65f - Math.Abs(bhopAccuracy))*7.65f + (0.65f - Math.Abs(strafeTimingOffset))*7.65f;
-        currentJumpAttempt = new JumpAttempt(2,attemptNumber, strafeTimingOffset, 0, 0, 0, 0, score, 0, 0, bhopAccuracy, date: System.DateTime.Now);
+        //bhopAccuracy is look offset
+        currentJumpAttempt = new JumpAttempt(2,attemptNumber, strafeTimingOffset, 0, 0, 0, 0, score, 0, bhopAccuracy, 0, date: System.DateTime.Now);
         scoreManager.SaveScore(2,currentJumpAttempt);
         //TODO: stats are going to be different depending on the scene, this should probably be dont in the scene manager but I dont know
         //jank, fix later
@@ -250,9 +251,9 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
             //start attempt by moving over left orb
             if(playerStart == false && startPressed == true)
             {
-                if(mouseAngleTracker.angleChange < 0)
+                if(mouseAngleTracker.currentAngle < 0)
                 {
-                    if (mouseAngleTracker.angleChange < -87.5 && mouseAngleTracker.angleChange > -92.5)
+                    if (mouseAngleTracker.currentAngle < -43 && mouseAngleTracker.currentAngle > -47)
                     {
                         playerStart = true;
                         //Debug.Log("Player is looking left");
@@ -319,9 +320,9 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
             //check if the player has started the attempt, if not, are they looking at a target?
             if(playerStart == true)
             {
-                if(mouseAngleTracker.angleChange > 0)
+                if(mouseAngleTracker.currentAngle > 0)
                 {
-                    if(mouseAngleTracker.angleChange > 87.5 && mouseAngleTracker.angleChange < 92.5 && currentTarget == rightTarget && switchTimer > -1)
+                    if(mouseAngleTracker.currentAngle > 43 && mouseAngleTracker.currentAngle < 47 && currentTarget == rightTarget && switchTimer > -1)
                     {
                         switchTimes.Add(switchTimer);
                         orbController.ShowRightAccuracy(switchTimer);
@@ -334,9 +335,9 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
                         //Debug.Log("Player is looking right");
                     }
                 }
-                else if(mouseAngleTracker.angleChange < 0)
+                else if(mouseAngleTracker.currentAngle < 0)
                 {
-                    if (mouseAngleTracker.angleChange < -87.5 && mouseAngleTracker.angleChange > -92.5 && currentTarget == leftTarget && switchTimer > -1)
+                    if (mouseAngleTracker.currentAngle < -43 && mouseAngleTracker.currentAngle > -47 && currentTarget == leftTarget && switchTimer > -1)
                     {
                         switchTimes.Add(switchTimer);
                         orbController.ShowLeftAccuracy(switchTimer);
@@ -477,6 +478,7 @@ public class StrafeAimingTimingSceneManager : MonoBehaviour
                 {
                     bhopAccuracy += time - 0.65f;
                 }
+                //bhopAccuracy is look accuracy for this scene
                 bhopAccuracy = bhopAccuracy / maxSwitches;
                 //for each switch, check from halfway to last switch to halfway to next switch and determine accuracy
                 //add values to timeline

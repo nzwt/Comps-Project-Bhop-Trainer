@@ -15,6 +15,7 @@ public class MouseAngleTracker : MonoBehaviour
     private float lastMouseY;
     private float accumulatedAngle = 0f;
     public float angleChange = 0f;
+    public float currentAngle = 0f;
     private float timer = 0f;
     public float jumpTimer = 0f;
     public float attemptAngleChange = 0;
@@ -47,7 +48,7 @@ public class MouseAngleTracker : MonoBehaviour
     void Start()
     {
         // Capture the initial mouse position
-        lastMouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
+        lastMouseX = transform.eulerAngles.y;//Input.GetAxis("Mouse X") * mouseSensitivity;
         smoothnessStartAngle = lastMouseX;
         lastMouseY = (Input.GetAxis("Mouse Y") * playerAiming.verticalSensitivity  * playerAiming.sensitivityMultiplier) / 2.1f;
     }
@@ -59,7 +60,12 @@ public class MouseAngleTracker : MonoBehaviour
             return;
         }
         // Increment the timer by the time passed since the last frame   
-        float mouseX = Input.GetAxis("Mouse X")*mouseSensitivity;
+        float mouseX = transform.eulerAngles.y;//Input.GetAxis("Mouse X")*mouseSensitivity;
+        if(mouseX > 180)
+        {
+            mouseX = mouseX - 360;
+        }
+        currentAngle = mouseX;
         
         // Accumulate the angle change
         accumulatedAngle += mouseX;
@@ -160,7 +166,7 @@ public class MouseAngleTracker : MonoBehaviour
     public void StartTrackingSmoothness()
     {
         //TODO replace with sensitivity
-        startAngle = Input.GetAxis("Mouse X")*mouseSensitivity;
+        startAngle = transform.rotation.y;//Input.GetAxis("Mouse X")*mouseSensitivity;
         elapsedTime = 0f;
         deviations = new List<float>();
         tracking = true;
