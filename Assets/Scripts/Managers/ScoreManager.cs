@@ -97,7 +97,7 @@ public class ScoreManager : MonoBehaviour
 
     private void SetFilePath(int sceneNumber)
     {
-        String levelPath = user +"Ethan_JumpAttempt_Scene_" + sceneNumber + ".json";
+        String levelPath = user +"_JumpAttempt_Scene_" + sceneNumber + ".json";
         filePath = Path.Combine(Application.persistentDataPath,levelPath);
         Debug.Log("File path set to: " + filePath);
     }

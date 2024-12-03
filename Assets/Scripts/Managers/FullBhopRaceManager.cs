@@ -25,7 +25,7 @@ public class FullBhopRaceManager : MonoBehaviour
     public GameObject cameraHolder;
     public GameObject arrow; //flip x to aim left
     //Race Values
-    public bool isRace = false;
+    public bool isRace = true;
     public float finishLine = 15;
     private float raceTimer = 0;
     
@@ -179,10 +179,7 @@ public class FullBhopRaceManager : MonoBehaviour
         {
             scoreManager.SaveScore(4, currentJumpAttempt);
         }
-        else
-        {
-            scoreManager.SaveScore(3, currentJumpAttempt);
-        }
+    
         //TODO: stats are going to be different depending on the scene, this should probably be dont in the scene manager but I dont know
         //jank, fix later
         if(!isRace)
@@ -494,6 +491,7 @@ public class FullBhopRaceManager : MonoBehaviour
 
         if ((currentJumps >= maxJumps) && playerStart == true || (isRace &&(surfCharacter.transform.position.z <= finishLine + 0.2 && surfCharacter.transform.position.z >= finishLine)))
         {
+            int length = groundTimes.Count;
             if(leftSwitchCount == -1)
             {
                 leftSwitchCount = 0;
@@ -516,13 +514,23 @@ public class FullBhopRaceManager : MonoBehaviour
             int rightIndex = 0;
             int leftIndex = 0;
             bool right = true;
-            for(int i = 0; i < jumpTimestamps.Length; i++)
+            if(length % 2 == 1)
+            {
+                rightLookAttemptTimestamps = new float[(length/2)+1];
+                rightLookOffsets = new float[(length/2)+1];
+            }
+            else
+            {
+                rightLookAttemptTimestamps = new float[length/2];
+                rightLookOffsets = new float[length/2];
+            }
+            
+            leftLookAttemptTimestamps = new float[length/2];
+            leftLookOffsets = new float[length/2];
+            for(int i = 0; i < length; i++)
             {
                 float closestRight = float.MaxValue;
                 float closestLeft = float.MaxValue;
-                print("i: " + i);
-                print("rightIndex: " + rightIndex);
-                print("leftIndex: " + leftIndex);
                 if(right)
                 {
                     for(int j = 0; j < rightLookTimes.Count; j++)
@@ -556,6 +564,18 @@ public class FullBhopRaceManager : MonoBehaviour
                 }
             }
 
+            if(length % 2 == 1)
+            {
+                DPressedOffset = new float[(length/2)+1];
+                DStrafeTimeline = new float[(length/2)+1];
+            }
+            else
+            {
+                DPressedOffset = new float[length/2];
+                DStrafeTimeline = new float[length/2];
+            }
+            APressedOffset = new float[length/2];
+            AStrafeTimeline = new float[length/2];
             //calculate offset of all D presses from rightLookAttemptTimestamps
             for(int i = 0; i < rightLookAttemptTimestamps.Count(); i++)
             {

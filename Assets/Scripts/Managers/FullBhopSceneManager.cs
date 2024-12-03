@@ -520,9 +520,6 @@ public class FullBhopSceneManager : MonoBehaviour
             {
                 float closestRight = float.MaxValue;
                 float closestLeft = float.MaxValue;
-                print("i: " + i);
-                print("rightIndex: " + rightIndex);
-                print("leftIndex: " + leftIndex);
                 if(right)
                 {
                     for(int j = 0; j < rightLookTimes.Count; j++)
